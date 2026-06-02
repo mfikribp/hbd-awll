@@ -42,7 +42,7 @@ export const WalkingMascots: React.FC = () => {
           />
         </motion.div>
       </motion.div>
- 
+
       {/* 🐱 Walking Cat */}
       <motion.div
         className="absolute bottom-0 w-10 h-10"

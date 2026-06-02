@@ -27,33 +27,43 @@ const BUFF_LIST: BuffType[] = [
 export const SystemMessage: React.FC = () => {
   const { nextSection } = useGameStore();
   const { playClick, playUnlock } = useAudio();
-  
+
   const [messages, setMessages] = useState<string[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [typingText, setTypingText] = useState('');
   const [typingComplete, setTypingComplete] = useState(false);
   const [showBuff, setShowBuff] = useState(false);
   const [randomBuff, setRandomBuff] = useState<BuffType>({ text: '', desc: '', icon: <Sparkles /> });
-  const chatEndRef = useRef<HTMLDivElement>(null);
+  const terminalRef = useRef<HTMLDivElement>(null);
 
   const textLines = [
-    "Makasih ya udah jadi orang baik selama ini. 💙",
-    "Semoga semua usaha dan lelahmu gak sia-sia, pelan-pelan terbayar. ✨",
+    "awll@birthday-os:~$ run check-status.sh",
+    "[SYSTEM] Initializing Life Status Analysis...",
+    "[SYSTEM] Level 20 reached successfully! 🎂",
+    "awll@birthday-os:~$ cat wishes_for_awll.txt",
+    "Makasih ya udah jadi orang baik selama ini.",
+    "Semoga semua usaha dan lelahmu gak sia-sia, pelan-pelan terbayar.",
     "Semoga tahun ini jadi tahun yang lebih ringan, lebih bahagia, dan penuh hal baik.",
-    "Dan... maaf kalau aku pernah bikin kamu gak nyaman atau kecewa 🙏",
-    "// Always proud of you, Awll!"
+    "Dan... maaf kalau aku pernah bikin kamu gak nyaman atau kecewa",
+    "awll@birthday-os:~$ execute proud-mode.sh --always",
+    "// Always proud of you, Awll! 💚",
+    "[SYSTEM] Birthday messages loaded! Injecting active birthday buffs..."
   ];
 
   // Typewriter logic line-by-line
   useEffect(() => {
     if (currentIndex < textLines.length) {
       const line = textLines[currentIndex];
+      const isCommand = line.startsWith("awll@birthday-os:~$");
+      const prefix = isCommand ? "awll@birthday-os:~$ " : "";
+      const actualTextToType = isCommand ? line.replace("awll@birthday-os:~$ ", "") : line;
+      
       let charIndex = 0;
-      setTypingText('');
+      setTypingText(prefix);
 
       const interval = setInterval(() => {
-        if (charIndex < line.length) {
-          setTypingText((prev) => prev + line.charAt(charIndex));
+        if (charIndex < actualTextToType.length) {
+          setTypingText(prefix + actualTextToType.substring(0, charIndex + 1));
           charIndex++;
         } else {
           clearInterval(interval);
@@ -68,7 +78,7 @@ export const SystemMessage: React.FC = () => {
       return () => clearInterval(interval);
     } else {
       setTypingComplete(true);
-      
+
       const chosenBuff = BUFF_LIST[Math.floor(Math.random() * BUFF_LIST.length)];
       setRandomBuff(chosenBuff);
       setTimeout(() => {
@@ -78,9 +88,11 @@ export const SystemMessage: React.FC = () => {
     }
   }, [currentIndex]);
 
-  // Scroll to bottom on new messages
+  // Scroll to bottom on new messages (highly reliable DOM implementation for mobile)
   useEffect(() => {
-    chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    if (terminalRef.current) {
+      terminalRef.current.scrollTop = terminalRef.current.scrollHeight;
+    }
   }, [messages, typingText]);
 
   const handleNext = () => {
@@ -88,7 +100,18 @@ export const SystemMessage: React.FC = () => {
     nextSection();
   };
 
-  const renderLineWithIcons = (line: string) => {
+  const renderLineWithIcons = (line: string, cursor: React.ReactNode = null) => {
+    if (line.includes('💚')) {
+      const parts = line.split('💚');
+      return (
+        <span className="flex items-center flex-wrap gap-1">
+          <span>{parts[0]}</span>
+          <Heart className="w-4 h-4 text-retro-green fill-current inline-block shrink-0 animate-pulse" />
+          <span>{parts[1]}</span>
+          {cursor}
+        </span>
+      );
+    }
     if (line.includes('💙')) {
       const parts = line.split('💙');
       return (
@@ -96,6 +119,7 @@ export const SystemMessage: React.FC = () => {
           <span>{parts[0]}</span>
           <Heart className="w-4 h-4 text-retro-skyblue fill-current inline-block shrink-0 animate-pulse" />
           <span>{parts[1]}</span>
+          {cursor}
         </span>
       );
     }
@@ -106,6 +130,7 @@ export const SystemMessage: React.FC = () => {
           <span>{parts[0]}</span>
           <Sparkles className="w-4 h-4 text-retro-gold fill-current inline-block animate-pulse shrink-0" />
           <span>{parts[1]}</span>
+          {cursor}
         </span>
       );
     }
@@ -116,22 +141,73 @@ export const SystemMessage: React.FC = () => {
           <span>{parts[0]}</span>
           <Smile className="w-4 h-4 text-retro-navy inline-block shrink-0" />
           <span>{parts[1]}</span>
+          {cursor}
         </span>
       );
     }
-    return <span>{line}</span>;
+    return (
+      <>
+        {line}
+        {cursor}
+      </>
+    );
+  };
+
+  const renderTerminalLine = (line: string, isCurrentTyping: boolean = false) => {
+    const fullLine = isCurrentTyping && currentIndex < textLines.length ? textLines[currentIndex] : line;
+
+    // Typewriter cursor inline inside the terminal text
+    const cursor = isCurrentTyping ? (
+      <span className="w-2 h-4 bg-retro-green inline-block animate-pulse ml-1 shrink-0 align-middle" />
+    ) : null;
+
+    if (fullLine.startsWith("awll@birthday-os:~$")) {
+      // Remove prefix from the typed content to prevent double-rendering if any
+      const command = line.startsWith("awll@birthday-os:~$") 
+        ? line.replace("awll@birthday-os:~$", "").trimStart() 
+        : line.trimStart();
+      return (
+        <div className="font-mono text-xs sm:text-sm select-text flex flex-wrap gap-x-1.5 leading-relaxed shrink-0 break-words whitespace-pre-wrap">
+          <span className="text-retro-green font-bold">awll@birthday-os</span>
+          <span className="text-retro-pink font-bold">:~$</span>
+          <span className="text-white font-semibold flex items-center flex-wrap">
+            {command}
+            {cursor}
+          </span>
+        </div>
+      );
+    }
+
+    if (fullLine.startsWith("[SYSTEM]")) {
+      return (
+        <div className="font-mono text-xs sm:text-sm text-retro-skyblue select-text leading-relaxed pl-2 shrink-0 break-words whitespace-pre-wrap">
+          {renderLineWithIcons(line, cursor)}
+        </div>
+      );
+    }
+
+    if (fullLine.startsWith("//")) {
+      return (
+        <div className="font-mono text-xs sm:text-sm text-retro-green font-extrabold select-text leading-relaxed pl-2 shrink-0 animate-pulse break-words whitespace-pre-wrap">
+          {renderLineWithIcons(line, cursor)}
+        </div>
+      );
+    }
+
+    // Default terminal response output (standard wishes text)
+    return (
+      <div className="font-mono text-xs sm:text-sm text-gray-200 select-text pl-4 leading-relaxed border-l-2 border-retro-skyblue/30 shrink-0 break-words whitespace-pre-wrap">
+        {renderLineWithIcons(line, cursor)}
+      </div>
+    );
   };
 
   return (
     <div
-      className="min-h-screen w-full flex flex-col justify-center items-center p-4 sm:p-6 bg-[#090b14] relative overflow-hidden"
-      style={{
-        backgroundImage: `radial-gradient(#141829 2px, transparent 2px)`,
-        backgroundSize: '24px 24px',
-      }}
+      className="min-h-screen w-full flex flex-col justify-center items-center p-4 sm:p-6 bg-system-message relative overflow-hidden"
     >
       {/* Cozy ambient decorations matching design */}
-      {/* Bottom-left: Cat, Signboard & Coffee Mug */}
+      {/* Bottom-left: Signboard, Dino and Cat mascots sitting side-by-side */}
       <div className="absolute bottom-4 left-4 flex items-end gap-3 z-10 select-none pointer-events-none scale-75 sm:scale-100 origin-bottom-left">
         {/* Wooden Sign "JANGAN LUPA MINUM!" */}
         <div className="flex flex-col items-center">
@@ -144,153 +220,130 @@ export const SystemMessage: React.FC = () => {
           <div className="w-2.5 h-6 bg-[#5c3a21] border-x-4 border-black -mt-1" />
         </div>
 
-        {/* Cute Cat mascot sitting */}
-        <div className="w-16 h-16 relative">
-          <Image
-            src="/assets/2.png"
-            alt="Mascot Cat Ambient"
-            fill
-            sizes="64px"
-            className="object-contain"
+        {/* Cozy Mascots snugged closer together */}
+        <div className="flex -space-x-3 items-end">
+          {/* Cute Dino mascot */}
+          <div className="w-16 h-16 relative">
+            <Image
+              src="/assets/1.png"
+              alt="Mascot Dino Ambient"
+              fill
+              sizes="64px"
+              className="object-contain"
+            />
+          </div>
+
+          {/* Cute Cat mascot */}
+          <div className="w-16 h-16 relative">
+            <Image
+              src="/assets/2.png"
+              alt="Mascot Cat Ambient"
+              fill
+              sizes="64px"
+              className="object-contain"
+            />
+          </div>
+        </div>
+      </div>
+
+      <div className="relative w-full max-w-xl">
+        {/* Animated Mascot Cat Sitting on Top of the Window Header Frame */}
+        <div
+          className="absolute -top-[86px] right-8 w-28 h-28 z-20 pointer-events-none select-none"
+        >
+          <img
+            src="/cat.gif"
+            alt="Mascot Cat"
+            className="w-full h-full object-contain"
           />
         </div>
 
-        {/* Blue Coffee Mug */}
-        <div className="w-8 h-8 bg-retro-skyblue border-4 border-black relative rounded-t-sm rounded-b-md flex justify-end items-center mb-0.5 shadow-md">
-          {/* Handle */}
-          <div className="absolute -right-3 w-3 h-5 border-4 border-black border-l-0 rounded-r-md bg-transparent" />
-        </div>
-      </div>
+        <RetroWindow title="SYSTEM MESSAGE" className="shadow-2xl relative z-10">
 
-      {/* Bottom-right: Potted Plant */}
-      <div className="absolute bottom-4 right-4 flex flex-col items-center z-10 select-none pointer-events-none scale-75 sm:scale-100 origin-bottom-right">
-        {/* Leaves */}
-        <div className="flex -space-x-2 -mb-1 animate-pulse">
-          <div className="w-8 h-10 bg-retro-green border-4 border-black rounded-full rotate-[-15deg]" />
-          <div className="w-7 h-9 bg-[#2e7d32] border-4 border-black rounded-full rotate-[10deg]" />
-          <div className="w-6 h-8 bg-retro-green border-4 border-black rounded-full rotate-[-45deg]" />
-        </div>
-        {/* Pot */}
-        <div className="w-8 h-8 bg-[#cd853f] border-4 border-black rounded-b-xl relative">
-          {/* Pot Rim */}
-          <div className="absolute -top-1 -left-1 w-8 h-2.5 bg-[#cd853f] border-4 border-black" />
-        </div>
-      </div>
+          {/* Terminal/Chat Window Display with Neon Glow */}
+          <div 
+            ref={terminalRef}
+            className="bg-[#0C101B] border-4 border-retro-skyblue/70 p-4 pixel-border-inward flex flex-col gap-3 min-h-[260px] max-h-[320px] select-none overflow-y-auto shadow-[0_0_15px_rgba(78,168,222,0.25)] scrollbar-thin scrollbar-thumb-retro-skyblue"
+          >
 
-      <RetroWindow title="SYSTEM MESSAGE" className="max-w-xl shadow-2xl relative z-10">
-        
-        {/* Terminal/Chat Window Display with Neon Glow */}
-        <div className="bg-[#0C101B] border-4 border-retro-skyblue/70 p-4 pixel-border-inward flex flex-col gap-3 min-h-[260px] max-h-[320px] select-none overflow-y-auto shadow-[0_0_15px_rgba(78,168,222,0.25)] scrollbar-thin scrollbar-thumb-retro-skyblue">
-          
-          {/* System notification bar */}
-          <div className="flex items-center gap-2 border-b border-gray-800 pb-2 mb-1 text-gray-500 shrink-0 font-mono text-[10px] sm:text-xs">
-            <Terminal className="w-3.5 h-3.5 text-retro-skyblue animate-pulse" />
-            <span>&lt;&lt; SYSTEM MESSAGE &gt;&gt;</span>
-          </div>
+            {/* System notification bar */}
+            <div className="flex items-center gap-2 border-b border-gray-800 pb-2 mb-1 text-gray-500 shrink-0 font-mono text-[10px] sm:text-xs">
+              <Terminal className="w-3.5 h-3.5 text-retro-skyblue animate-pulse" />
+              <span>&lt;&lt; SYSTEM MESSAGE &gt;&gt;</span>
+            </div>
 
-          {/* Bubbles flex container */}
-          <div className="flex flex-col gap-3 items-start w-full">
-            {messages.map((line, idx) => {
-              if (line.startsWith('//')) {
-                return (
-                  <motion.p
-                    key={idx}
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    className="text-retro-green font-mono font-bold text-xs sm:text-sm mt-2 tracking-wide select-text"
-                  >
-                    {line}
-                  </motion.p>
-                );
-              }
-              return (
+            {/* UNIX Terminal Shell Console Display */}
+            <div className="flex flex-col gap-2.5 items-start w-full">
+              {messages.map((line, idx) => (
                 <motion.div
                   key={idx}
-                  initial={{ opacity: 0, scale: 0.92, y: 10 }}
-                  animate={{ opacity: 1, scale: 1, y: 0 }}
-                  transition={{ type: 'spring', damping: 15 }}
-                  className="bg-white text-gray-800 px-4 py-2.5 rounded-2xl border-4 border-black font-nunito font-extrabold text-xs sm:text-sm max-w-[90%] shadow-[3px_3px_0px_rgba(0,0,0,0.15)] relative select-text"
+                  initial={{ opacity: 0, x: -5 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.15 }}
+                  className="w-full"
                 >
-                  {/* Speech bubble arrow pointer on bottom-left */}
-                  <div className="absolute bottom-2 -left-[14px] w-0 h-0 border-y-8 border-y-transparent border-r-8 border-r-black pointer-events-none" />
-                  <div className="absolute bottom-2.5 -left-[7px] w-0 h-0 border-y-[6px] border-y-transparent border-r-[6px] border-r-white pointer-events-none z-10" />
-                  
-                  {renderLineWithIcons(line)}
+                  {renderTerminalLine(line)}
                 </motion.div>
-              );
-            })}
+              ))}
 
-            {/* Line currently typing inside bubble */}
-            {typingText && (
-              typingText.startsWith('//') ? (
-                <p className="text-retro-green font-mono font-bold text-xs sm:text-sm mt-2 tracking-wide">
-                  {typingText}
-                  <span className="w-1.5 h-4 bg-retro-green inline-block animate-pulse ml-0.5" />
-                </p>
-              ) : (
-                <motion.div
-                  initial={{ opacity: 0, scale: 0.95 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  className="bg-white text-gray-800 px-4 py-2.5 rounded-2xl border-4 border-black font-nunito font-extrabold text-xs sm:text-sm max-w-[90%] shadow-[3px_3px_0px_rgba(0,0,0,0.15)] flex items-center relative"
-                >
-                  {/* Speech bubble arrow pointer */}
-                  <div className="absolute bottom-2 -left-[14px] w-0 h-0 border-y-8 border-y-transparent border-r-8 border-r-black pointer-events-none" />
-                  <div className="absolute bottom-2.5 -left-[7px] w-0 h-0 border-y-[6px] border-y-transparent border-r-[6px] border-r-white pointer-events-none z-10" />
-                  
-                  {renderLineWithIcons(typingText)}
-                  <span className="w-1.5 h-4 bg-gray-800 inline-block animate-pulse ml-1 shrink-0" />
-                </motion.div>
-              )
-            )}
-            
-            <div ref={chatEndRef} />
+              {/* Line currently typing in console with flashing cursor */}
+              {typingText && (
+                <div className="w-full">
+                  {renderTerminalLine(typingText, true)}
+                </div>
+              )}
+            </div>
           </div>
-        </div>
 
-        {/* Easter Egg Birthday Buff Alert Popup */}
-        <AnimatePresence>
-          {showBuff && (
+          {/* Easter Egg Birthday Buff Alert Popup */}
+          <AnimatePresence>
+            {showBuff && (
+              <motion.div
+                initial={{ scale: 0.8, opacity: 0, y: 15 }}
+                animate={{ scale: 1, opacity: 1, y: 0 }}
+                exit={{ scale: 0.8, opacity: 0 }}
+                className="mt-6 p-4 sm:p-5 border-4 border-retro-gold bg-[#0C101B] text-white shadow-[6px_6px_0px_#000000] relative overflow-visible flex items-center gap-4 select-none"
+              >
+                {/* Ribbon style Top-Right Badge */}
+                <div className="absolute -top-3.5 right-4 bg-retro-pink text-white border-2 border-black font-press-start text-[7px] sm:text-[8px] px-2.5 py-1 uppercase tracking-widest shadow-[2px_2px_0px_#000] font-bold">
+                  BUFF ACTIVE
+                </div>
+
+                {/* Golden Animated Icon Container */}
+                <div className="p-3 border-4 border-black bg-retro-gold text-black shrink-0 animate-bounce relative shadow-[2px_2px_0px_#000]">
+                  {randomBuff.icon}
+                </div>
+
+                <div className="flex-1 font-nunito">
+                  <h3 className="font-press-start text-[8px] sm:text-[9.5px] text-retro-skyblue mb-2 leading-relaxed flex items-center gap-1.5 font-bold tracking-wide">
+                    <span>EASTER EGG BUFF ACTIVATED!</span>
+                    <Sparkles className="w-3.5 h-3.5 text-retro-gold fill-current animate-pulse" />
+                  </h3>
+                  <p className="font-press-start text-xs sm:text-sm text-retro-gold mb-1.5 leading-snug drop-shadow-[0_1.5px_0_#000]">
+                    {randomBuff.text}
+                  </p>
+                  <p className="text-[11px] sm:text-xs font-semibold text-gray-300 leading-relaxed">
+                    {randomBuff.desc}
+                  </p>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+
+          {/* Navigation Button */}
+          {typingComplete && (
             <motion.div
-              initial={{ scale: 0.8, opacity: 0, y: 20 }}
-              animate={{ scale: 1, opacity: 1, y: 0 }}
-              exit={{ scale: 0.8, opacity: 0 }}
-              className="mt-5 p-4 border-4 border-black bg-retro-beigedark text-black pixel-border flex items-start gap-4 relative overflow-hidden"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="mt-6 flex justify-center w-full"
             >
-              <div className="absolute top-0 right-0 p-1 bg-black text-retro-gold font-press-start text-[7px] uppercase tracking-wider">
-                Buff Active
-              </div>
-              <div className="p-2.5 border-4 border-black bg-retro-gold text-black shrink-0 animate-bounce relative">
-                {randomBuff.icon}
-              </div>
-              <div className="flex-1 select-none font-nunito">
-                <h3 className="font-press-start text-[8px] sm:text-[9px] text-retro-navy mb-1.5 leading-snug flex items-center gap-1">
-                  <span>EASTER EGG BUFF ACTIVATED!</span>
-                  <Sparkles className="w-3 h-3 text-retro-purple animate-pulse" />
-                </h3>
-                <p className="font-extrabold text-sm text-retro-purple mb-1 leading-snug">
-                  {randomBuff.text}
-                </p>
-                <p className="text-[11px] font-bold text-gray-700 leading-snug">
-                  {randomBuff.desc}
-                </p>
-              </div>
+              <PixelButton onClick={handleNext} className="w-full py-4 text-xs sm:text-sm">
+                LANJUT YAA ➔
+              </PixelButton>
             </motion.div>
           )}
-        </AnimatePresence>
-
-        {/* Navigation Button */}
-        {typingComplete && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            className="mt-6 flex justify-center w-full"
-          >
-            <PixelButton onClick={handleNext} className="w-full py-4 text-xs sm:text-sm">
-              LANJUT YAA ➔
-            </PixelButton>
-          </motion.div>
-        )}
-      </RetroWindow>
+        </RetroWindow>
+      </div>
     </div>
   );
 };

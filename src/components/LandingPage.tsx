@@ -223,7 +223,7 @@ export const LandingPage: React.FC = () => {
         className="z-10 flex flex-col items-center max-w-xl px-4"
       >
         {/* SELAMAT Title */}
-        <motion.h1 
+        <motion.h1
           className="font-press-start text-[26px] xs:text-[32px] sm:text-[40px] md:text-5xl mb-4 select-none flex flex-col items-center justify-center gap-y-2 max-w-full px-2"
           initial="initial"
           animate="animate"
@@ -247,10 +247,10 @@ export const LandingPage: React.FC = () => {
                 }}
                 variants={{
                   initial: { y: -80, opacity: 0, scale: 0.2, rotate: -20 },
-                  animate: { 
-                    y: 0, 
-                    opacity: 1, 
-                    scale: 1, 
+                  animate: {
+                    y: 0,
+                    opacity: 1,
+                    scale: 1,
                     rotate: 0,
                     transition: {
                       type: "spring",
@@ -259,10 +259,10 @@ export const LandingPage: React.FC = () => {
                     }
                   }
                 }}
-                whileHover={{ 
-                  scale: 1.35, 
+                whileHover={{
+                  scale: 1.35,
                   rotate: 12,
-                  transition: { type: "spring", stiffness: 500, damping: 6 } 
+                  transition: { type: "spring", stiffness: 500, damping: 6 }
                 }}
                 whileTap={{
                   scale: 1.35,
@@ -288,10 +288,10 @@ export const LandingPage: React.FC = () => {
                   }}
                   variants={{
                     initial: { y: -80, opacity: 0, scale: 0.2, rotate: -20 },
-                    animate: { 
-                      y: 0, 
-                      opacity: 1, 
-                      scale: 1, 
+                    animate: {
+                      y: 0,
+                      opacity: 1,
+                      scale: 1,
                       rotate: 0,
                       transition: {
                         type: "spring",
@@ -300,10 +300,10 @@ export const LandingPage: React.FC = () => {
                       }
                     }
                   }}
-                  whileHover={{ 
-                    scale: 1.35, 
+                  whileHover={{
+                    scale: 1.35,
                     rotate: 12,
-                    transition: { type: "spring", stiffness: 500, damping: 6 } 
+                    transition: { type: "spring", stiffness: 500, damping: 6 }
                   }}
                   whileTap={{
                     scale: 1.35,
@@ -335,14 +335,14 @@ export const LandingPage: React.FC = () => {
           initial={{ scale: 0, rotate: -3 }}
           animate={{ scale: 1, rotate: 0 }}
           transition={{ type: "spring", stiffness: 120, damping: 14, delay: 0.2 }}
-          whileHover={{ 
-            scale: 1.06, 
+          whileHover={{
+            scale: 1.06,
             rotate: 1,
             boxShadow: "8px 8px 0px #000000",
             transition: { type: "spring", stiffness: 400, damping: 15 }
           }}
-          whileTap={{ 
-            scale: 1.06, 
+          whileTap={{
+            scale: 1.06,
             rotate: 1,
             boxShadow: "8px 8px 0px #000000",
             transition: { type: "spring", stiffness: 400, damping: 15 }
@@ -416,9 +416,34 @@ export const LandingPage: React.FC = () => {
         </div>
 
         {/* Blinking Retro Play Prompt */}
-        <div className="font-press-start text-[9px] sm:text-[10px] text-retro-gold mb-3 tracking-widest animate-pulse flex items-center justify-center gap-1.5 select-none font-bold drop-shadow-[0_2px_0_#000]">
-          <span className="text-retro-pink">★</span> CLICK TO PLAY <span className="text-retro-pink">★</span>
-        </div>
+        <motion.div
+          className="font-press-start text-[9px] sm:text-[10px] mb-3 tracking-widest flex items-center justify-center gap-2 select-none font-bold drop-shadow-[0_2px_0_#000]"
+          animate={{
+            scale: [1, 1.15, 1],
+            color: ["#FFD700", "#FF6B6B", "#4EA8DE", "#4AD66D", "#FFD700"],
+          }}
+          transition={{
+            duration: 1.4,
+            repeat: Infinity,
+            ease: "easeInOut",
+          }}
+        >
+          <motion.span
+            className="text-retro-pink inline-block origin-center"
+            animate={{ rotate: 360 }}
+            transition={{ duration: 2.2, repeat: Infinity, ease: "linear" }}
+          >
+            ★
+          </motion.span>
+          <span>CLICK START ADVENTURE TO PLAY</span>
+          <motion.span
+            className="text-retro-pink inline-block origin-center"
+            animate={{ rotate: -360 }}
+            transition={{ duration: 2.2, repeat: Infinity, ease: "linear" }}
+          >
+            ★
+          </motion.span>
+        </motion.div>
 
         {/* Start Adventure Button: Glowing Pulse Animation */}
         <motion.div
@@ -434,9 +459,9 @@ export const LandingPage: React.FC = () => {
         >
           {/* Premium Glowing neon color underlay */}
           <div className="absolute -inset-1 bg-gradient-to-r from-retro-gold via-retro-pink to-retro-skyblue rounded-none blur-sm opacity-60 group-hover:opacity-90 animate-pulse pointer-events-none" />
-          
-          <PixelButton 
-            onClick={handleStart} 
+
+          <PixelButton
+            onClick={handleStart}
             className="px-10 py-4.5 text-sm sm:text-base font-bold relative uppercase tracking-wider !shadow-[6px_6px_0px_#000000]"
           >
             ▸ START ADVENTURE ◂

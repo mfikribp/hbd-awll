@@ -20,8 +20,7 @@ export const CharacterCard: React.FC = () => {
 
   return (
     <div
-      className="min-h-screen w-full flex flex-col justify-center items-center p-4 sm:p-6 bg-cover bg-center select-none relative"
-      style={{ backgroundImage: `url('/assets/bg-character.jpg')` }}
+      className="min-h-screen w-full flex flex-col justify-center items-center p-4 sm:p-6 bg-character-page select-none relative"
     >
       {/* Soft overlay to ensure retro windows pop beautifully */}
       <div className="absolute inset-0 bg-[#EFECE6]/35 z-0 pointer-events-none" />
@@ -49,55 +48,54 @@ export const CharacterCard: React.FC = () => {
           </div>
 
           {/* Right Column - Stats Details */}
-          <div className="flex-1 w-full text-black flex flex-col justify-between font-nunito">
-            {/* Header Identity */}
-            <div className="pb-3 mb-3 text-xs sm:text-sm font-extrabold flex flex-col space-y-1.5 bg-[#FAF6EE] p-3 border-4 border-black shadow-[4px_4px_0px_#000000]">
-              <div className="grid grid-cols-[100px_15px_1fr] items-center">
-                <span className="text-gray-600 font-bold flex items-center gap-1.5"><User className="w-3.5 h-3.5 text-gray-500 shrink-0" /> Name</span>
-                <span className="text-gray-600 font-bold">:</span>
-                <span className="text-retro-navy font-black">Awll</span>
+          <div className="flex-1 w-full text-black flex flex-col justify-between">
+            {/* Header Identity - Fully Themed Retro RPG Stat Block */}
+            <div className="pb-4 mb-4 font-press-start text-[8.5px] sm:text-[9.5px] leading-relaxed flex flex-col space-y-3 bg-[#FAF6EE] p-4 border-4 border-black shadow-[4px_4px_0px_#000000] pixel-border-inward">
+              <div className="grid grid-cols-[75px_15px_1fr] sm:grid-cols-[85px_15px_1fr] items-center">
+                <span className="text-gray-600 font-extrabold flex items-center gap-1.5">
+                  <User className="w-3.5 h-3.5 text-retro-pink shrink-0" /> NAME
+                </span>
+                <span className="text-gray-600 font-extrabold">:</span>
+                <span className="text-retro-navy font-black tracking-wide uppercase">Awll</span>
               </div>
-              <div className="grid grid-cols-[100px_15px_1fr] items-center">
-                <span className="text-gray-600 font-bold flex items-center gap-1.5"><ArrowUpCircle className="w-3.5 h-3.5 text-retro-purple shrink-0" /> Level</span>
-                <span className="text-gray-600 font-bold">:</span>
-                <span className="text-retro-navy font-black">20</span>
+              <div className="grid grid-cols-[75px_15px_1fr] sm:grid-cols-[85px_15px_1fr] items-center">
+                <span className="text-gray-600 font-extrabold flex items-center gap-1.5">
+                  <ArrowUpCircle className="w-3.5 h-3.5 text-retro-gold shrink-0 animate-pulse" /> LEVEL
+                </span>
+                <span className="text-gray-600 font-extrabold">:</span>
+                <span className="text-retro-purple font-black tracking-wide">20</span>
               </div>
-              <div className="grid grid-cols-[100px_15px_1fr] items-center">
-                <span className="text-gray-600 font-bold flex items-center gap-1.5"><GraduationCap className="w-3.5 h-3.5 text-gray-500 shrink-0" /> Class</span>
-                <span className="text-gray-600 font-bold">:</span>
-                <span className="text-retro-navy font-black">Mahasiswa + Pekerja</span>
-              </div>
-              <div className="grid grid-cols-[100px_15px_1fr] items-center">
-                <span className="text-gray-600 font-bold flex items-center gap-1.5"><Ruler className="w-3.5 h-3.5 text-gray-500 shrink-0" /> Jurusan</span>
-                <span className="text-gray-600 font-bold">:</span>
-                <span className="text-retro-navy font-black">Teknik Sipil</span>
+              <div className="grid grid-cols-[75px_15px_1fr] sm:grid-cols-[85px_15px_1fr] items-center">
+                <span className="text-gray-600 font-extrabold flex items-center gap-1.5">
+                  <GraduationCap className="w-3.5 h-3.5 text-retro-green shrink-0" /> DEPT
+                </span>
+                <span className="text-gray-600 font-extrabold">:</span>
+                <span className="text-retro-navy font-black tracking-wide text-[7px] sm:text-[8.5px] leading-tight uppercase">CIVIL ENGG</span>
               </div>
             </div>
 
             {/* Dynamic Interactive Stats Progress Bars */}
             <div className="space-y-1 mb-4">
-              <ProgressBar label="HP" value={999} max={999} colorClass="bg-red-500" />
-              <ProgressBar label="Stress" value={70} max={100} colorClass="bg-[#ff8c00]" />
-              <ProgressBar label="Tidur" value={2} max={100} colorClass="bg-[#1c2541]" />
-              <ProgressBar label="Kopi" value={8} max={10} colorClass="bg-[#8b5a2b]" />
+              <ProgressBar label="Semangat" value={999} max={999} colorClass="bg-retro-pink" />
+              <ProgressBar label="Tidur" value={2} max={100} colorClass="bg-retro-skyblue" />
+              <ProgressBar label="Kopi" value={6} max={10} colorClass="bg-[#8b5a2b]" />
             </div>
           </div>
         </div>
 
         {/* Bottom Dialogue Box */}
         <div className="mt-4 p-4 bg-[#EAD9B8] pixel-border border-4 border-black text-black flex items-center space-x-4">
-          <div className="w-10 h-10 relative shrink-0">
+          <div className="w-20 h-20 relative shrink-0">
             <Image
               src="/assets/2.png"
               alt="Mascot Cat"
               fill
-              sizes="40px"
+              sizes="60px"
               className="object-contain"
             />
           </div>
           <p className="font-nunito font-extrabold text-xs sm:text-sm text-retro-navy leading-snug flex items-center gap-1.5">
             <span>Tipikal kuat tapi sebenarnya butuh tidur dan healing</span>
-            <Smile className="w-4 h-4 text-retro-navy shrink-0 animate-bounce inline-block" />
           </p>
         </div>
 

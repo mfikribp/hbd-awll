@@ -132,3 +132,62 @@
   background-image: radial-gradient(circle, rgba(255,255,255,0.05) 1px, transparent 1px);
   background-size: 20px 20px;
 }
+
+/* Responsive background for System Message page */
+.bg-system-message {
+  background-image: url('/assets/bg-system-message-mobile.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-color: #090b14;
+}
+
+@media (min-width: 768px) {
+  .bg-system-message {
+    background-image: radial-gradient(#141829 2px, transparent 2px) !important;
+    background-size: 24px 24px !important;
+    background-repeat: repeat !important;
+    background-position: initial !important;
+  }
+}
+
+/* Responsive background for Character Card page */
+.bg-character-page {
+  background-image: url('/assets/bg-page2-mobile.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+@media (min-width: 768px) {
+  .bg-character-page {
+    background-image: url('/assets/bg-character.jpg') !important;
+  }
+}
+
+/* Expandable Glow text animation for game complete */
+@keyframes expandable-glow {
+  0%, 100% {
+    text-shadow: 
+      0 0 6px rgba(255, 255, 255, 0.4),
+      0 0 12px rgba(255, 255, 255, 0.2),
+      3px 3px 0px #000000;
+    transform: scale(1);
+  }
+  50% {
+    text-shadow: 
+      0 0 18px rgba(78, 168, 222, 0.95),  /* Skyblue glowing halo */
+      0 0 28px rgba(78, 168, 222, 0.5),
+      0 0 38px rgba(247, 37, 133, 0.35),  /* Pink outer glow */
+      3px 3px 0px #000000;
+    transform: scale(1.03);
+  }
+}
+
+.animate-expandable-glow {
+  display: inline-block;
+  animation: expandable-glow 2.2s ease-in-out infinite;
+}
+
+
+

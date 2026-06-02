@@ -28,7 +28,7 @@ const ACHIEVEMENT_LIST = (isUnlocked: boolean): AchievementCard[] => [
 export const Achievements: React.FC = () => {
   const { xpPoints, addXP, nextSection, unlockedAchievements, unlockAchievement } = useGameStore();
   const { playUnlock, playClick } = useAudio();
-  const [xpParticles, setXpParticles] = useState<{ id: number; x: number; y: number }[]>([]);
+  const [xpParticles, setXpParticles] = useState<{ id: number; cardId: string; x: number; y: number }[]>([]);
 
   const handleCardClick = (e: React.MouseEvent<HTMLDivElement>, card: AchievementCard) => {
     if (unlockedAchievements.includes(card.id)) return;
@@ -37,7 +37,7 @@ export const Achievements: React.FC = () => {
     const rect = e.currentTarget.getBoundingClientRect();
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;
-    setXpParticles((prev) => [...prev, { id: Date.now(), x, y }]);
+    setXpParticles((prev) => [...prev, { id: Date.now(), cardId: card.id, x, y }]);
 
     // Trigger state changes
     unlockAchievement(card.id);
@@ -96,7 +96,7 @@ export const Achievements: React.FC = () => {
                 whileHover={{ scale: isUnlocked ? 1 : 1.05, y: isUnlocked ? 0 : -3 }}
                 whileTap={{ scale: isUnlocked ? 1 : 0.98 }}
                 onClick={(e) => handleCardClick(e, card)}
-                className={`relative p-3.5 border-4 border-black pixel-border cursor-pointer select-none transition-all flex flex-col items-center text-center justify-between min-h-[140px] overflow-hidden ${isUnlocked ? 'bg-gray-300 opacity-65 cursor-default' : card.color
+                className={`relative p-3.5 border-4 border-black pixel-border cursor-pointer select-none transition-all flex flex-col items-center text-center justify-between min-h-[140px] overflow-visible ${isUnlocked ? 'bg-gray-300 opacity-65 cursor-default' : card.color
                   }`}
               >
                 {/* Bouncing Hand Cursor Guide */}
@@ -114,7 +114,7 @@ export const Achievements: React.FC = () => {
                       className="w-10 h-10 relative drop-shadow-[2.5px_2.5px_0px_#000000] select-none"
                     >
                       <img 
-                        src="/assets/kursor.png?v=3" 
+                      src="/assets/kursor.png?v=3" 
                         alt="Pointer" 
                         className="w-full h-full object-contain image-rendering-pixelated"
                       />
@@ -123,18 +123,20 @@ export const Achievements: React.FC = () => {
                 )}
                 {/* Floating XP Effect Overlay */}
                 <AnimatePresence>
-                  {xpParticles.map((p) => (
-                    <motion.span
-                      key={p.id}
-                      initial={{ opacity: 1, y: p.y, x: p.x, scale: 1 }}
-                      animate={{ opacity: 0, y: p.y - 80, scale: 1.5 }}
-                      exit={{ opacity: 0 }}
-                      transition={{ duration: 0.8 }}
-                      className="absolute font-press-start text-[10px] font-black text-retro-purple pointer-events-none"
-                    >
-                      +500 XP
-                    </motion.span>
-                  ))}
+                  {xpParticles
+                    .filter((p) => p.cardId === card.id)
+                    .map((p) => (
+                      <motion.span
+                        key={p.id}
+                        initial={{ opacity: 1, y: p.y, x: p.x, scale: 1 }}
+                        animate={{ opacity: 0, y: p.y - 80, scale: 1.5 }}
+                        exit={{ opacity: 0 }}
+                        transition={{ duration: 0.8 }}
+                        className="absolute font-press-start text-[10px] font-black text-retro-purple pointer-events-none"
+                      >
+                        +500 XP
+                      </motion.span>
+                    ))}
                 </AnimatePresence>
 
                 {/* Inner Elements */}

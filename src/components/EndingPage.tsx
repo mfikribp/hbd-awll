@@ -4,9 +4,8 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useGameStore } from '../store/useGameStore';
 import { useAudio } from '../hooks/useAudio';
-import { PixelButton } from './ui/PixelButton';
 import ReactConfetti from 'react-confetti';
-import { Heart, RefreshCw, Sparkles, Cake, Users } from 'lucide-react';
+import { Heart } from 'lucide-react';
 import Image from 'next/image';
 
 interface HeartParticle {
@@ -43,7 +42,7 @@ export const EndingPage: React.FC = () => {
 
   const handleVirtualHug = () => {
     playLevelUp();
-    
+
     // Spawn 15 hearts floating up with random X positions, scales, and delays
     const newHearts = Array.from({ length: 15 }).map((_, i) => ({
       id: Date.now() + i,
@@ -51,7 +50,7 @@ export const EndingPage: React.FC = () => {
       scale: Math.random() * 0.6 + 0.6,
       delay: Math.random() * 0.5,
     }));
-    
+
     setHearts((prev) => [...prev, ...newHearts]);
 
     // Clean up hearts after animation completes
@@ -67,26 +66,24 @@ export const EndingPage: React.FC = () => {
 
   return (
     <div
-      className="relative min-h-screen flex flex-col justify-between items-center text-center p-6 bg-cover bg-center select-none"
+      className="relative min-h-screen w-full flex flex-col justify-between items-center p-4 sm:p-6 bg-cover bg-center select-none overflow-hidden"
       style={{ backgroundImage: `url('/assets/bg-ending.png')` }}
     >
-      {/* Dark overlay */}
-      <div className="absolute inset-0 bg-black/55 z-0" />
-
+      {/* 6. Ending Section Indicator (Top-Left) */}
       {/* Confetti Selebrasi */}
       {isClient && (
         <ReactConfetti
           width={windowSize.width}
           height={windowSize.height}
           recycle={true}
-          numberOfPieces={80}
-          gravity={0.05}
+          numberOfPieces={60}
+          gravity={0.03}
           colors={['#FFD700', '#F72585', '#4EA8DE', '#4AD66D', '#7209B7']}
         />
       )}
 
       {/* Floating Hearts Overlay */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none z-10 flex justify-center items-end">
+      <div className="absolute inset-0 overflow-hidden pointer-events-none z-30 flex justify-center items-end">
         <AnimatePresence>
           {hearts.map((h) => (
             <motion.div
@@ -103,99 +100,100 @@ export const EndingPage: React.FC = () => {
         </AnimatePresence>
       </div>
 
-      {/* Top Margin */}
-      <div className="mt-8 z-10" />
+      {/* Spacer */}
+      <div className="h-6" />
 
-      {/* Main Container */}
-      <motion.div
-        initial={{ scale: 0.8, opacity: 0 }}
-        animate={{ scale: 1, opacity: 1 }}
-        transition={{ type: 'spring', duration: 1 }}
-        className="z-10 flex flex-col items-center w-full max-w-3xl px-4 select-none overflow-visible"
-      >
-        {/* MISSION COMPLETE Header */}
-        <h1 className="font-press-start text-3xl sm:text-4xl text-retro-gold mb-8 tracking-wide drop-shadow-[0_4px_0_#000000] animate-pulse">
-          MISSION COMPLETE!
-        </h1>
+      {/* Header - MISSION COMPLETE with Expandable Glow */}
+      <h1 className="font-press-start text-3xl sm:text-4xl md:text-5xl text-[#FAF6EE] text-center tracking-wide z-10 select-none mt-8 animate-expandable-glow">
+        MISSION COMPLETE!
+      </h1>
 
-        {/* Profile Card and Wooden Plank Signboard (Spacious, No Clipping) */}
-        <div className="flex flex-col md:flex-row gap-8 items-center justify-center mb-8 bg-[#10172a]/70 p-8 border-4 border-black pixel-border w-full max-w-2xl relative overflow-visible shadow-2xl">
-          
-          {/* Awll & Cat Characters container */}
-          <div className="flex items-end gap-3 relative overflow-visible pt-10">
-            {/* Waving Awll Avatar */}
-            <div className="w-28 h-28 relative p-1 border-4 border-black pixel-border bg-[#EAD9B8] overflow-hidden animate-bobbing z-10 shrink-0 shadow-lg">
-              <Image
-                src="/assets/profile-awll.png"
-                alt="Waving Awll"
-                fill
-                priority
-                sizes="112px"
-                className="object-cover"
-              />
-            </div>
-            
-            {/* Waving Cat Mascot with Speech Bubble */}
-            <div className="flex flex-col items-center shrink-0 relative pb-1 overflow-visible">
-              {/* "Yeay! 🎉" Speech Bubble on top of Cat */}
-              <div className="absolute -top-11 left-1/2 -translate-x-1/2 bg-white text-black text-[8px] sm:text-[9px] font-press-start font-black py-1.5 px-3 border-4 border-black rounded-xl shadow-lg whitespace-nowrap animate-bounce z-30 flex items-center gap-0.5">
-                <span>Yeay!</span>
-                <Sparkles className="w-3.5 h-3.5 text-retro-gold fill-current animate-pulse shrink-0" />
-              </div>
-              
-              {/* Cat Avatar sprite */}
-              <div className="w-16 h-16 relative shrink-0 z-10 animate-bobbing [animation-delay:0.3s]">
-                <Image
-                  src="/assets/2.png"
-                  alt="Waving Cat"
-                  fill
-                  sizes="64px"
-                  className="object-contain"
-                />
-              </div>
-            </div>
+      {/* Center Layout Container: Mascots and Hanging Scroll */}
+      <div className="flex flex-col md:flex-row items-center justify-center gap-6 md:gap-10 w-full max-w-3xl z-10 my-4 select-none">
+
+        {/* Mascots Group (Awll & Cat side-by-side) */}
+        <div className="flex items-end gap-1.5 relative pt-12 overflow-visible select-none animate-bobbing">
+          {/* Awll Waving Character */}
+          <div className="w-50 h-50 sm:w-50 sm:h-50 relative shrink-0 select-none">
+            <Image
+              src="/assets/awll-page6.png"
+              alt="Waving Awll"
+              fill
+              priority
+              sizes="(max-width: 640px) 160px, 192px"
+              className="object-contain image-rendering-pixelated"
+            />
           </div>
 
-          {/* Hanging Wooden signboard styling */}
-          <div className="flex-1 p-5 bg-[#8B5A2B] border-4 border-black text-[#F4EAD4] font-nunito font-extrabold text-xs sm:text-sm pixel-border select-none relative shadow-[4px_4px_0px_#000000] min-w-[200px] max-w-[260px] md:mt-2">
-            {/* Hanging String Loops */}
-            <div className="absolute -top-4 left-6 w-1.5 h-4 bg-black" />
-            <div className="absolute -top-4 right-6 w-1.5 h-4 bg-black" />
-            <p className="tracking-wide text-center leading-relaxed font-black">
-              "LIFE IS A PROJECT, BUILD IT WELL AND ENJOY THE PROCESS."
-            </p>
+          {/* Waving Cat Mascot with Speech Bubble */}
+          <div className="flex flex-col items-center shrink-0 relative pb-1 overflow-visible select-none">
+            {/* "Yeay! " Speech Bubble on top of Cat */}
+            <div className="absolute -top-12 left-1/2 -translate-x-1/2 bg-[#FAF6EE] text-black text-[7.5px] sm:text-[8px] font-press-start font-black py-1.5 px-3.5 border-4 border-black rounded-2xl shadow-lg whitespace-nowrap z-20 flex items-center gap-1 select-none animate-bounce">
+              <span>Yeay!</span>
+              <span className="text-[10px] sm:text-[11px] select-none">🥳</span>
+            </div>
+
+            {/* Cat Avatar sprite */}
+            <div className="w-30 h-30 sm:w-30 sm:h-30 relative shrink-0 z-10">
+              <Image
+                src="/assets/page6.png"
+                alt="Smiling Cat"
+                fill
+                sizes="(max-width: 640px) 80px, 96px"
+                className="object-contain image-rendering-pixelated"
+              />
+            </div>
           </div>
         </div>
 
-        {/* Thank You Card */}
-        <div className="bg-[#FAF6EE] text-black p-5 sm:p-6 border-4 border-black pixel-border max-w-xl mb-8 shadow-xl">
-          <p className="font-nunito font-extrabold text-sm sm:text-base text-retro-navy leading-relaxed flex items-center justify-center flex-wrap gap-1.5">
-            <span>Terima kasih sudah menjalani perjalanan ini sampai akhir! Semoga hari ulang tahunmu asik dan menyenangkan!</span>
-            <Cake className="w-5 h-5 text-retro-pink fill-current inline-block animate-pulse shrink-0" />
+        {/* Paper Scroll Signboard */}
+        <div className="bg-[#EFECE6] border-4 border-black p-4 sm:p-5 w-52 sm:w-56 text-[#444] font-press-start text-[8px] sm:text-[9px] leading-relaxed relative shadow-[4px_4px_0px_#000000] select-none rotate-1 transform hover:rotate-0 transition-transform duration-200">
+          {/* Thread/peg hook connection */}
+          <div className="absolute -top-3 left-6 w-1.5 h-3 bg-black" />
+          <div className="absolute -top-3 right-6 w-1.5 h-3 bg-black" />
+          <p className="text-center font-extrabold uppercase tracking-tight text-gray-700 space-y-1">
+            <span className="block">LIFE IS</span>
+            <span className="block">A PROJECT,</span>
+            <span className="block">BUILD IT</span>
+            <span className="block">WELL AND</span>
+            <span className="block">ENJOY THE</span>
+            <span className="block">PROCESS.</span>
+          </p>
+        </div>
+
+      </div>
+
+      {/* Dialogue box & Buttons Wrapper */}
+      <div className="w-full max-w-2xl flex flex-col items-center gap-5 z-10 mb-6">
+
+        {/* Thank You Dialogue Box */}
+        <div className="w-full bg-[#121824]/90 border-4 border-[#3b4c66] p-4 sm:p-5 rounded-2xl text-center shadow-lg select-none">
+          <p className="font-nunito font-extrabold text-xs sm:text-sm text-gray-200 leading-relaxed flex items-center justify-center flex-wrap gap-1.5">
+            <span>Terima kasih sudah menjalani perjalanan ini sampai akhir! Semoga hari ulang tahunmu asik dan menyenangkan! 🎂</span>
           </p>
         </div>
 
         {/* Action Buttons */}
-        <div className="flex flex-col sm:flex-row gap-4 w-full justify-center max-w-md">
-          <PixelButton onClick={handleVirtualHug} className="flex-1 py-4 text-xs sm:text-sm font-bold flex items-center justify-center gap-2">
-            <Users className="w-4 h-4 text-retro-pink fill-current animate-pulse animate-bounce" />
-            KIRIM PELUKAN VIRTUAL
-          </PixelButton>
+        <div className="flex flex-col sm:flex-row gap-4 w-full justify-center">
 
-          <PixelButton onClick={handleRestart} variant="blue" className="flex-1 py-4 text-xs sm:text-sm font-bold flex items-center justify-center gap-2">
-            <RefreshCw className="w-4 h-4 animate-spin-slow" />
+          {/* Kirim Pelukan Virtual (Gold/Yellow) */}
+          <button
+            onClick={handleVirtualHug}
+            className="flex-1 py-3.5 px-6 bg-[#d4a337] active:translate-y-0.5 active:translate-x-0.5 transition-transform border-4 border-black text-black font-press-start text-[8px] sm:text-[9.5px] rounded-xl font-bold flex items-center justify-center gap-2 shadow-[4px_4px_0px_#000000] cursor-pointer"
+          >
+            KIRIM PELUKAN VIRTUAL 🤗
+          </button>
+
+          {/* Main Lagi Nanti Ya! (Dark Blue) */}
+          <button
+            onClick={handleRestart}
+            className="flex-1 py-3.5 px-6 bg-[#1d4ed8] active:translate-y-0.5 active:translate-x-0.5 transition-transform border-4 border-black text-white font-press-start text-[8px] sm:text-[9.5px] rounded-xl font-bold flex items-center justify-center gap-2 shadow-[4px_4px_0px_#000000] cursor-pointer"
+          >
             MAIN LAGI NANTI YA!
-          </PixelButton>
-        </div>
-      </motion.div>
+          </button>
 
-      {/* Small traffic cone deco on bottom right */}
-      <div className="z-10 text-[9px] text-gray-400 font-bold mb-4 flex items-center gap-1.5 opacity-60 mt-12">
-        <span className="flex items-center gap-1 font-mono">
-          <span>// Made with</span>
-          <Heart className="w-3 h-3 text-retro-pink fill-current animate-pulse shrink-0" />
-          <span>in 2026</span>
-        </span>
+        </div>
+
       </div>
     </div>
   );

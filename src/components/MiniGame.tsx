@@ -27,6 +27,9 @@ export const MiniGame: React.FC = () => {
   const { playSuccess, playClick } = useAudio();
   const [screenShake, setScreenShake] = React.useState(false);
 
+  const [isDragOver, setIsDragOver] = React.useState(false);
+  const dropAreaRef = React.useRef<HTMLDivElement>(null);
+
   const handleComponentClick = (id: string) => {
     if (placedBlessings.includes(id)) return;
     
@@ -42,6 +45,27 @@ export const MiniGame: React.FC = () => {
   const handleNext = () => {
     playClick();
     nextSection();
+  };
+
+  const handleDrag = (event: any, info: any) => {
+    if (!dropAreaRef.current) return;
+    const rect = dropAreaRef.current.getBoundingClientRect();
+    const { x, y } = info.point;
+    if (x >= rect.left && x <= rect.right && y >= rect.top && y <= rect.bottom) {
+      setIsDragOver(true);
+    } else {
+      setIsDragOver(false);
+    }
+  };
+
+  const handleDragEnd = (event: any, info: any, id: string) => {
+    setIsDragOver(false);
+    if (!dropAreaRef.current) return;
+    const rect = dropAreaRef.current.getBoundingClientRect();
+    const { x, y } = info.point;
+    if (x >= rect.left && x <= rect.right && y >= rect.top && y <= rect.bottom) {
+      handleComponentClick(id);
+    }
   };
 
   const isCompleted = placedBlessings.length === 4;
@@ -61,7 +85,7 @@ export const MiniGame: React.FC = () => {
           BUILD THE BLESSING!
         </h2>
         <p className="font-nunito font-extrabold text-sm sm:text-base text-gray-300">
-          Susun komponen ini untuk membangun tahun yang luar biasa!
+          Tarik komponen atau klik untuk membangun tahun yang luar biasa!
         </p>
       </div>
 
@@ -75,13 +99,23 @@ export const MiniGame: React.FC = () => {
             return (
               <motion.button
                 key={b.id}
+                drag={!isUsed}
+                dragConstraints={{ left: 0, right: 0, top: 0, bottom: 0 }}
+                dragElastic={0.8}
+                dragTransition={{ bounceStiffness: 400, bounceDamping: 20 }}
+                onDrag={handleDrag}
+                onDragEnd={(event, info) => handleDragEnd(event, info, b.id)}
+                whileDrag={{ zIndex: 50, scale: 1.1, cursor: 'grabbing' }}
                 whileHover={isUsed ? {} : { scale: 1.04, y: -2 }}
                 whileTap={isUsed ? {} : { scale: 0.96 }}
                 onClick={() => handleComponentClick(b.id)}
                 disabled={isUsed}
-                className={`p-2 border-4 border-black pixel-border flex flex-col items-center text-center justify-between cursor-pointer select-none transition-all ${
-                  isUsed ? 'bg-gray-300 border-gray-400 text-gray-400 cursor-not-allowed opacity-50' : 'bg-white hover:bg-gray-50 text-black'
+                className={`p-2 border-4 border-black pixel-border flex flex-col items-center text-center justify-between select-none transition-all ${
+                  isUsed
+                    ? 'bg-gray-300 border-gray-400 text-gray-400 cursor-not-allowed opacity-50'
+                    : 'bg-white hover:bg-gray-50 text-black cursor-grab active:cursor-grabbing'
                 }`}
+                title={isUsed ? undefined : "Tarik atau klik komponen ini!"}
               >
                 {/* Icon box */}
                 <div className={`w-12 h-12 flex items-center justify-center border-4 border-black shrink-0 ${isUsed ? 'bg-gray-400' : b.color}`}>
@@ -97,7 +131,14 @@ export const MiniGame: React.FC = () => {
         </div>
 
         {/* Construction Crane & Platform Drop Area */}
-        <div className="relative border-4 border-dashed border-black bg-black/5 min-h-[220px] flex flex-col justify-end items-center p-4 relative overflow-hidden pixel-border-inward">
+        <div
+          ref={dropAreaRef}
+          className={`relative border-4 border-dashed min-h-[220px] flex flex-col justify-end items-center p-4 overflow-hidden pixel-border-inward transition-all duration-200 ${
+            isDragOver
+              ? 'border-retro-gold bg-retro-gold/10 scale-[1.02] shadow-[0_0_15px_rgba(255,215,0,0.3)]'
+              : 'border-black bg-black/5'
+          }`}
+        >
           
           {/* Animated Crane Cable if game is not complete */}
           {!isCompleted && (
@@ -131,7 +172,7 @@ export const MiniGame: React.FC = () => {
 
           {/* Guideline placeholder text if empty */}
           {placedBlessings.length === 0 && (
-            <div className="absolute inset-0 flex flex-col justify-center items-center text-gray-500 animate-pulse text-center p-4 select-none">
+            <div className="absolute inset-0 flex flex-col justify-center items-center text-gray-500 animate-pulse text-center p-4 select-none pointer-events-none">
               <span className="text-4xl font-extrabold mb-1">↓</span>
               <span className="font-press-start text-[8px] sm:text-[9px] tracking-tighter">TARIK KOMPONEN KE SINI!</span>
             </div>

@@ -12,17 +12,27 @@ export const ProgressBar: React.FC<ProgressBarProps> = ({ label, value, max, col
   const percentage = Math.min((value / max) * 100, 100);
 
   return (
-    <div className="flex flex-col w-full my-2 font-nunito">
-      <div className="flex justify-between items-center mb-1 text-sm font-bold">
-        <span className="tracking-wide uppercase text-gray-700">{label}</span>
-        <span className="font-mono text-gray-900">{value} / {max}</span>
+    <div className="flex flex-col w-full my-3">
+      <div className="flex justify-between items-center mb-1.5">
+        {/* Retro Label */}
+        <span className="font-press-start text-[9px] uppercase tracking-wider text-gray-700">
+          {label}
+        </span>
+        {/* Retro Values */}
+        <span className="font-press-start text-[9px] text-gray-900 tracking-tighter">
+          {value} / {max}
+        </span>
       </div>
-      <div className="w-full bg-gray-300 border-4 border-black h-8 relative pixel-border-inward overflow-hidden">
+      {/* Heavy 3D Retro Inward Border */}
+      <div className="w-full bg-[#EAD9B8] border-4 border-black h-7 relative pixel-border-inward overflow-hidden">
         <motion.div
           initial={{ width: 0 }}
           animate={{ width: `${percentage}%` }}
           transition={{ duration: 1.2, ease: 'easeOut' }}
-          className={`h-full ${colorClass}`}
+          className={`h-full border-r-4 border-black/35 ${colorClass}`}
+          style={{
+            backgroundImage: 'linear-gradient(rgba(255, 255, 255, 0.15) 50%, rgba(0, 0, 0, 0.1) 50%)',
+          }}
         />
       </div>
     </div>
