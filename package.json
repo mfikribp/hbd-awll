@@ -9,9 +9,19 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@tsparticles/react": "^4.1.1",
+    "@tsparticles/slim": "^4.1.1",
+    "@types/canvas-confetti": "^1.9.0",
+    "canvas-confetti": "^1.9.4",
+    "framer-motion": "^12.40.0",
+    "lucide-react": "^1.17.0",
     "next": "16.2.6",
     "react": "19.2.4",
-    "react-dom": "19.2.4"
+    "react-confetti": "^6.4.0",
+    "react-dom": "19.2.4",
+    "react-type-animation": "^3.2.0",
+    "use-sound": "^5.0.0",
+    "zustand": "^5.0.14"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",

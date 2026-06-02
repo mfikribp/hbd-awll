@@ -1,26 +1,134 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+@theme {
+  --font-press-start: var(--font-press-start), system-ui;
+  --font-nunito: var(--font-nunito), system-ui;
+  
+  --color-retro-navy: #1D3557;
+  --color-retro-purple: #7209B7;
+  --color-retro-skyblue: #4EA8DE;
+  --color-retro-gold: #FFD700;
+  --color-retro-pink: #F72585;
+  --color-retro-green: #4AD66D;
+  --color-retro-bg: #0B132B;
+  --color-retro-beige: #F4EAD4;
+  --color-retro-beigedark: #EAD9B8;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+@layer base {
+  body {
+    @apply min-h-full flex flex-col bg-retro-bg text-white font-nunito overflow-x-hidden;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* Custom Pixel Art Styles */
+.pixel-border {
+  border: 4px solid #000000;
+  box-shadow: 4px 4px 0px #000000;
+}
+
+.pixel-border-inward {
+  border: 4px solid #000000;
+  box-shadow: inset 4px 4px 0px rgba(0, 0, 0, 0.2);
+}
+
+.pixel-border-gold {
+  border: 4px solid #000000;
+  box-shadow: 4px 4px 0px #FFD700;
+}
+
+.pixel-button {
+  @apply relative inline-block px-4 py-2 text-xs font-press-start text-black bg-retro-gold border-4 border-black active:translate-y-1 active:translate-x-1 cursor-pointer select-none transition-transform duration-75;
+  box-shadow: 4px 4px 0px #000000;
+}
+
+.pixel-button:active {
+  box-shadow: 0px 0px 0px #000000;
+}
+
+.pixel-button-blue {
+  @apply bg-retro-skyblue text-white;
+}
+
+.pixel-button-pink {
+  @apply bg-retro-pink text-white;
+}
+
+.pixel-button-disabled {
+  @apply bg-gray-400 text-gray-700 cursor-not-allowed active:translate-y-0 active:translate-x-0;
+  box-shadow: 4px 4px 0px #222222;
+}
+
+/* RPG OS Window custom styles */
+.retro-window-header {
+  border-bottom: 4px solid #000000;
+}
+
+/* Floating Animation */
+@keyframes bobbing {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+.animate-bobbing {
+  animation: bobbing 3s ease-in-out infinite;
+}
+
+/* Retro Rainbow Wave for Title letters */
+@keyframes retro-rainbow-wave {
+  0%, 100% {
+    transform: translateY(0) scale(1);
+    color: #FFD700; /* Gold */
+    text-shadow: 2px 2px 0px #000;
+  }
+  25% {
+    color: #F72585; /* Pink */
+    text-shadow: 2px 2px 0px #000;
+  }
+  50% {
+    transform: translateY(-15px) scale(1.1);
+    color: #4AD66D; /* Green */
+    text-shadow: 3px 3px 0px #000;
+  }
+  75% {
+    color: #4EA8DE; /* Skyblue */
+    text-shadow: 2px 2px 0px #000;
+  }
+}
+
+.animate-retro-wave {
+  display: inline-block;
+  animation: retro-rainbow-wave 1.6s ease-in-out infinite;
+}
+
+/* Floating Stars Animation */
+@keyframes float {
+  0% {
+    transform: translateY(0px) translateX(0px) rotate(0deg);
+    opacity: 0;
+  }
+  10% {
+    opacity: 0.8;
+  }
+  90% {
+    opacity: 0.8;
+  }
+  100% {
+    transform: translateY(-80px) translateX(15px) rotate(360deg);
+    opacity: 0;
+  }
+}
+
+.animate-float-particle {
+  animation: float 4s ease-in-out infinite;
+}
+
+/* Confetti particles */
+.celebrate-bg {
+  background-image: radial-gradient(circle, rgba(255,255,255,0.05) 1px, transparent 1px);
+  background-size: 20px 20px;
 }
