@@ -225,7 +225,7 @@ export const SystemMessage: React.FC = () => {
           {/* Cute Dino mascot */}
           <div className="w-16 h-16 relative">
             <Image
-              src="/assets/1.png"
+              src="/assets/mascot/png/dino.png"
               alt="Mascot Dino Ambient"
               fill
               sizes="64px"
@@ -236,7 +236,7 @@ export const SystemMessage: React.FC = () => {
           {/* Cute Cat mascot */}
           <div className="w-16 h-16 relative">
             <Image
-              src="/assets/2.png"
+              src="/assets/mascot/png/cat.png"
               alt="Mascot Cat Ambient"
               fill
               sizes="64px"
@@ -252,7 +252,7 @@ export const SystemMessage: React.FC = () => {
           className="absolute -top-[86px] right-8 w-28 h-28 z-20 pointer-events-none select-none"
         >
           <img
-            src="/cat.gif"
+            src="/assets/mascot/gif/cat.gif"
             alt="Mascot Cat"
             className="w-full h-full object-contain"
           />

@@ -53,7 +53,7 @@ export const Achievements: React.FC = () => {
   return (
     <div
       className="min-h-screen w-full flex flex-col justify-between items-center p-4 sm:p-6 bg-cover bg-center select-none relative"
-      style={{ backgroundImage: `url('/assets/bg-drafting.png')` }}
+      style={{ backgroundImage: `url('/assets/dekstop/bg-drafting-dekstop.png')` }}
     >
       {/* Soft overlay to ensure retro windows pop beautifully */}
       <div className="absolute inset-0 bg-[#EFECE6]/45 z-0 pointer-events-none" />
@@ -74,16 +74,6 @@ export const Achievements: React.FC = () => {
           <span>ACHIEVEMENT UNLOCKED</span>
           <HardHat className="w-4 h-4 text-retro-navy shrink-0 animate-bounce" />
         </h2>
-        {/* Bouncing Retro Prompt */}
-        <div className="relative mx-auto mt-1 mb-5 w-fit z-20 select-none pointer-events-none">
-          <div className="bg-white text-black px-4 py-2.5 border-4 border-black font-nunito font-extrabold text-xs pixel-border animate-bounce shadow-2xl flex items-center gap-2">
-            <Trophy className="w-4 h-4 text-retro-purple animate-pulse shrink-0" />
-            <span>Tap semua achievement kamu!</span>
-          </div>
-          {/* Pointer tail pointing down to the achievements grid */}
-          <div className="absolute -bottom-3.5 left-1/2 -translate-x-1/2 w-0 h-0 border-x-6 border-x-transparent border-t-6 border-t-black" />
-          <div className="absolute -bottom-[9px] left-1/2 -translate-x-1/2 w-0 h-0 border-x-[5px] border-x-transparent border-t-[5px] border-t-white z-10" />
-        </div>
 
         {/* 6 Grid items */}
         <div className="grid grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4 my-2">
@@ -99,7 +89,7 @@ export const Achievements: React.FC = () => {
                 className={`relative p-3.5 border-4 border-black pixel-border cursor-pointer select-none transition-all flex flex-col items-center text-center justify-between min-h-[140px] overflow-visible ${isUnlocked ? 'bg-gray-300 opacity-65 cursor-default' : card.color
                   }`}
               >
-                {/* Bouncing Hand Cursor Guide */}
+                {/* Bouncing Hand Cursor Guide with Bubble Chat */}
                 {card.id === 'struktur' && !isUnlocked && (
                   <div className="absolute inset-0 flex justify-center items-center pointer-events-none z-30 translate-x-5 translate-y-5">
                     <motion.div
@@ -111,16 +101,24 @@ export const Achievements: React.FC = () => {
                         repeat: Infinity,
                         ease: "easeInOut",
                       }}
-                      className="w-10 h-10 relative drop-shadow-[2.5px_2.5px_0px_#000000] select-none"
+                      className="relative flex flex-col items-center select-none"
                     >
-                      <img 
-                      src="/assets/kursor.png?v=3" 
-                        alt="Pointer" 
-                        className="w-full h-full object-contain image-rendering-pixelated"
+                      {/* Bubble chat pointing to cursor */}
+                      <div className="absolute bottom-full mb-1 bg-white text-black text-[7px] font-press-start font-black py-1 px-1.5 border-2 border-black rounded-lg shadow-md whitespace-nowrap z-40 select-none">
+                        <span>Tap aku!</span>
+                        <div className="absolute top-full left-1/2 -translate-x-1/2 w-0 h-0 border-x-4 border-x-transparent border-t-4 border-t-black" />
+                        <div className="absolute top-[calc(100%-2px)] left-1/2 -translate-x-1/2 w-0 h-0 border-x-[3px] border-x-transparent border-t-[3px] border-t-white z-10" />
+                      </div>
+
+                      <img
+                        src="/assets/element/kursor.png?v=3"
+                        alt="Pointer"
+                        className="w-10 h-10 object-contain image-rendering-pixelated drop-shadow-[2.5px_2.5px_0px_#000000]"
                       />
                     </motion.div>
                   </div>
                 )}
+
                 {/* Floating XP Effect Overlay */}
                 <AnimatePresence>
                   {xpParticles
@@ -159,12 +157,12 @@ export const Achievements: React.FC = () => {
         {/* Mascot Dino Dialog bubble */}
         <div className="flex gap-4 items-center w-full my-2">
           {/* Dino Mascot */}
-          <div className="w-14 h-14 relative shrink-0">
+          <div className="w-20 h-24 relative shrink-0">
             <Image
-              src="/assets/1.png"
+              src="/assets/mascot/png/dino.png"
               alt="Mascot Dino"
               fill
-              sizes="56px"
+              sizes="60px"
               className="object-contain"
             />
           </div>

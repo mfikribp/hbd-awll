@@ -40,7 +40,7 @@ export const LandingPage: React.FC = () => {
 
   return (
     <div
-      className="relative min-h-screen flex flex-col justify-between items-center text-center p-6 bg-cover bg-center overflow-hidden select-none bg-[url('/assets/bg-landing-mobile.png')] md:bg-[url('/assets/bg-landing.png')]"
+      className="relative min-h-screen flex flex-col justify-between items-center text-center p-6 bg-cover bg-center overflow-hidden select-none bg-[url(/assets/mobile/bg-landing-mobile.png)] md:bg-[url(/assets/dekstop/bg-landing-dekstop.png)]"
     >
       {/* Dark overlay for better readability */}
       <div className="absolute inset-0 bg-black/45 z-0 pointer-events-none" />

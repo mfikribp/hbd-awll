@@ -30,7 +30,7 @@ export const CharacterCard: React.FC = () => {
           <div className="flex flex-col items-center">
             <div className="w-36 h-36 relative pixel-border bg-[#EAD9B8] p-2 overflow-hidden animate-bobbing">
               <Image
-                src="/assets/profile-awll.png"
+                src="/assets/awl/png/awll-profile-crop.png"
                 alt="Awll Avatar"
                 fill
                 priority
@@ -87,7 +87,7 @@ export const CharacterCard: React.FC = () => {
         <div className="mt-4 p-4 bg-[#EAD9B8] pixel-border border-4 border-black text-black flex items-center space-x-4">
           <div className="w-20 h-20 relative shrink-0">
             <Image
-              src="/assets/2.png"
+              src="/assets/mascot/png/cat.png"
               alt="Mascot Cat"
               fill
               sizes="60px"

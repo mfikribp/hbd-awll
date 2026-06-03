@@ -135,7 +135,7 @@
 
 /* Responsive background for System Message page */
 .bg-system-message {
-  background-image: url('/assets/bg-system-message-mobile.png');
+  background-image: url('/assets/mobile/bg-system-message-mobile.png');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -153,7 +153,7 @@
 
 /* Responsive background for Character Card page */
 .bg-character-page {
-  background-image: url('/assets/bg-page2-mobile.png');
+  background-image: url('/assets/mobile/bg-card-mobile.png');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -161,7 +161,7 @@
 
 @media (min-width: 768px) {
   .bg-character-page {
-    background-image: url('/assets/bg-character.jpg') !important;
+    background-image: url('/assets/dekstop/bg-card-dekstop.jpg') !important;
   }
 }
 

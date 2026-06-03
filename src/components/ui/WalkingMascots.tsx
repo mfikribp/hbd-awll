@@ -34,7 +34,7 @@ export const WalkingMascots: React.FC = () => {
           className="w-full h-full relative"
         >
           <Image
-            src="/assets/1.png"
+            src="/assets/mascot/gif/dino.gif"
             alt="Walking Dino"
             fill
             sizes="48px"
@@ -42,7 +42,7 @@ export const WalkingMascots: React.FC = () => {
           />
         </motion.div>
       </motion.div>
-
+ 
       {/* 🐱 Walking Cat */}
       <motion.div
         className="absolute bottom-0 w-10 h-10"
@@ -70,7 +70,7 @@ export const WalkingMascots: React.FC = () => {
           className="w-full h-full relative"
         >
           <Image
-            src="/assets/2.png"
+            src="/assets/mascot/gif/cat.gif"
             alt="Walking Cat"
             fill
             sizes="40px"

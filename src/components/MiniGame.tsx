@@ -32,11 +32,11 @@ export const MiniGame: React.FC = () => {
 
   const handleComponentClick = (id: string) => {
     if (placedBlessings.includes(id)) return;
-    
+
     // Play sound and place
     playSuccess();
     placeBlessing(id);
-    
+
     // Shake screen slightly
     setScreenShake(true);
     setTimeout(() => setScreenShake(false), 300);
@@ -72,26 +72,33 @@ export const MiniGame: React.FC = () => {
 
   return (
     <div
-      className={`min-h-screen w-full flex flex-col justify-between items-center p-4 sm:p-6 bg-cover bg-center select-none transition-transform duration-100 relative ${
-        screenShake ? 'translate-y-1 scale-[0.99] border-red-500' : ''
-      }`}
-      style={{ backgroundImage: `url('/assets/bg-drafting.png')` }}
+      className={`min-h-screen w-full flex flex-col justify-between items-center p-4 sm:p-6 bg-cover bg-center select-none transition-transform duration-100 relative ${screenShake ? 'translate-y-1 scale-[0.99] border-red-500' : ''
+        }`}
+      style={{ backgroundImage: `url('/assets/dekstop/bg-drafting-dekstop.png')` }}
     >
       {/* Soft overlay to ensure retro windows pop beautifully */}
       <div className="absolute inset-0 bg-[#EFECE6]/45 z-0 pointer-events-none" />
       {/* Title */}
-      <div className="text-center z-10 mt-6 max-w-xl">
+      <div className="text-center z-10 mt-6 max-w-xl bg-[#0C101B]/85 p-4 sm:p-5 border-4 border-black pixel-border rounded-2xl shadow-[4px_4px_0_#000000]">
         <h2 className="font-press-start text-xs sm:text-sm text-retro-gold mb-2 tracking-tight">
           BUILD THE BLESSING!
         </h2>
-        <p className="font-nunito font-extrabold text-sm sm:text-base text-gray-300">
+        <p className="font-nunito font-extrabold text-xs sm:text-sm text-gray-200">
           Tarik komponen atau klik untuk membangun tahun yang luar biasa!
         </p>
       </div>
 
       {/* Main Game Container */}
-      <div className="w-full max-w-lg bg-[#FAF6EE] border-4 border-black p-4 sm:p-6 pixel-border text-black select-none z-10 flex flex-col gap-5 my-6">
-        
+      <div className="w-full max-w-lg bg-[#FAF6EE] border-4 border-black p-4 sm:p-6 pixel-border text-black select-none z-10 flex flex-col gap-5 my-6 relative">
+        {/* Animated Mascot Dino Sitting on Top of the Container Frame */}
+        <div className="absolute -top-[114px] right-6 w-36 h-36 z-20 pointer-events-none select-none">
+          <img
+            src="/assets/mascot/gif/dino.gif"
+            alt="Mascot Dino Sitting"
+            className="w-full h-full object-contain scale-x-[-1]"
+          />
+        </div>
+
         {/* Component Selector Area */}
         <div className="grid grid-cols-4 gap-2">
           {BLESSINGS.map((b) => {
@@ -110,11 +117,10 @@ export const MiniGame: React.FC = () => {
                 whileTap={isUsed ? {} : { scale: 0.96 }}
                 onClick={() => handleComponentClick(b.id)}
                 disabled={isUsed}
-                className={`p-2 border-4 border-black pixel-border flex flex-col items-center text-center justify-between select-none transition-all ${
-                  isUsed
-                    ? 'bg-gray-300 border-gray-400 text-gray-400 cursor-not-allowed opacity-50'
-                    : 'bg-white hover:bg-gray-50 text-black cursor-grab active:cursor-grabbing'
-                }`}
+                className={`p-2 border-4 border-black pixel-border flex flex-col items-center text-center justify-between select-none transition-all ${isUsed
+                  ? 'bg-gray-300 border-gray-400 text-gray-400 cursor-not-allowed opacity-50'
+                  : 'bg-white hover:bg-gray-50 text-black cursor-grab active:cursor-grabbing'
+                  }`}
                 title={isUsed ? undefined : "Tarik atau klik komponen ini!"}
               >
                 {/* Icon box */}
@@ -133,13 +139,12 @@ export const MiniGame: React.FC = () => {
         {/* Construction Crane & Platform Drop Area */}
         <div
           ref={dropAreaRef}
-          className={`relative border-4 border-dashed min-h-[220px] flex flex-col justify-end items-center p-4 overflow-hidden pixel-border-inward transition-all duration-200 ${
-            isDragOver
-              ? 'border-retro-gold bg-retro-gold/10 scale-[1.02] shadow-[0_0_15px_rgba(255,215,0,0.3)]'
-              : 'border-black bg-black/5'
-          }`}
+          className={`relative border-4 border-dashed min-h-[220px] flex flex-col justify-end items-center p-4 overflow-hidden pixel-border-inward transition-all duration-200 ${isDragOver
+            ? 'border-retro-gold bg-retro-gold/10 scale-[1.02] shadow-[0_0_15px_rgba(255,215,0,0.3)]'
+            : 'border-black bg-black/5'
+            }`}
         >
-          
+
           {/* Animated Crane Cable if game is not complete */}
           {!isCompleted && (
             <motion.div
@@ -172,9 +177,9 @@ export const MiniGame: React.FC = () => {
 
           {/* Guideline placeholder text if empty */}
           {placedBlessings.length === 0 && (
-            <div className="absolute inset-0 flex flex-col justify-center items-center text-gray-500 animate-pulse text-center p-4 select-none pointer-events-none">
+            <div className="absolute inset-0 flex flex-col justify-center items-center text-retro-navy/65 animate-pulse text-center p-4 select-none pointer-events-none">
               <span className="text-4xl font-extrabold mb-1">↓</span>
-              <span className="font-press-start text-[8px] sm:text-[9px] tracking-tighter">TARIK KOMPONEN KE SINI!</span>
+              <span className="font-press-start text-[8px] sm:text-[9px] font-black tracking-tighter">TARIK KOMPONEN KE SINI!</span>
             </div>
           )}
         </div>
@@ -182,9 +187,9 @@ export const MiniGame: React.FC = () => {
         {/* Helper Dialogue box */}
         <div className="flex gap-4 items-center w-full my-2">
           {/* Cat Mascot */}
-          <div className="w-14 h-14 relative shrink-0">
+          <div className="w-16 h-24 relative shrink-0">
             <Image
-              src="/assets/2.png"
+              src="/assets/mascot/png/cat.png"
               alt="Mascot Cat"
               fill
               sizes="56px"
@@ -196,7 +201,7 @@ export const MiniGame: React.FC = () => {
             {/* Bubble Triangle pointer */}
             <div className="absolute top-1/2 -left-3.5 -translate-y-1/2 w-0 h-0 border-y-8 border-y-transparent border-r-8 border-r-black pointer-events-none" />
             <div className="absolute top-1/2 -left-[9px] -translate-y-1/2 w-0 h-0 border-y-[6px] border-y-transparent border-r-[6px] border-r-white pointer-events-none z-10" />
-            
+
             <p className="font-nunito font-extrabold text-xs sm:text-sm text-retro-navy leading-snug flex items-center flex-wrap gap-1">
               <span>Struktur yang seimbang akan menghasilkan bangunan yang kokoh!</span>
               <Hammer className="w-4 h-4 text-retro-navy shrink-0 animate-bounce inline-block" />
