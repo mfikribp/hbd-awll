@@ -179,7 +179,7 @@ export const EndingPage: React.FC = () => {
 
         {/* Footer Line */}
         <p className="font-nunito text-[10px] sm:text-[11px] text-[#ebd2ab] font-extrabold tracking-widest mt-5 text-center drop-shadow-[0_2px_4px_rgba(0,0,0,0.95)]">
-          — when the sky meets the sea. —
+          — where the sky meets the sea —
         </p>
       </div>
     </div>
