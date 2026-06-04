@@ -24,7 +24,7 @@ const BLESSINGS: BlessingComponent[] = [
 
 export const MiniGame: React.FC = () => {
   const { placedBlessings, placeBlessing, nextSection } = useGameStore();
-  const { playSuccess, playClick } = useAudio();
+  const { playSuccess, playClick, playLevelUp } = useAudio();
   const [screenShake, setScreenShake] = React.useState(false);
 
   const [isDragOver, setIsDragOver] = React.useState(false);
@@ -43,7 +43,7 @@ export const MiniGame: React.FC = () => {
   };
 
   const handleNext = () => {
-    playClick();
+    playLevelUp();
     nextSection();
   };
 
@@ -72,12 +72,11 @@ export const MiniGame: React.FC = () => {
 
   return (
     <div
-      className={`min-h-screen w-full flex flex-col justify-between items-center p-4 sm:p-6 bg-cover bg-center select-none transition-transform duration-100 relative ${screenShake ? 'translate-y-1 scale-[0.99] border-red-500' : ''
+      className={`min-h-screen w-full flex flex-col justify-between items-center p-4 sm:p-6 bg-cover bg-center bg-no-repeat select-none transition-transform duration-100 relative bg-[url(/assets/mobile/bg-blessing-mobile.png)] md:bg-[url(/assets/dekstop/bg-blessing-dekstop.png)] ${screenShake ? 'translate-y-1 scale-[0.99] border-red-500' : ''
         }`}
-      style={{ backgroundImage: `url('/assets/dekstop/bg-drafting-dekstop.png')` }}
     >
       {/* Soft overlay to ensure retro windows pop beautifully */}
-      <div className="absolute inset-0 bg-[#EFECE6]/45 z-0 pointer-events-none" />
+      <div className="absolute inset-0 bg-[#EFECE6]/20 z-0 pointer-events-none" />
       {/* Title */}
       <div className="text-center z-10 mt-6 max-w-xl bg-[#0C101B]/85 p-4 sm:p-5 border-4 border-black pixel-border rounded-2xl shadow-[4px_4px_0_#000000]">
         <h2 className="font-press-start text-xs sm:text-sm text-retro-gold mb-2 tracking-tight">
@@ -103,11 +102,11 @@ export const MiniGame: React.FC = () => {
         <div className="grid grid-cols-4 gap-2">
           {BLESSINGS.map((b) => {
             const isUsed = placedBlessings.some((placedId) => {
-              const normalizedId = placedId === 'kesehatan' ? 'health' 
-                : placedId === 'keberuntungan' || placedId === 'Lucky' || placedId === 'luck' ? 'luck' 
-                : placedId === 'ilmu' ? 'knowledge' 
-                : placedId === 'wealth' || placedId === 'Rezeki' || placedId === 'rezeki' ? 'rezeki' 
-                : placedId;
+              const normalizedId = placedId === 'kesehatan' ? 'health'
+                : placedId === 'keberuntungan' || placedId === 'Lucky' || placedId === 'luck' ? 'luck'
+                  : placedId === 'ilmu' ? 'knowledge'
+                    : placedId === 'wealth' || placedId === 'Rezeki' || placedId === 'rezeki' ? 'rezeki'
+                      : placedId;
               return normalizedId === b.id;
             });
             return (
@@ -117,6 +116,7 @@ export const MiniGame: React.FC = () => {
                 dragConstraints={{ left: 0, right: 0, top: 0, bottom: 0 }}
                 dragElastic={0.8}
                 dragTransition={{ bounceStiffness: 400, bounceDamping: 20 }}
+                onDragStart={() => playClick()}
                 onDrag={handleDrag}
                 onDragEnd={(event, info) => handleDragEnd(event, info, b.id)}
                 whileDrag={{ zIndex: 50, scale: 1.1, cursor: 'grabbing' }}
@@ -157,11 +157,11 @@ export const MiniGame: React.FC = () => {
           {/* Placed components stack inside tower */}
           <div className="w-full max-w-[240px] flex flex-col-reverse gap-1 z-10">
             {placedBlessings.map((bId, index) => {
-              const normalizedId = bId === 'kesehatan' ? 'health' 
-                : bId === 'keberuntungan' || bId === 'Lucky' || bId === 'luck' ? 'luck' 
-                : bId === 'ilmu' ? 'knowledge' 
-                : bId === 'wealth' || bId === 'Rezeki' || bId === 'rezeki' ? 'rezeki' 
-                : bId;
+              const normalizedId = bId === 'kesehatan' ? 'health'
+                : bId === 'keberuntungan' || bId === 'Lucky' || bId === 'luck' ? 'luck'
+                  : bId === 'ilmu' ? 'knowledge'
+                    : bId === 'wealth' || bId === 'Rezeki' || bId === 'rezeki' ? 'rezeki'
+                      : bId;
               const b = BLESSINGS.find((x) => x.id === normalizedId);
               if (!b) return null;
               return (
@@ -189,7 +189,7 @@ export const MiniGame: React.FC = () => {
                   repeat: Infinity,
                   ease: "easeInOut"
                 }}
-                className="text-4xl font-extrabold mb-1 block"
+                className="text-4xl font-extrabold mb-4 block"
               >
                 ↓
               </motion.span>

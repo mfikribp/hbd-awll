@@ -7,6 +7,7 @@ interface GameState {
   activeBuffs: string[];
   placedBlessings: string[];
   isMuted: boolean;
+  isMusicMuted: boolean;
   gameCompleted: boolean;
   nextSection: () => void;
   prevSection: () => void;
@@ -16,6 +17,7 @@ interface GameState {
   activateBuff: (buff: string) => void;
   placeBlessing: (id: string) => void;
   toggleMute: () => void;
+  toggleMusicMute: () => void;
   resetGame: () => void;
 }
 
@@ -26,6 +28,7 @@ export const useGameStore = create<GameState>((set) => ({
   activeBuffs: [],
   placedBlessings: [],
   isMuted: false,
+  isMusicMuted: false,
   gameCompleted: false,
 
   nextSection: () => set((state) => ({ currentSection: Math.min(state.currentSection + 1, 6) })),
@@ -53,6 +56,7 @@ export const useGameStore = create<GameState>((set) => ({
   }),
   
   toggleMute: () => set((state) => ({ isMuted: !state.isMuted })),
+  toggleMusicMute: () => set((state) => ({ isMusicMuted: !state.isMusicMuted })),
   
   resetGame: () => set({
     currentSection: 1,
@@ -60,6 +64,8 @@ export const useGameStore = create<GameState>((set) => ({
     unlockedAchievements: [],
     activeBuffs: [],
     placedBlessings: [],
+    isMuted: false,
+    isMusicMuted: false,
     gameCompleted: false,
   }),
 }));

@@ -6,7 +6,7 @@ import { useGameStore } from '../store/useGameStore';
 import { motion } from 'framer-motion';
 
 export const AudioController: React.FC = () => {
-  const { isMuted, toggleMute } = useGameStore();
+  const { isMusicMuted, toggleMusicMute } = useGameStore();
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const [showPrompt, setShowPrompt] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -27,7 +27,7 @@ export const AudioController: React.FC = () => {
     audio.addEventListener('pause', handlePause);
 
     // Start playing if not muted
-    if (!isMuted) {
+    if (!isMusicMuted) {
       const playPromise = audio.play();
       if (playPromise !== undefined) {
         playPromise
@@ -41,7 +41,7 @@ export const AudioController: React.FC = () => {
 
     // Set up auto-play on first interaction anywhere in the window
     const handleFirstInteraction = () => {
-      if (audioRef.current && !isMuted && audioRef.current.paused) {
+      if (audioRef.current && !isMusicMuted && audioRef.current.paused) {
         audioRef.current.play()
           .then(() => setIsPlaying(true))
           .catch((err) => {
@@ -85,12 +85,12 @@ export const AudioController: React.FC = () => {
     };
   }, []);
 
-  // Sync play/pause state when isMuted is changed from other parts of the app
+  // Sync play/pause state when isMusicMuted is changed from other parts of the app
   useEffect(() => {
     const audio = audioRef.current;
     if (!audio) return;
 
-    if (isMuted) {
+    if (isMusicMuted) {
       audio.pause();
       setIsPlaying(false);
     } else if (audio.paused) {
@@ -98,7 +98,7 @@ export const AudioController: React.FC = () => {
         .then(() => setIsPlaying(true))
         .catch(() => {});
     }
-  }, [isMuted]);
+  }, [isMusicMuted]);
 
   const handleButtonClick = () => {
     const audio = audioRef.current;
@@ -107,12 +107,12 @@ export const AudioController: React.FC = () => {
     if (isPlaying) {
       audio.pause();
       setIsPlaying(false);
-      if (!isMuted) toggleMute();
+      if (!isMusicMuted) toggleMusicMute();
     } else {
       audio.play()
         .then(() => setIsPlaying(true))
         .catch(() => {});
-      if (isMuted) toggleMute();
+      if (isMusicMuted) toggleMusicMute();
     }
     setShowPrompt(false);
   };

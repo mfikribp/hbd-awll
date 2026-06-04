@@ -204,7 +204,7 @@ export const SystemMessage: React.FC = () => {
 
   return (
     <div
-      className="min-h-screen w-full flex flex-col justify-center items-center p-4 sm:p-6 bg-system-message relative overflow-hidden"
+      className="min-h-screen w-full flex flex-col justify-center items-center p-4 sm:p-6 bg-[url(/assets/mobile/bg-system-message-mobile.png)] md:bg-[url(/assets/dekstop/bg-system-message-dekstop.png)] bg-cover bg-center bg-no-repeat relative overflow-hidden"
     >
       {/* Cozy ambient decorations matching design */}
       {/* Bottom-left: Signboard, Dino and Cat mascots sitting side-by-side */}

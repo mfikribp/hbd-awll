@@ -3,7 +3,7 @@
 @theme {
   --font-press-start: var(--font-press-start), system-ui;
   --font-nunito: var(--font-nunito), system-ui;
-  
+
   --color-retro-navy: #1D3557;
   --color-retro-purple: #7209B7;
   --color-retro-skyblue: #4EA8DE;
@@ -66,9 +66,12 @@
 
 /* Floating Animation */
 @keyframes bobbing {
-  0%, 100% {
+
+  0%,
+  100% {
     transform: translateY(0);
   }
+
   50% {
     transform: translateY(-8px);
   }
@@ -80,22 +83,31 @@
 
 /* Retro Rainbow Wave for Title letters */
 @keyframes retro-rainbow-wave {
-  0%, 100% {
+
+  0%,
+  100% {
     transform: translateY(0) scale(1);
-    color: #FFD700; /* Gold */
+    color: #FFD700;
+    /* Gold */
     text-shadow: 2px 2px 0px #000;
   }
+
   25% {
-    color: #F72585; /* Pink */
+    color: #F72585;
+    /* Pink */
     text-shadow: 2px 2px 0px #000;
   }
+
   50% {
     transform: translateY(-15px) scale(1.1);
-    color: #4AD66D; /* Green */
+    color: #4AD66D;
+    /* Green */
     text-shadow: 3px 3px 0px #000;
   }
+
   75% {
-    color: #4EA8DE; /* Skyblue */
+    color: #4EA8DE;
+    /* Skyblue */
     text-shadow: 2px 2px 0px #000;
   }
 }
@@ -111,12 +123,15 @@
     transform: translateY(0px) translateX(0px) rotate(0deg);
     opacity: 0;
   }
+
   10% {
     opacity: 0.8;
   }
+
   90% {
     opacity: 0.8;
   }
+
   100% {
     transform: translateY(-80px) translateX(15px) rotate(360deg);
     opacity: 0;
@@ -129,7 +144,7 @@
 
 /* Confetti particles */
 .celebrate-bg {
-  background-image: radial-gradient(circle, rgba(255,255,255,0.05) 1px, transparent 1px);
+  background-image: radial-gradient(circle, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
   background-size: 20px 20px;
 }
 
@@ -144,10 +159,10 @@
 
 @media (min-width: 768px) {
   .bg-system-message {
-    background-image: radial-gradient(#141829 2px, transparent 2px) !important;
-    background-size: 24px 24px !important;
-    background-repeat: repeat !important;
-    background-position: initial !important;
+    background-image: url('/assets/dekstop/bg-system-message-dekstop.png') !important;
+    background-size: cover !important;
+    background-repeat: no-repeat !important;
+    background-position: center !important;
   }
 }
 
@@ -167,18 +182,23 @@
 
 /* Expandable Glow text animation for game complete */
 @keyframes expandable-glow {
-  0%, 100% {
-    text-shadow: 
+
+  0%,
+  100% {
+    text-shadow:
       0 0 6px rgba(255, 255, 255, 0.4),
       0 0 12px rgba(255, 255, 255, 0.2),
       3px 3px 0px #000000;
     transform: scale(1);
   }
+
   50% {
-    text-shadow: 
-      0 0 18px rgba(78, 168, 222, 0.95),  /* Skyblue glowing halo */
+    text-shadow:
+      0 0 18px rgba(78, 168, 222, 0.95),
+      /* Skyblue glowing halo */
       0 0 28px rgba(78, 168, 222, 0.5),
-      0 0 38px rgba(247, 37, 133, 0.35),  /* Pink outer glow */
+      0 0 38px rgba(247, 37, 133, 0.35),
+      /* Pink outer glow */
       3px 3px 0px #000000;
     transform: scale(1.03);
   }
@@ -188,6 +208,3 @@
   display: inline-block;
   animation: expandable-glow 2.2s ease-in-out infinite;
 }
-
-
-

@@ -2,14 +2,23 @@ import { useCallback } from 'react';
 import { useGameStore } from '../store/useGameStore';
 
 export const useAudio = () => {
+  const isMuted = useGameStore((state) => state.isMuted);
+
   const playSynthTone = useCallback((freqs: number[], duration: number, type: OscillatorType = 'square') => {
     if (typeof window === 'undefined') return;
+    if (isMuted) return;
 
     try {
       const AudioContextClass = window.AudioContext || (window as any).webkitAudioContext;
       if (!AudioContextClass) return;
 
       const ctx = new AudioContextClass();
+      
+      // Explicitly resume context in case the browser launched it suspended
+      if (ctx.state === 'suspended') {
+        ctx.resume();
+      }
+
       const osc = ctx.createOscillator();
       const gain = ctx.createGain();
 
@@ -40,7 +49,7 @@ export const useAudio = () => {
     } catch (e) {
       console.warn("Web Audio synthesis failed:", e);
     }
-  }, []);
+  }, [isMuted]);
 
   return {
     playClick: () => playSynthTone([350, 200], 0.08, 'triangle'),
