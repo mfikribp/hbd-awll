@@ -40,7 +40,7 @@ export const LandingPage: React.FC = () => {
 
   return (
     <div
-      className="relative min-h-screen flex flex-col justify-between items-center text-center p-6 bg-cover bg-center overflow-hidden select-none bg-[url(/assets/mobile/bg-landing-mobile.png)] md:bg-[url(/assets/dekstop/bg-landing-dekstop.png)]"
+      className="relative min-h-screen flex flex-col justify-between items-center text-center p-6 bg-cover bg-center overflow-hidden select-none bg-[url(/assets/mobile/bg-landing-mobilev2.png)] md:bg-[url(/assets/dekstop/bg-landing-dekstop.png)]"
     >
       {/* Dark overlay for better readability */}
       <div className="absolute inset-0 bg-black/45 z-0 pointer-events-none" />
@@ -420,7 +420,7 @@ export const LandingPage: React.FC = () => {
           className="font-press-start text-[9px] sm:text-[10px] mb-3 tracking-widest flex items-center justify-center gap-2 select-none font-bold drop-shadow-[0_2px_0_#000]"
           animate={{
             scale: [1, 1.15, 1],
-            color: ["#FFD700", "#FF6B6B", "#4EA8DE", "#4AD66D", "#FFD700"],
+            color: ["#ffffffff", "#ffffffff"],
           }}
           transition={{
             duration: 1.4,
@@ -433,7 +433,7 @@ export const LandingPage: React.FC = () => {
             animate={{ rotate: 360 }}
             transition={{ duration: 2.2, repeat: Infinity, ease: "linear" }}
           >
-            ★
+
           </motion.span>
           <span>CLICK START ADVENTURE TO PLAY</span>
           <motion.span
@@ -441,7 +441,7 @@ export const LandingPage: React.FC = () => {
             animate={{ rotate: -360 }}
             transition={{ duration: 2.2, repeat: Infinity, ease: "linear" }}
           >
-            ★
+
           </motion.span>
         </motion.div>
 

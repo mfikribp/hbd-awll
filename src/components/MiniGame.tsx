@@ -16,10 +16,10 @@ interface BlessingComponent {
 }
 
 const BLESSINGS: BlessingComponent[] = [
-  { id: 'kesehatan', name: 'Kesehatan', color: 'bg-retro-pink border-retro-pink', icon: <Heart className="w-6 h-6 text-white fill-current" /> },
-  { id: 'keberuntungan', name: 'Keberuntungan', color: 'bg-retro-green border-retro-green', icon: <Clover className="w-6 h-6 text-white fill-current" /> },
-  { id: 'ilmu', name: 'Ilmu Bermanfaat', color: 'bg-retro-skyblue border-retro-skyblue', icon: <BookOpen className="w-6 h-6 text-white fill-current" /> },
-  { id: 'rezeki', name: 'Rezeki Lancar', color: 'bg-retro-gold border-retro-gold', icon: <Coins className="w-6 h-6 text-white fill-current" /> },
+  { id: 'health', name: 'Health', color: 'bg-retro-pink border-retro-pink', icon: <img src="/assets/element/kesehatan.png" alt="Health" className="w-12 h-12 object-contain image-rendering-pixelated" /> },
+  { id: 'luck', name: 'Luck', color: 'bg-retro-green border-retro-green', icon: <img src="/assets/element/keberuntungan.png" alt="Luck" className="w-12 h-12 object-contain image-rendering-pixelated" /> },
+  { id: 'knowledge', name: 'Knowledge', color: 'bg-retro-skyblue border-retro-skyblue', icon: <img src="/assets/element/ilmu.png" alt="Knowledge" className="w-12 h-12 object-contain image-rendering-pixelated" /> },
+  { id: 'rezeki', name: 'Rezeki', color: 'bg-retro-gold border-retro-gold', icon: <img src="/assets/element/rezeki.png" alt="Rezeki" className="w-12 h-12 object-contain image-rendering-pixelated" /> },
 ];
 
 export const MiniGame: React.FC = () => {
@@ -102,7 +102,14 @@ export const MiniGame: React.FC = () => {
         {/* Component Selector Area */}
         <div className="grid grid-cols-4 gap-2">
           {BLESSINGS.map((b) => {
-            const isUsed = placedBlessings.includes(b.id);
+            const isUsed = placedBlessings.some((placedId) => {
+              const normalizedId = placedId === 'kesehatan' ? 'health' 
+                : placedId === 'keberuntungan' || placedId === 'Lucky' || placedId === 'luck' ? 'luck' 
+                : placedId === 'ilmu' ? 'knowledge' 
+                : placedId === 'wealth' || placedId === 'Rezeki' || placedId === 'rezeki' ? 'rezeki' 
+                : placedId;
+              return normalizedId === b.id;
+            });
             return (
               <motion.button
                 key={b.id}
@@ -124,12 +131,12 @@ export const MiniGame: React.FC = () => {
                 title={isUsed ? undefined : "Tarik atau klik komponen ini!"}
               >
                 {/* Icon box */}
-                <div className={`w-12 h-12 flex items-center justify-center border-4 border-black shrink-0 ${isUsed ? 'bg-gray-400' : b.color}`}>
+                <div className={`w-12 h-12 flex items-center justify-center shrink-0 ${isUsed ? 'grayscale opacity-30' : ''}`}>
                   {b.icon}
                 </div>
                 {/* Text Label */}
-                <span className="font-press-start text-[7px] font-bold tracking-tighter uppercase mt-2 block break-all leading-tight">
-                  {b.name === 'Ilmu Bermanfaat' ? 'ILMU' : b.name === 'Rezeki Lancar' ? 'REZEKI' : b.name}
+                <span className="font-press-start text-[5.5px] xs:text-[6.5px] sm:text-[8px] font-bold tracking-tighter uppercase mt-2 block leading-none text-center">
+                  {b.name}
                 </span>
               </motion.button>
             );
@@ -145,21 +152,18 @@ export const MiniGame: React.FC = () => {
             }`}
         >
 
-          {/* Animated Crane Cable if game is not complete */}
-          {!isCompleted && (
-            <motion.div
-              animate={{ y: [0, 8, 0] }}
-              transition={{ repeat: Infinity, duration: 2, ease: 'easeInOut' }}
-              className="absolute top-0 w-1 bg-black h-12 flex justify-center"
-            >
-              <div className="w-3 h-3 bg-retro-beigedark border-2 border-black rounded-full mt-10" />
-            </motion.div>
-          )}
+
 
           {/* Placed components stack inside tower */}
           <div className="w-full max-w-[240px] flex flex-col-reverse gap-1 z-10">
             {placedBlessings.map((bId, index) => {
-              const b = BLESSINGS.find((x) => x.id === bId)!;
+              const normalizedId = bId === 'kesehatan' ? 'health' 
+                : bId === 'keberuntungan' || bId === 'Lucky' || bId === 'luck' ? 'luck' 
+                : bId === 'ilmu' ? 'knowledge' 
+                : bId === 'wealth' || bId === 'Rezeki' || bId === 'rezeki' ? 'rezeki' 
+                : bId;
+              const b = BLESSINGS.find((x) => x.id === normalizedId);
+              if (!b) return null;
               return (
                 <motion.div
                   key={bId}
@@ -177,9 +181,19 @@ export const MiniGame: React.FC = () => {
 
           {/* Guideline placeholder text if empty */}
           {placedBlessings.length === 0 && (
-            <div className="absolute inset-0 flex flex-col justify-center items-center text-retro-navy/65 animate-pulse text-center p-4 select-none pointer-events-none">
-              <span className="text-4xl font-extrabold mb-1">↓</span>
-              <span className="font-press-start text-[8px] sm:text-[9px] font-black tracking-tighter">TARIK KOMPONEN KE SINI!</span>
+            <div className="absolute inset-0 flex flex-col justify-center items-center text-retro-navy/65 text-center p-4 select-none pointer-events-none">
+              <motion.span
+                animate={{ y: [-6, 6, -6] }}
+                transition={{
+                  duration: 1.4,
+                  repeat: Infinity,
+                  ease: "easeInOut"
+                }}
+                className="text-4xl font-extrabold mb-1 block"
+              >
+                ↓
+              </motion.span>
+              <span className="font-press-start text-[8px] sm:text-[9px] font-black tracking-tighter animate-pulse">TARIK KOMPONEN KE SINI!</span>
             </div>
           )}
         </div>

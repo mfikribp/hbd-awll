@@ -160,7 +160,7 @@ export const EndingPage: React.FC = () => {
             transition={{ repeat: Infinity, duration: 0.8, ease: "easeInOut" }}
             className="text-[#D81159] font-black text-xs sm:text-sm drop-shadow-[0_1px_0px_#000]"
           >
-            ▶
+
           </motion.span>
 
           <span className="drop-shadow-[0_1px_0px_rgba(255,255,255,0.6)]">
@@ -173,13 +173,13 @@ export const EndingPage: React.FC = () => {
             transition={{ repeat: Infinity, duration: 0.8, ease: "easeInOut" }}
             className="text-[#D81159] font-black text-xs sm:text-sm drop-shadow-[0_1px_0px_#000]"
           >
-            ◀
+
           </motion.span>
         </motion.button>
 
         {/* Footer Line */}
         <p className="font-nunito text-[10px] sm:text-[11px] text-[#ebd2ab] font-extrabold tracking-widest mt-5 text-center drop-shadow-[0_2px_4px_rgba(0,0,0,0.95)]">
-          — where the sky meets the sea —
+          — when the sky touches the sea —
         </p>
       </div>
     </div>

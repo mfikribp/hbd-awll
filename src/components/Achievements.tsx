@@ -6,7 +6,7 @@ import { useGameStore } from '../store/useGameStore';
 import { useAudio } from '../hooks/useAudio';
 import { PixelButton } from './ui/PixelButton';
 import Image from 'next/image';
-import { ShieldCheck, Award, Grid, Calculator, Ruler, Layers, Users, Coffee, Trophy, Flame, Sparkles, HardHat, MousePointerClick } from 'lucide-react';
+import { ShieldCheck, Award, Network, Calculator, Ruler, Layers, Users, Coffee, Trophy, Flame, Sparkles, HardHat, MousePointerClick } from 'lucide-react';
 
 interface AchievementCard {
   id: string;
@@ -17,12 +17,10 @@ interface AchievementCard {
 }
 
 const ACHIEVEMENT_LIST = (isUnlocked: boolean): AchievementCard[] => [
-  { id: 'struktur', title: 'Survived Tugas Struktur', xp: 500, color: 'bg-green-100 hover:bg-green-200 border-green-500 text-green-800', icon: <Grid className={`w-8 h-8 ${isUnlocked ? 'text-gray-500' : 'text-green-700'}`} /> },
-  { id: 'manual', title: 'Survived Perhitungan Manual', xp: 500, color: 'bg-red-100 hover:bg-red-200 border-red-500 text-red-800', icon: <Calculator className={`w-8 h-8 ${isUnlocked ? 'text-gray-500' : 'text-red-700'}`} /> },
-  { id: 'gambar', title: 'Survived Revisi Gambar', xp: 500, color: 'bg-yellow-100 hover:bg-yellow-200 border-yellow-500 text-yellow-800', icon: <Ruler className={`w-8 h-8 ${isUnlocked ? 'text-gray-500' : 'text-yellow-700'}`} /> },
-  { id: 'beton', title: 'Survived Praktikum Beton', xp: 500, color: 'bg-purple-100 hover:bg-purple-200 border-purple-500 text-purple-800', icon: <Layers className={`w-8 h-8 ${isUnlocked ? 'text-gray-500' : 'text-purple-700'}`} /> },
-  { id: 'kelompok', title: 'Survived Kerja Kelompok', xp: 500, color: 'bg-blue-100 hover:bg-blue-200 border-blue-500 text-blue-800', icon: <Users className={`w-8 h-8 ${isUnlocked ? 'text-gray-500' : 'text-blue-700'}`} /> },
-  { id: 'begadang', title: 'Survived Begadang', xp: 500, color: 'bg-amber-100 hover:bg-amber-200 border-amber-500 text-amber-800', icon: <Coffee className={`w-8 h-8 ${isUnlocked ? 'text-gray-500' : 'text-amber-700'}`} /> },
+  { id: 'struktur', title: 'Survived Analisa Struktur', xp: 500, color: 'bg-green-100 hover:bg-green-200 border-green-500 text-green-800', icon: <img src="/assets/element/anstrukv1.png" alt="Analisa Struktur" className={`w-16 h-16 object-contain image-rendering-pixelated ${isUnlocked ? 'grayscale opacity-50' : ''}`} /> },
+  { id: 'manual', title: 'Survived Fisika Teknik', xp: 500, color: 'bg-red-100 hover:bg-red-200 border-red-500 text-red-800', icon: <img src="/assets/element/fistek.png" alt="Fisika Teknik" className={`w-16 h-16 object-contain image-rendering-pixelated ${isUnlocked ? 'grayscale opacity-50' : ''}`} /> },
+  { id: 'gambar', title: 'Survived Gambar Teknik', xp: 500, color: 'bg-yellow-100 hover:bg-yellow-200 border-yellow-500 text-yellow-800', icon: <img src="/assets/element/gamtek.png" alt="Gambar Teknik" className={`w-16 h-16 object-contain image-rendering-pixelated ${isUnlocked ? 'grayscale opacity-50' : ''}`} /> },
+  { id: 'begadang', title: 'Survived Begadang', xp: 500, color: 'bg-amber-100 hover:bg-amber-200 border-amber-500 text-amber-800', icon: <img src="/assets/element/kopi.png" alt="Begadang" className={`w-16 h-16 object-contain image-rendering-pixelated ${isUnlocked ? 'grayscale opacity-50' : ''}`} /> },
 ];
 
 export const Achievements: React.FC = () => {
@@ -52,11 +50,9 @@ export const Achievements: React.FC = () => {
 
   return (
     <div
-      className="min-h-screen w-full flex flex-col justify-between items-center p-4 sm:p-6 bg-cover bg-center select-none relative"
-      style={{ backgroundImage: `url('/assets/dekstop/bg-drafting-dekstop.png')` }}
+      className="min-h-screen w-full flex flex-col justify-between items-center p-4 sm:p-6 bg-cover bg-center select-none relative bg-[url(/assets/mobile/bg-achievement-mobile.png)] md:bg-[url(/assets/dekstop/bg-achievement-dekstop.png)]"
     >
-      {/* Soft overlay to ensure retro windows pop beautifully */}
-      <div className="absolute inset-0 bg-[#EFECE6]/45 z-0 pointer-events-none" />
+
       {/* Top XP display */}
       <div className="w-full max-w-2xl flex justify-between items-center bg-black/60 px-4 py-2 border-4 border-black pixel-border z-10">
         <span className="font-press-start text-[10px] text-retro-gold flex items-center gap-1.5 animate-pulse">
@@ -70,14 +66,12 @@ export const Achievements: React.FC = () => {
       {/* Main Container */}
       <div className="w-full max-w-2xl bg-[#F4EAD4] border-4 border-black p-4 sm:p-6 my-6 pixel-border text-black select-none z-10 flex flex-col gap-6">
         <h2 className="font-press-start text-xs sm:text-sm text-center text-retro-navy tracking-tight leading-snug border-b-4 border-black pb-3 flex items-center justify-center gap-2">
-          <Sparkles className="w-4 h-4 text-retro-gold fill-current animate-pulse shrink-0" />
           <span>ACHIEVEMENT UNLOCKED</span>
-          <HardHat className="w-4 h-4 text-retro-navy shrink-0 animate-bounce" />
         </h2>
 
-        {/* 6 Grid items */}
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4 my-2">
-          {['struktur', 'manual', 'gambar', 'beton', 'kelompok', 'begadang'].map((id) => {
+        {/* 4 Grid items */}
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 my-2">
+          {['struktur', 'manual', 'gambar', 'begadang'].map((id) => {
             const isUnlocked = unlockedAchievements.includes(id);
             const card = ACHIEVEMENT_LIST(isUnlocked).find((c) => c.id === id)!;
             return (
@@ -126,11 +120,12 @@ export const Achievements: React.FC = () => {
                     .map((p) => (
                       <motion.span
                         key={p.id}
+                        style={{ left: 0, top: 0 }}
                         initial={{ opacity: 1, y: p.y, x: p.x, scale: 1 }}
-                        animate={{ opacity: 0, y: p.y - 80, scale: 1.5 }}
+                        animate={{ opacity: 0, y: p.y - 80, x: p.x, scale: 1.5 }}
                         exit={{ opacity: 0 }}
                         transition={{ duration: 0.8 }}
-                        className="absolute font-press-start text-[10px] font-black text-retro-purple pointer-events-none"
+                        className="absolute font-press-start text-[10px] font-black text-retro-purple pointer-events-none z-50"
                       >
                         +500 XP
                       </motion.span>
