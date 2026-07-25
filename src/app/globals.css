@@ -81,40 +81,40 @@
   animation: bobbing 3s ease-in-out infinite;
 }
 
-/* Retro Rainbow Wave for Title letters */
+/* Earth Tone Wave for Title letters (Warna Bumi Warm & Natural) */
 @keyframes retro-rainbow-wave {
 
   0%,
   100% {
     transform: translateY(0) scale(1);
-    color: #FFD700;
-    /* Gold */
-    text-shadow: 2px 2px 0px #000;
+    color: #E0A96D;
+    /* Muted Ochre / Warm Amber */
+    text-shadow: 3px 3px 0px #000;
   }
 
   25% {
-    color: #F72585;
-    /* Pink */
-    text-shadow: 2px 2px 0px #000;
+    color: #D97757;
+    /* Warm Terracotta / Clay */
+    text-shadow: 3px 3px 0px #000;
   }
 
   50% {
-    transform: translateY(-15px) scale(1.1);
-    color: #4AD66D;
-    /* Green */
+    transform: translateY(-10px) scale(1.04);
+    color: #8F9E75;
+    /* Muted Olive / Sage Green */
     text-shadow: 3px 3px 0px #000;
   }
 
   75% {
-    color: #4EA8DE;
-    /* Skyblue */
-    text-shadow: 2px 2px 0px #000;
+    color: #F4EAD4;
+    /* Warm Sand Cream */
+    text-shadow: 3px 3px 0px #000;
   }
 }
 
 .animate-retro-wave {
   display: inline-block;
-  animation: retro-rainbow-wave 1.6s ease-in-out infinite;
+  animation: retro-rainbow-wave 3s ease-in-out infinite;
 }
 
 /* Floating Stars Animation */

@@ -24,14 +24,14 @@ export const LandingPage: React.FC = () => {
       particleCount: 35,
       spread: 60,
       origin: { y: 0.5 },
-      colors: ['#FFD700', '#F72585', '#4EA8DE', '#4AD66D']
+      colors: ['#E0A96D', '#D97757', '#8F9E75', '#F4EAD4']
     });
     setTimeout(() => setBoardBounce(false), 600);
   };
 
   useEffect(() => {
-    // Festive Dual Cannon & Center Confetti Explosion
-    const colors = ['#FFD700', '#F72585', '#4EA8DE', '#4AD66D', '#FFFFFF', '#FF70A6'];
+    // Earth Tone Confetti Burst
+    const colors = ['#E0A96D', '#D97757', '#8F9E75', '#F4EAD4', '#C86D51'];
 
     // Left cannon
     confetti({
@@ -292,35 +292,48 @@ export const LandingPage: React.FC = () => {
 
         {/* HERO TITLE: HAPPY BIRTHDAY! */}
         <div className="relative mb-6 select-none flex flex-col items-center">
-          {/* Floating Emojis with Glowing Halos */}
-          {[
-            { top: '2%', left: '0%', icon: '🎉', delay: 0.4, size: 'text-3xl sm:text-5xl' },
-            { top: '2%', right: '0%', icon: '🎂', delay: 1.2, size: 'text-3xl sm:text-5xl' },
-          ].map((sparkle, i) => (
-            <motion.div
-              key={`sparkle-${i}`}
-              className={`absolute pointer-events-none z-20 ${sparkle.size}`}
-              style={{
-                top: sparkle.top,
-                ...(sparkle.left ? { left: sparkle.left } : {}),
-                ...(sparkle.right ? { right: sparkle.right } : {}),
-                filter: 'drop-shadow(0 0 15px #FFD700) drop-shadow(0 0 25px #F72585)',
-              }}
-              animate={{
-                y: [0, -12, 0],
-                scale: [0.9, 1.25, 0.9],
-                rotate: [0, 15, -15, 0],
-              }}
-              transition={{
-                duration: 2.5,
-                repeat: Infinity,
-                ease: 'easeInOut',
-                delay: sparkle.delay,
-              }}
-            >
-              {sparkle.icon}
-            </motion.div>
-          ))}
+          {/* Floating Dinoxcat Mascot (Left) */}
+          <motion.div
+            className="absolute -left-4 sm:-left-8 -top-10 sm:-top-16 pointer-events-none z-20"
+            animate={{
+              y: [0, -10, 0],
+              rotate: [4, -4, 4],
+            }}
+            transition={{
+              duration: 3.5,
+              repeat: Infinity,
+              ease: 'easeInOut',
+            }}
+          >
+            <img
+              src="/assets/mascot/png/dinoxcat.png"
+              alt="Dinoxcat Mascot"
+              className="w-30 h-30 sm:w-35 sm:h-35 object-contain image-rendering-pixelated"
+              style={{ filter: 'drop-shadow(3px 3px 0px #000)' }}
+            />
+          </motion.div>
+
+          {/* Floating Kue Element (Right) */}
+          <motion.div
+            className="absolute -right-4 sm:-right-8 -top-10 sm:-top-16 pointer-events-none z-20"
+            animate={{
+              y: [0, -10, 0],
+              rotate: [-4, 4, -4],
+            }}
+            transition={{
+              duration: 3,
+              repeat: Infinity,
+              ease: 'easeInOut',
+            }}
+          >
+            <img
+              src="/assets/element/kue.png"
+              alt="Birthday Cake"
+              className="w-20 h-20 sm:w-28 sm:h-28 object-contain image-rendering-pixelated"
+              style={{ filter: 'drop-shadow(3px 3px 0px #000)' }}
+            />
+          </motion.div>
+
 
           <motion.h1
             className="font-press-start text-[32px] xs:text-[42px] sm:text-[64px] md:text-7xl lg:text-8xl select-none flex flex-col items-center justify-center gap-y-3 max-w-full px-2 drop-shadow-[0_6px_0px_#000000]"

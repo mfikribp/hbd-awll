@@ -236,8 +236,8 @@ export const CharacterCard: React.FC = () => {
                       <Smile className="w-3.5 h-3.5 text-retro-gold animate-bounce" /> MOOD
                     </span>
                   }
-                  value={100}
-                  max={100}
+                  value={999}
+                  max={999}
                   colorClass="bg-retro-gold"
                   badge="HAPPY ✨"
                   badgeColor="bg-retro-gold text-black font-bold"
