@@ -1,13 +1,13 @@
 'use client';
 
-import React, { useState, useEffect, useRef } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { useGameStore } from '../store/useGameStore';
-import { useAudio } from '../hooks/useAudio';
-import { RetroWindow } from './ui/RetroWindow';
-import { PixelButton } from './ui/PixelButton';
-import { Terminal, Heart, Sparkles, Smile, Zap, GraduationCap, CheckCircle, Shield, Coffee, HelpCircle } from 'lucide-react';
+import { AnimatePresence, motion } from 'framer-motion';
+import { CheckCircle, Coffee, GraduationCap, Heart, Shield, Smile, Sparkles, Terminal, Zap } from 'lucide-react';
 import Image from 'next/image';
+import React, { useEffect, useRef, useState } from 'react';
+import { useAudio } from '../hooks/useAudio';
+import { useGameStore } from '../store/useGameStore';
+import { PixelButton } from './ui/PixelButton';
+import { RetroWindow } from './ui/RetroWindow';
 
 interface BuffType {
   text: string;
@@ -16,12 +16,9 @@ interface BuffType {
 }
 
 const BUFF_LIST: BuffType[] = [
-  { text: '+100 Keberuntungan', desc: 'Semua revisi gambar auto di-ACC dosen dalam sekali coba.', icon: <Sparkles className="w-6 h-6 text-retro-gold fill-current" /> },
+  { text: '+100 Keberuntungan', desc: 'Semua revisi gamtek auto di-ACC dosen dalam sekali coba.', icon: <Sparkles className="w-6 h-6 text-retro-gold fill-current" /> },
   { text: 'Deadline Resistance +50%', desc: 'Kekebalan ekstra terhadap tugas dadakan di jam 11 malam.', icon: <Zap className="w-6 h-6 text-amber-500 fill-current animate-pulse" /> },
-  { text: 'Dosen Friendly Buff Activated', desc: 'Dosen pembimbing mendadak ramah dan hobi ngasih nilai A.', icon: <GraduationCap className="w-6 h-6 text-retro-navy" /> },
-  { text: 'Auto Lulus Praktikum', desc: 'Beton praktikum langsung teruji kokoh tanpa retak sehelai pun.', icon: <CheckCircle className="w-6 h-6 text-retro-green" /> },
-  { text: 'Concrete Strength +999', desc: 'Kekuatan fisik dan mental setara beton mutu K-500.', icon: <Shield className="w-6 h-6 text-blue-500 fill-current" /> },
-  { text: 'Unlimited Kopi For Today', desc: 'Kafein tanpa batas, lambung tetap aman sentosa.', icon: <Coffee className="w-6 h-6 text-[#8b5a2b] fill-current" /> },
+  { text: 'Dosen Friendly Buff Activated', desc: 'Dosen mendadak ramah dan hobi ngasih nilai A.', icon: <GraduationCap className="w-6 h-6 text-retro-navy" /> },
 ];
 
 export const SystemMessage: React.FC = () => {
@@ -37,16 +34,19 @@ export const SystemMessage: React.FC = () => {
   const terminalRef = useRef<HTMLDivElement>(null);
 
   const textLines = [
-    "awll@birthday-os:~$ run check-status.sh",
+    "awll@birthday:~$ run check-status.sh",
     "[SYSTEM] Initializing Life Status Analysis...",
     "[SYSTEM] Level 20 reached successfully! 🎂",
-    "awll@birthday-os:~$ cat wishes_for_awll.txt",
-    "Makasih ya udah jadi orang baik selama ini.",
-    "Semoga semua usaha dan lelahmu gak sia-sia, pelan-pelan terbayar.",
-    "Semoga tahun ini jadi tahun yang lebih ringan, lebih bahagia, dan penuh hal baik.",
-    "Dan... maaf kalau aku pernah bikin kamu gak nyaman atau kecewa",
-    "awll@birthday-os:~$ execute proud-mode.sh --always",
-    "// Always proud of you, Awll! 💚",
+    "awll@birthday:~$ cat wishes_for_awll.txt",
+    "HAPPY 20TH BIRTHDAYYY🥳🎉",
+    "semoga semua harapan yang selalu kamu sebut di dalam do'a mu perlahan tercapai sedikit demi sedikit, jangan merasa cape sama proses yang kamu rasa stagnan, karena stagnan juga termasuk ke dalam proses ke stabilan yang artinya engga turun tapi engga naik juga, teruslah berproses, percayakan semua sama do'a dan usaha kamu buat wujudin apa yang kamu mau baik itu untuk diri sendiri ataupun keluarga",
+    "...",
+    "sorry banget udh runtuhin pertemanan kita sebelumnya yg udah berjalan sejak ombus ft, aku kira orang tahan banting yg bisa kuliah sambil kerja dan juga ngekost itu cuma cerita motivator belaka, tapi ternyata beneran ada. makanya aku berani buat bilang apa yang aku rasain ke kmu sebelumnya, karena aku ngeliat masa depan di kamu, tapi ternyata aku bukan orng yg beruntung...jadi aku juga punya pikiran bahwa 'mau segimanapun aku berusaha agaknya ga akan ada valuenya deh di dia', bukan sebagai tanda bendera putih, melainkan bentuk rasionalitas yg aku punya buat diri sendiri",
+    "makasih banget atas kedewasaan yang kamu miliki, aku jadi bisa terlepas secara perlahan dan ga terlarut larut dengan obsesi dari tujuan aku ke kmu sebelumnya",
+    "TETAP SEMANGAT KULIAH DAN KERJANYA, JANGAN LUPA MAKAN, JANGAN LUPA BUAT ISTIRAHAT, SATU LAGI JANGAN LUPA BUAT OLAHRAGA!",
+    "sorry and thnk you, i just wanna say 'HAPPY BIRTHDAY AWLL!!!'",
+    "awll@birthday:~$ execute proud-mode.sh --always",
+    "// always proud of you, awll! 💚",
     "[SYSTEM] Birthday messages loaded! Injecting active birthday buffs..."
   ];
 
@@ -54,10 +54,10 @@ export const SystemMessage: React.FC = () => {
   useEffect(() => {
     if (currentIndex < textLines.length) {
       const line = textLines[currentIndex];
-      const isCommand = line.startsWith("awll@birthday-os:~$");
-      const prefix = isCommand ? "awll@birthday-os:~$ " : "";
-      const actualTextToType = isCommand ? line.replace("awll@birthday-os:~$ ", "") : line;
-      
+      const isCommand = line.startsWith("awll@birthday:~$");
+      const prefix = isCommand ? "awll@birthday:~$ " : "";
+      const actualTextToType = isCommand ? line.replace("awll@birthday:~$ ", "") : line;
+
       let charIndex = 0;
       setTypingText(prefix);
 
@@ -161,14 +161,14 @@ export const SystemMessage: React.FC = () => {
       <span className="w-2 h-4 bg-retro-green inline-block animate-pulse ml-1 shrink-0 align-middle" />
     ) : null;
 
-    if (fullLine.startsWith("awll@birthday-os:~$")) {
+    if (fullLine.startsWith("awll@birthday:~$")) {
       // Remove prefix from the typed content to prevent double-rendering if any
-      const command = line.startsWith("awll@birthday-os:~$") 
-        ? line.replace("awll@birthday-os:~$", "").trimStart() 
+      const command = line.startsWith("awll@birthday:~$")
+        ? line.replace("awll@birthday:~$", "").trimStart()
         : line.trimStart();
       return (
         <div className="font-mono text-xs sm:text-sm select-text flex flex-wrap gap-x-1.5 leading-relaxed shrink-0 break-words whitespace-pre-wrap">
-          <span className="text-retro-green font-bold">awll@birthday-os</span>
+          <span className="text-retro-green font-bold">awll@birthday</span>
           <span className="text-retro-pink font-bold">:~$</span>
           <span className="text-white font-semibold flex items-center flex-wrap">
             {command}
@@ -261,7 +261,7 @@ export const SystemMessage: React.FC = () => {
         <RetroWindow title="SYSTEM MESSAGE" className="shadow-2xl relative z-10">
 
           {/* Terminal/Chat Window Display with Neon Glow */}
-          <div 
+          <div
             ref={terminalRef}
             className="bg-[#0C101B] border-4 border-retro-skyblue/70 p-4 pixel-border-inward flex flex-col gap-3 min-h-[260px] max-h-[320px] select-none overflow-y-auto shadow-[0_0_15px_rgba(78,168,222,0.25)] scrollbar-thin scrollbar-thumb-retro-skyblue"
           >

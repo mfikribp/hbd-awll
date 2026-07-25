@@ -204,7 +204,7 @@ export const EndingPage: React.FC = () => {
 
         {/* Title: MISSION COMPLETE! */}
         <h1 className="font-press-start text-5xl text-[#FAF6EE] text-center tracking-wide drop-shadow-[0_4px_0px_#000000] animate-expandable-glow w-full px-2">
-          MISSION COMPLETE!
+          HAPPY BIRTHDAY
         </h1>
       </div>
 

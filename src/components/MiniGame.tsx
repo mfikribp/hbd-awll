@@ -16,8 +16,8 @@ interface BlessingComponent {
 }
 
 const BLESSINGS: BlessingComponent[] = [
-  { id: 'health', name: 'Health', color: 'bg-retro-pink border-retro-pink', icon: <img src="/assets/element/kesehatan.png" alt="Health" className="w-12 h-12 object-contain image-rendering-pixelated" /> },
-  { id: 'luck', name: 'Luck', color: 'bg-retro-green border-retro-green', icon: <img src="/assets/element/keberuntungan.png" alt="Luck" className="w-12 h-12 object-contain image-rendering-pixelated" /> },
+  { id: 'health', name: 'Health', color: 'bg-retro-pink border-retro-pink', icon: <img src="/assets/element/health.png" alt="Health" className="w-12 h-12 object-contain image-rendering-pixelated" /> },
+  { id: 'luck', name: 'Luck', color: 'bg-retro-green border-retro-green', icon: <img src="/assets/element/luck.png" alt="Luck" className="w-12 h-12 object-contain image-rendering-pixelated" /> },
   { id: 'knowledge', name: 'Knowledge', color: 'bg-retro-skyblue border-retro-skyblue', icon: <img src="/assets/element/ilmu.png" alt="Knowledge" className="w-12 h-12 object-contain image-rendering-pixelated" /> },
   { id: 'rezeki', name: 'Rezeki', color: 'bg-retro-gold border-retro-gold', icon: <img src="/assets/element/rezeki.png" alt="Rezeki" className="w-12 h-12 object-contain image-rendering-pixelated" /> },
 ];
@@ -26,9 +26,6 @@ export const MiniGame: React.FC = () => {
   const { placedBlessings, placeBlessing, nextSection } = useGameStore();
   const { playSuccess, playClick, playLevelUp } = useAudio();
   const [screenShake, setScreenShake] = React.useState(false);
-
-  const [isDragOver, setIsDragOver] = React.useState(false);
-  const dropAreaRef = React.useRef<HTMLDivElement>(null);
 
   const handleComponentClick = (id: string) => {
     if (placedBlessings.includes(id)) return;
@@ -47,32 +44,11 @@ export const MiniGame: React.FC = () => {
     nextSection();
   };
 
-  const handleDrag = (event: any, info: any) => {
-    if (!dropAreaRef.current) return;
-    const rect = dropAreaRef.current.getBoundingClientRect();
-    const { x, y } = info.point;
-    if (x >= rect.left && x <= rect.right && y >= rect.top && y <= rect.bottom) {
-      setIsDragOver(true);
-    } else {
-      setIsDragOver(false);
-    }
-  };
-
-  const handleDragEnd = (event: any, info: any, id: string) => {
-    setIsDragOver(false);
-    if (!dropAreaRef.current) return;
-    const rect = dropAreaRef.current.getBoundingClientRect();
-    const { x, y } = info.point;
-    if (x >= rect.left && x <= rect.right && y >= rect.top && y <= rect.bottom) {
-      handleComponentClick(id);
-    }
-  };
-
   const isCompleted = placedBlessings.length === 4;
 
   return (
     <div
-      className={`min-h-screen w-full flex flex-col justify-between items-center p-4 sm:p-6 bg-cover bg-center bg-no-repeat select-none transition-transform duration-100 relative bg-[url(/assets/mobile/bg-blessing-mobile.png)] md:bg-[url(/assets/dekstop/bg-blessing-dekstop.png)] ${screenShake ? 'translate-y-1 scale-[0.99] border-red-500' : ''
+      className={`min-h-screen w-full flex flex-col justify-between items-center p-4 sm:p-6 bg-cover bg-center bg-no-repeat select-none transition-transform duration-100 relative bg-[url(/assets/mobile/bg-blessing-mobile.png)] md:bg-[url(/assets/dekstop/bg-blessing-dekstop.png)] ${screenShake ? 'translate-y-1 scale-[0.99]' : ''
         }`}
     >
       {/* Soft overlay to ensure retro windows pop beautifully */}
@@ -83,7 +59,7 @@ export const MiniGame: React.FC = () => {
           BUILD THE BLESSING!
         </h2>
         <p className="font-nunito font-extrabold text-xs sm:text-sm text-gray-200">
-          Tarik komponen atau klik untuk membangun tahun yang luar biasa!
+          Klik komponen di bawah untuk membangun tahun yang luar biasa! ({placedBlessings.length}/4)
         </p>
       </div>
 
@@ -112,30 +88,25 @@ export const MiniGame: React.FC = () => {
             return (
               <motion.button
                 key={b.id}
-                drag={!isUsed}
-                dragConstraints={{ left: 0, right: 0, top: 0, bottom: 0 }}
-                dragElastic={0.8}
-                dragTransition={{ bounceStiffness: 400, bounceDamping: 20 }}
-                onDragStart={() => playClick()}
-                onDrag={handleDrag}
-                onDragEnd={(event, info) => handleDragEnd(event, info, b.id)}
-                whileDrag={{ zIndex: 50, scale: 1.1, cursor: 'grabbing' }}
-                whileHover={isUsed ? {} : { scale: 1.04, y: -2 }}
-                whileTap={isUsed ? {} : { scale: 0.96 }}
-                onClick={() => handleComponentClick(b.id)}
+                whileHover={isUsed ? {} : { scale: 1.06, y: -3 }}
+                whileTap={isUsed ? {} : { scale: 0.94 }}
+                onClick={() => {
+                  playClick();
+                  handleComponentClick(b.id);
+                }}
                 disabled={isUsed}
-                className={`p-2 border-4 border-black pixel-border flex flex-col items-center text-center justify-between select-none transition-all ${isUsed
-                  ? 'bg-gray-300 border-gray-400 text-gray-400 cursor-not-allowed opacity-50'
-                  : 'bg-white hover:bg-gray-50 text-black cursor-grab active:cursor-grabbing'
+                className={`p-2.5 border-4 border-black pixel-border flex flex-col items-center text-center justify-between select-none transition-all ${isUsed
+                  ? 'bg-gray-200 border-gray-400 text-gray-400 cursor-not-allowed opacity-40 grayscale'
+                  : 'bg-white hover:bg-amber-50 text-black cursor-pointer shadow-[2px_2px_0_#000]'
                   }`}
-                title={isUsed ? undefined : "Tarik atau klik komponen ini!"}
+                title={isUsed ? "Sudah ditambahkan!" : "Klik untuk menambahkan komponen ini!"}
               >
                 {/* Icon box */}
-                <div className={`w-12 h-12 flex items-center justify-center shrink-0 ${isUsed ? 'grayscale opacity-30' : ''}`}>
+                <div className="w-12 h-12 flex items-center justify-center shrink-0">
                   {b.icon}
                 </div>
                 {/* Text Label */}
-                <span className="font-press-start text-[5.5px] xs:text-[6.5px] sm:text-[8px] font-bold tracking-tighter uppercase mt-2 block leading-none text-center">
+                <span className="font-press-start text-[6px] xs:text-[7px] sm:text-[8px] font-bold tracking-tighter uppercase mt-2 block leading-none text-center">
                   {b.name}
                 </span>
               </motion.button>
@@ -145,18 +116,11 @@ export const MiniGame: React.FC = () => {
 
         {/* Construction Crane & Platform Drop Area */}
         <div
-          ref={dropAreaRef}
-          className={`relative border-4 border-dashed min-h-[220px] flex flex-col justify-end items-center p-4 overflow-hidden pixel-border-inward transition-all duration-200 ${isDragOver
-            ? 'border-retro-gold bg-retro-gold/10 scale-[1.02] shadow-[0_0_15px_rgba(255,215,0,0.3)]'
-            : 'border-black bg-black/5'
-            }`}
+          className="relative border-4 border-dashed border-black bg-black/5 min-h-[220px] flex flex-col justify-end items-center p-4 overflow-hidden pixel-border-inward transition-all duration-200"
         >
-
-
-
           {/* Placed components stack inside tower */}
-          <div className="w-full max-w-[240px] flex flex-col-reverse gap-1 z-10">
-            {placedBlessings.map((bId, index) => {
+          <div className="w-full max-w-[240px] flex flex-col-reverse gap-1.5 z-10">
+            {placedBlessings.map((bId) => {
               const normalizedId = bId === 'kesehatan' ? 'health'
                 : bId === 'keberuntungan' || bId === 'Lucky' || bId === 'luck' ? 'luck'
                   : bId === 'ilmu' ? 'knowledge'
@@ -167,13 +131,15 @@ export const MiniGame: React.FC = () => {
               return (
                 <motion.div
                   key={bId}
-                  initial={{ y: -150, opacity: 0, scale: 0.8 }}
+                  initial={{ y: -80, opacity: 0, scale: 0.8 }}
                   animate={{ y: 0, opacity: 1, scale: 1 }}
-                  transition={{ type: 'spring', stiffness: 200, damping: 15 }}
-                  className={`p-2 border-4 border-black text-center font-press-start text-[8px] sm:text-[9px] font-black text-white flex items-center justify-center gap-2 pixel-border ${b.color}`}
+                  transition={{ type: 'spring', stiffness: 250, damping: 18 }}
+                  className={`p-1.5 pl-6 border-4 border-black font-press-start text-[8px] sm:text-[9px] font-black text-white flex items-center justify-start gap-3 pixel-border shadow-[2px_2px_0_#000] ${b.color}`}
                 >
-                  {b.icon}
-                  {b.name.toUpperCase()} PLACED!
+                  <div className="w-10 h-10 flex items-center justify-center shrink-0">
+                    {b.icon}
+                  </div>
+                  <span>{b.name.toUpperCase()} PLACED!</span>
                 </motion.div>
               );
             })}
@@ -181,25 +147,27 @@ export const MiniGame: React.FC = () => {
 
           {/* Guideline placeholder text if empty */}
           {placedBlessings.length === 0 && (
-            <div className="absolute inset-0 flex flex-col justify-center items-center text-retro-navy/65 text-center p-4 select-none pointer-events-none">
+            <div className="absolute inset-0 flex flex-col justify-center items-center text-retro-navy/70 text-center p-4 select-none pointer-events-none">
               <motion.span
-                animate={{ y: [-6, 6, -6] }}
+                animate={{ y: [-4, 4, -4] }}
                 transition={{
-                  duration: 1.4,
+                  duration: 1.2,
                   repeat: Infinity,
                   ease: "easeInOut"
                 }}
-                className="text-4xl font-extrabold mb-4 block"
+                className="text-3xl font-extrabold mb-2 block"
               >
-                ↓
+                ↑
               </motion.span>
-              <span className="font-press-start text-[8px] sm:text-[9px] font-black tracking-tighter animate-pulse">TARIK KOMPONEN KE SINI!</span>
+              <span className="font-press-start text-[8px] sm:text-[9px] font-black tracking-tighter animate-pulse">
+                KLIK KOMPONEN DI ATAS UNTUK MENAMBAHKAN!
+              </span>
             </div>
           )}
         </div>
 
         {/* Helper Dialogue box */}
-        <div className="flex gap-4 items-center w-full my-2">
+        <div className="flex gap-4 items-center w-full my-1">
           {/* Cat Mascot */}
           <div className="w-16 h-24 relative shrink-0">
             <Image
@@ -211,13 +179,13 @@ export const MiniGame: React.FC = () => {
             />
           </div>
           {/* Speech Bubble */}
-          <div className="relative bg-white text-black p-3.5 border-4 border-black rounded-2xl pixel-border flex-1 select-none">
+          <div className="relative bg-white text-black p-3.5 border-4 border-black rounded-2xl pixel-border flex-1 select-none shadow-[2px_2px_0_#000]">
             {/* Bubble Triangle pointer */}
             <div className="absolute top-1/2 -left-3.5 -translate-y-1/2 w-0 h-0 border-y-8 border-y-transparent border-r-8 border-r-black pointer-events-none" />
             <div className="absolute top-1/2 -left-[9px] -translate-y-1/2 w-0 h-0 border-y-[6px] border-y-transparent border-r-[6px] border-r-white pointer-events-none z-10" />
 
             <p className="font-nunito font-extrabold text-xs sm:text-sm text-retro-navy leading-snug flex items-center flex-wrap gap-1">
-              <span>Struktur yang seimbang akan menghasilkan bangunan yang kokoh!</span>
+              <span>{isCompleted ? "Semua blessing telah terpasang sempurna!" : "Klik semua komponen di atas untuk melengkapi struktur!"}</span>
               <Hammer className="w-4 h-4 text-retro-navy shrink-0 animate-bounce inline-block" />
             </p>
           </div>
@@ -228,7 +196,7 @@ export const MiniGame: React.FC = () => {
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="flex justify-center mt-2"
+            className="flex justify-center mt-1"
           >
             <PixelButton onClick={handleNext} className="w-full py-3.5 text-xs sm:text-sm animate-bounce">
               LANJUT YUK! ➔

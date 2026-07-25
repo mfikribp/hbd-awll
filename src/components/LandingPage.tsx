@@ -7,11 +7,78 @@ import { useAudio } from '../hooks/useAudio';
 import { PixelButton } from './ui/PixelButton';
 import { Star, Sparkles, Heart, Coffee, ArrowUp } from 'lucide-react';
 
+import Image from 'next/image';
+import confetti from 'canvas-confetti';
+
 export const LandingPage: React.FC = () => {
   const nextSection = useGameStore((state) => state.nextSection);
   const { playLevelUp } = useAudio();
   const [isLoading, setIsLoading] = useState(false);
   const [typedText, setTypedText] = useState('');
+  const [boardBounce, setBoardBounce] = useState(false);
+
+  const handleBoardClick = () => {
+    playLevelUp();
+    setBoardBounce(true);
+    confetti({
+      particleCount: 35,
+      spread: 60,
+      origin: { y: 0.5 },
+      colors: ['#FFD700', '#F72585', '#4EA8DE', '#4AD66D']
+    });
+    setTimeout(() => setBoardBounce(false), 600);
+  };
+
+  useEffect(() => {
+    // Festive Dual Cannon & Center Confetti Explosion
+    const colors = ['#FFD700', '#F72585', '#4EA8DE', '#4AD66D', '#FFFFFF', '#FF70A6'];
+
+    // Left cannon
+    confetti({
+      particleCount: 60,
+      angle: 60,
+      spread: 70,
+      origin: { x: 0.05, y: 0.65 },
+      colors
+    });
+
+    // Right cannon
+    confetti({
+      particleCount: 60,
+      angle: 120,
+      spread: 70,
+      origin: { x: 0.95, y: 0.65 },
+      colors
+    });
+
+    // Center star burst after 200ms
+    const timer1 = setTimeout(() => {
+      confetti({
+        particleCount: 80,
+        spread: 100,
+        origin: { x: 0.5, y: 0.45 },
+        shapes: ['star', 'circle'],
+        colors
+      });
+    }, 200);
+
+    // Final flourish after 500ms
+    const timer2 = setTimeout(() => {
+      confetti({
+        particleCount: 50,
+        angle: 90,
+        spread: 120,
+        startVelocity: 45,
+        origin: { x: 0.5, y: 0.5 },
+        colors
+      });
+    }, 500);
+
+    return () => {
+      clearTimeout(timer1);
+      clearTimeout(timer2);
+    };
+  }, []);
 
   useEffect(() => {
     if (!isLoading) return;
@@ -215,76 +282,67 @@ export const LandingPage: React.FC = () => {
       {/* Top Banner spacing */}
       <div className="z-10 mt-12" />
 
-      {/* Main Content Area */}
+      {/* Main Hero Content Area (Centered) */}
       <motion.div
         initial={{ y: -30, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.8 }}
-        className="z-10 flex flex-col items-center max-w-xl px-4"
+        className="z-10 flex flex-col items-center max-w-2xl px-4 my-auto w-full"
       >
-        {/* SELAMAT Title */}
-        <motion.h1
-          className="font-press-start text-[26px] xs:text-[32px] sm:text-[40px] md:text-5xl mb-4 select-none flex flex-col items-center justify-center gap-y-2 max-w-full px-2"
-          initial="initial"
-          animate="animate"
-          variants={{
-            initial: {},
-            animate: {
-              transition: {
-                staggerChildren: 0.08,
-              }
-            }
-          }}
-        >
-          {/* First Line: HAPPY */}
-          <div className="flex justify-center gap-x-1 sm:gap-x-2">
-            {"HAPPY".split("").map((char, index) => (
-              <motion.span
-                key={`happy-${index}`}
-                className="animate-retro-wave origin-bottom cursor-default"
-                style={{
-                  animationDelay: `${index * 0.12}s`,
-                }}
-                variants={{
-                  initial: { y: -80, opacity: 0, scale: 0.2, rotate: -20 },
-                  animate: {
-                    y: 0,
-                    opacity: 1,
-                    scale: 1,
-                    rotate: 0,
-                    transition: {
-                      type: "spring",
-                      stiffness: 300,
-                      damping: 9
-                    }
-                  }
-                }}
-                whileHover={{
-                  scale: 1.35,
-                  rotate: 12,
-                  transition: { type: "spring", stiffness: 500, damping: 6 }
-                }}
-                whileTap={{
-                  scale: 1.35,
-                  rotate: 12,
-                  transition: { type: "spring", stiffness: 500, damping: 6 }
-                }}
-              >
-                {char}
-              </motion.span>
-            ))}
-          </div>
 
-          {/* Second Line: BIRTHDAY! */}
-          <div className="flex justify-center gap-x-1 sm:gap-x-2">
-            {"BIRTHDAY!".split("").map((char, index) => {
-              const globalIndex = 5 + index; // Keep staggered delay flow
-              return (
+        {/* HERO TITLE: HAPPY BIRTHDAY! */}
+        <div className="relative mb-6 select-none flex flex-col items-center">
+          {/* Floating Emojis with Glowing Halos */}
+          {[
+            { top: '2%', left: '0%', icon: '🎉', delay: 0.4, size: 'text-3xl sm:text-5xl' },
+            { top: '2%', right: '0%', icon: '🎂', delay: 1.2, size: 'text-3xl sm:text-5xl' },
+          ].map((sparkle, i) => (
+            <motion.div
+              key={`sparkle-${i}`}
+              className={`absolute pointer-events-none z-20 ${sparkle.size}`}
+              style={{
+                top: sparkle.top,
+                ...(sparkle.left ? { left: sparkle.left } : {}),
+                ...(sparkle.right ? { right: sparkle.right } : {}),
+                filter: 'drop-shadow(0 0 15px #FFD700) drop-shadow(0 0 25px #F72585)',
+              }}
+              animate={{
+                y: [0, -12, 0],
+                scale: [0.9, 1.25, 0.9],
+                rotate: [0, 15, -15, 0],
+              }}
+              transition={{
+                duration: 2.5,
+                repeat: Infinity,
+                ease: 'easeInOut',
+                delay: sparkle.delay,
+              }}
+            >
+              {sparkle.icon}
+            </motion.div>
+          ))}
+
+          <motion.h1
+            className="font-press-start text-[32px] xs:text-[42px] sm:text-[64px] md:text-7xl lg:text-8xl select-none flex flex-col items-center justify-center gap-y-3 max-w-full px-2 drop-shadow-[0_6px_0px_#000000]"
+            initial="initial"
+            animate="animate"
+            variants={{
+              initial: {},
+              animate: {
+                transition: {
+                  staggerChildren: 0.08,
+                },
+              },
+            }}
+          >
+            {/* First Line: HAPPY */}
+            <div className="flex justify-center gap-x-1.5 sm:gap-x-3">
+              {'HAPPY'.split('').map((char, index) => (
                 <motion.span
-                  key={`birthday-${index}`}
-                  className="animate-retro-wave origin-bottom cursor-default"
+                  key={`happy-${index}`}
+                  className="animate-retro-wave origin-bottom cursor-default inline-block"
                   style={{
-                    animationDelay: `${globalIndex * 0.12}s`,
+                    animationDelay: `${index * 0.12}s`,
                   }}
                   variants={{
                     initial: { y: -80, opacity: 0, scale: 0.2, rotate: -20 },
@@ -294,133 +352,137 @@ export const LandingPage: React.FC = () => {
                       scale: 1,
                       rotate: 0,
                       transition: {
-                        type: "spring",
+                        type: 'spring',
                         stiffness: 300,
-                        damping: 9
-                      }
-                    }
+                        damping: 9,
+                      },
+                    },
                   }}
                   whileHover={{
-                    scale: 1.35,
-                    rotate: 12,
-                    transition: { type: "spring", stiffness: 500, damping: 6 }
+                    scale: 1.4,
+                    rotate: 15,
+                    transition: { type: 'spring', stiffness: 500, damping: 6 },
                   }}
                   whileTap={{
-                    scale: 1.35,
-                    rotate: 12,
-                    transition: { type: "spring", stiffness: 500, damping: 6 }
+                    scale: 1.4,
+                    rotate: 15,
+                    transition: { type: 'spring', stiffness: 500, damping: 6 },
                   }}
                 >
                   {char}
                 </motion.span>
-              );
-            })}
-          </div>
-        </motion.h1>
-        {/* Retro Level Up Badge */}
-        <motion.div
-          className="flex items-center justify-center mb-8"
-          initial={{ opacity: 0, scale: 0.8 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ delay: 0.3 }}
-        >
-          <div className="flex items-center gap-1.5 bg-retro-green text-black font-press-start text-[10px] sm:text-xs px-3.5 py-2 border-4 border-black shadow-[3px_3px_0px_#000] select-none font-bold animate-bounce">
-            <ArrowUp className="w-4 h-4 stroke-[3.5] animate-pulse" />
-            LEVEL UP!
-          </div>
-        </motion.div>
+              ))}
+            </div>
 
-        {/* Level Card: Beautiful Spring Animation */}
-        <motion.div
-          initial={{ scale: 0, rotate: -3 }}
-          animate={{ scale: 1, rotate: 0 }}
-          transition={{ type: "spring", stiffness: 120, damping: 14, delay: 0.2 }}
-          whileHover={{
-            scale: 1.06,
-            rotate: 1,
-            boxShadow: "8px 8px 0px #000000",
-            transition: { type: "spring", stiffness: 400, damping: 15 }
-          }}
-          whileTap={{
-            scale: 1.06,
-            rotate: 1,
-            boxShadow: "8px 8px 0px #000000",
-            transition: { type: "spring", stiffness: 400, damping: 15 }
-          }}
-          style={{ transform: 'translateZ(0)' }}
-          className="bg-[#1C2541]/95 text-white p-6 sm:p-8 border-4 border-retro-gold shadow-[5px_5px_0px_#000000] max-w-sm mb-8 relative select-none"
-        >
-          {/* Top Right Floating Shiny Star */}
-          <div className="absolute -top-4 -right-4 text-retro-gold filter drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)]">
-            <motion.div
-              animate={{
-                scale: [1, 1.25, 1],
-                rotate: [0, 180, 360],
-              }}
-              transition={{
-                duration: 4,
-                repeat: Infinity,
-                ease: "linear"
-              }}
-            >
-              <Star className="fill-retro-gold w-10 h-10 text-black stroke-2" />
-            </motion.div>
-          </div>
-
-          <p className="font-press-start text-[9px] tracking-widest text-retro-skyblue mb-3 uppercase drop-shadow-[0_1px_0_#000]">
-            Awll has reached
-          </p>
-
-          {/* Wrapper to fix gradient rendering bugs on mobile browsers */}
-          <div className="filter drop-shadow-[0_3px_0_#000000] mb-4">
-            <h2 className="font-press-start text-2xl sm:text-3xl font-extrabold bg-gradient-to-r from-retro-gold via-amber-300 to-yellow-500 bg-clip-text text-transparent tracking-widest uppercase animate-pulse">
-              LEVEL 20
-            </h2>
-          </div>
-
-          {/* Staggered bouncing rating stars */}
-          <div className="flex justify-center space-x-1.5 mt-2">
-            {[...Array(5)].map((_, i) => (
-              <motion.div
-                key={i}
-                initial={{ scale: 0, y: 10 }}
-                animate={{ scale: 1, y: 0 }}
-                transition={{
-                  type: "spring",
-                  stiffness: 200,
-                  damping: 10,
-                  delay: 0.4 + i * 0.1
-                }}
-                whileHover={{
-                  scale: 1.4,
-                  rotate: 15,
-                  transition: { type: "spring", stiffness: 300 }
-                }}
-                whileTap={{
-                  scale: 1.4,
-                  rotate: 15,
-                  transition: { type: "spring", stiffness: 300 }
-                }}
-              >
-                <Star className="w-5.5 h-5.5 fill-retro-gold text-black stroke-[1.5] filter drop-shadow-[0_2px_0px_#000]" />
-              </motion.div>
-            ))}
-          </div>
-        </motion.div>
-
-        {/* Highlight Card */}
-        <div className="bg-[#FAF6EE] text-black p-4 sm:p-5 pixel-border max-w-md mb-8">
-          <p className="font-press-start text-[8px] sm:text-[10px] leading-relaxed text-retro-navy text-center uppercase">
-            Hari ini adalah hari spesial untuk seseorang yang hebat!
-          </p>
+            {/* Second Line: BIRTHDAY! */}
+            <div className="flex justify-center gap-x-1.5 sm:gap-x-3">
+              {'BIRTHDAY!'.split('').map((char, index) => {
+                const globalIndex = 5 + index;
+                return (
+                  <motion.span
+                    key={`birthday-${index}`}
+                    className="animate-retro-wave origin-bottom cursor-default inline-block"
+                    style={{
+                      animationDelay: `${globalIndex * 0.12}s`,
+                    }}
+                    variants={{
+                      initial: { y: -80, opacity: 0, scale: 0.2, rotate: -20 },
+                      animate: {
+                        y: 0,
+                        opacity: 1,
+                        scale: 1,
+                        rotate: 0,
+                        transition: {
+                          type: 'spring',
+                          stiffness: 300,
+                          damping: 9,
+                        },
+                      },
+                    }}
+                    whileHover={{
+                      scale: 1.4,
+                      rotate: 15,
+                      transition: { type: 'spring', stiffness: 500, damping: 6 },
+                    }}
+                    whileTap={{
+                      scale: 1.4,
+                      rotate: 15,
+                      transition: { type: 'spring', stiffness: 500, damping: 6 },
+                    }}
+                  >
+                    {char}
+                  </motion.span>
+                );
+              })}
+            </div>
+          </motion.h1>
         </div>
 
-        {/* Blinking Retro Play Prompt */}
+        {/* Sleek Retro RPG Board Image Asset with Special Glow, Bobbing, & Click FX */}
         <motion.div
-          className="font-press-start text-[9px] sm:text-[10px] mb-3 tracking-widest flex items-center justify-center gap-2 select-none font-bold drop-shadow-[0_2px_0_#000]"
+          onClick={handleBoardClick}
+          initial={{ opacity: 0, scale: 0.85, y: 30 }}
+          animate={boardBounce
+            ? { opacity: 1, scale: [1, 1.12, 0.94, 1], rotate: [0, -4, 4, 0], y: [0, -15, 0] }
+            : { opacity: 1, scale: 1, y: [0, -6, 0] }
+          }
+          transition={boardBounce
+            ? { duration: 0.5, ease: "easeInOut" }
+            : { y: { repeat: Infinity, duration: 3, ease: "easeInOut" }, opacity: { delay: 0.25, duration: 0.4 }, scale: { delay: 0.25, duration: 0.4 } }
+          }
+          whileHover={{
+            scale: 1.04,
+            transition: { type: "spring", stiffness: 400, damping: 12 }
+          }}
+          className="w-full max-w-lg sm:max-w-xl my-4 flex justify-center cursor-pointer select-none"
+          style={{
+            filter: 'drop-shadow(5px 5px 0px #000000) drop-shadow(0 0 16px rgba(255, 215, 0, 0.35))'
+          }}
+          title="Klik papan!"
+        >
+          <img
+            src="/assets/element/papan.png"
+            alt="Papan Banner"
+            className="w-full h-auto object-contain image-rendering-pixelated"
+          />
+        </motion.div>
+      </motion.div>
+
+      {/* Bottom Action Area (Button + Description at the very bottom edge) */}
+      <motion.div
+        initial={{ y: 20, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ delay: 0.5 }}
+        className="z-10 w-full flex flex-col items-center justify-end pb-6 pt-4 mt-auto"
+      >
+        {/* Start Adventure Button */}
+        <motion.div
           animate={{
-            scale: [1, 1.15, 1],
-            color: ["#ffffffff", "#ffffffff"],
+            scale: [1, 1.04, 1],
+          }}
+          transition={{
+            duration: 1.6,
+            repeat: Infinity,
+            ease: "easeInOut",
+          }}
+          className="relative group mb-2.5"
+        >
+          {/* Premium Glowing neon color underlay */}
+          <div className="absolute -inset-1 bg-gradient-to-r from-retro-gold via-retro-pink to-retro-skyblue rounded-none blur-sm opacity-60 group-hover:opacity-90 animate-pulse pointer-events-none" />
+
+          <PixelButton
+            onClick={handleStart}
+            className="px-10 py-4 text-sm sm:text-base font-bold relative uppercase tracking-wider !shadow-[6px_6px_0px_#000000]"
+          >
+            ▸ START ADVENTURE ◂
+          </PixelButton>
+        </motion.div>
+
+        {/* Blinking Retro Play Description (Placed UNDER the button) */}
+        <motion.div
+          className="font-press-start text-[8px] sm:text-[9px] tracking-widest flex items-center justify-center gap-2 select-none font-bold drop-shadow-[0_2px_0_#000]"
+          animate={{
+            opacity: [0.5, 1, 0.5],
           }}
           transition={{
             duration: 1.4,
@@ -428,44 +490,7 @@ export const LandingPage: React.FC = () => {
             ease: "easeInOut",
           }}
         >
-          <motion.span
-            className="text-retro-pink inline-block origin-center"
-            animate={{ rotate: 360 }}
-            transition={{ duration: 2.2, repeat: Infinity, ease: "linear" }}
-          >
-
-          </motion.span>
           <span>CLICK START ADVENTURE TO PLAY</span>
-          <motion.span
-            className="text-retro-pink inline-block origin-center"
-            animate={{ rotate: -360 }}
-            transition={{ duration: 2.2, repeat: Infinity, ease: "linear" }}
-          >
-
-          </motion.span>
-        </motion.div>
-
-        {/* Start Adventure Button: Glowing Pulse Animation */}
-        <motion.div
-          animate={{
-            scale: [1, 1.05, 1],
-          }}
-          transition={{
-            duration: 1.6,
-            repeat: Infinity,
-            ease: "easeInOut",
-          }}
-          className="relative group"
-        >
-          {/* Premium Glowing neon color underlay */}
-          <div className="absolute -inset-1 bg-gradient-to-r from-retro-gold via-retro-pink to-retro-skyblue rounded-none blur-sm opacity-60 group-hover:opacity-90 animate-pulse pointer-events-none" />
-
-          <PixelButton
-            onClick={handleStart}
-            className="px-10 py-4.5 text-sm sm:text-base font-bold relative uppercase tracking-wider !shadow-[6px_6px_0px_#000000]"
-          >
-            ▸ START ADVENTURE ◂
-          </PixelButton>
         </motion.div>
       </motion.div>
 

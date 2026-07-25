@@ -168,7 +168,7 @@ export const Achievements: React.FC = () => {
             <div className="absolute top-1/2 -left-[9px] -translate-y-1/2 w-0 h-0 border-y-[6px] border-y-transparent border-r-[6px] border-r-white pointer-events-none z-10" />
 
             <p className="font-nunito font-extrabold text-xs sm:text-sm text-retro-navy leading-normal flex items-center flex-wrap gap-1">
-              <span>Hidup memang penuh beban, tapi kamu hebat bisa jalanin semuanya!</span> <Flame className="w-4 h-4 text-retro-pink fill-current inline-block animate-pulse shrink-0" />
+              <span>heyy... klaim semua achievement yang udah kamu capai selama satu tahun kuliah</span> <Flame className="w-4 h-4 text-retro-pink fill-current inline-block animate-pulse shrink-0" />
             </p>
           </div>
         </div>
