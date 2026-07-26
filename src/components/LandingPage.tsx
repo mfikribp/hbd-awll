@@ -1,21 +1,26 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { useGameStore } from '../store/useGameStore';
 import { useAudio } from '../hooks/useAudio';
 import { PixelButton } from './ui/PixelButton';
-import { Star, Sparkles, Heart, Coffee, ArrowUp } from 'lucide-react';
+import { Star, Sparkles, Heart, Coffee, ArrowUp, Volume2, VolumeX, Music } from 'lucide-react';
 
 import Image from 'next/image';
 import confetti from 'canvas-confetti';
 
 export const LandingPage: React.FC = () => {
   const nextSection = useGameStore((state) => state.nextSection);
+  const isMuted = useGameStore((state) => state.isMuted);
+  const toggleMute = useGameStore((state) => state.toggleMute);
   const { playLevelUp } = useAudio();
   const [isLoading, setIsLoading] = useState(false);
   const [typedText, setTypedText] = useState('');
   const [boardBounce, setBoardBounce] = useState(false);
+  const [bgMusicStarted, setBgMusicStarted] = useState(false);
+  const [musicPulse, setMusicPulse] = useState(false);
+  const bgAudioRef = useRef<HTMLAudioElement | null>(null);
 
   const handleBoardClick = () => {
     playLevelUp();
@@ -80,6 +85,80 @@ export const LandingPage: React.FC = () => {
     };
   }, []);
 
+  // Background music autoplay effect
+  useEffect(() => {
+    const audio = new Audio('/audio/membasuh.mp3');
+    audio.loop = true;
+    audio.volume = 0;
+    audio.muted = isMuted;
+    bgAudioRef.current = audio;
+
+    // Attempt autoplay immediately
+    const playPromise = audio.play();
+    if (playPromise !== undefined) {
+      playPromise
+        .then(() => {
+          // Fade in volume smoothly
+          setBgMusicStarted(true);
+          let vol = 0;
+          const fadeIn = setInterval(() => {
+            vol = Math.min(vol + 0.02, 0.45);
+            audio.volume = isMuted ? 0 : vol;
+            if (vol >= 0.45) clearInterval(fadeIn);
+          }, 80);
+        })
+        .catch(() => {
+          // Autoplay blocked — wait for first user interaction
+          const unlockAudio = () => {
+            audio.play().then(() => {
+              setBgMusicStarted(true);
+              let vol = 0;
+              const fadeIn = setInterval(() => {
+                vol = Math.min(vol + 0.02, 0.45);
+                audio.volume = isMuted ? 0 : vol;
+                if (vol >= 0.45) clearInterval(fadeIn);
+              }, 80);
+            }).catch(() => {});
+            document.removeEventListener('click', unlockAudio);
+            document.removeEventListener('keydown', unlockAudio);
+            document.removeEventListener('touchstart', unlockAudio);
+          };
+          document.addEventListener('click', unlockAudio);
+          document.addEventListener('keydown', unlockAudio);
+          document.addEventListener('touchstart', unlockAudio);
+        });
+    }
+
+    return () => {
+      audio.pause();
+      audio.src = '';
+    };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // Sync mute state with audio element
+  useEffect(() => {
+    const audio = bgAudioRef.current;
+    if (!audio) return;
+    if (isMuted) {
+      audio.volume = 0;
+    } else {
+      if (bgMusicStarted) {
+        audio.volume = 0.45;
+      }
+    }
+  }, [isMuted, bgMusicStarted]);
+
+  // Music note pulse animation trigger
+  useEffect(() => {
+    if (isMuted || !bgMusicStarted) return;
+    const interval = setInterval(() => {
+      setMusicPulse(true);
+      setTimeout(() => setMusicPulse(false), 400);
+    }, 2000);
+    return () => clearInterval(interval);
+  }, [isMuted, bgMusicStarted]);
+
   useEffect(() => {
     if (!isLoading) return;
     const fullText = "LOADING ADVENTURE...";
@@ -111,6 +190,82 @@ export const LandingPage: React.FC = () => {
     >
       {/* Dark overlay for better readability */}
       <div className="absolute inset-0 bg-black/45 z-0 pointer-events-none" />
+
+      {/* ♪ Floating Background Music Control Button */}
+      <motion.button
+        onClick={() => {
+          toggleMute();
+          setMusicPulse(true);
+          setTimeout(() => setMusicPulse(false), 400);
+          // If music hasn't started yet, trigger it on mute toggle
+          if (!bgMusicStarted && bgAudioRef.current) {
+            bgAudioRef.current.play().then(() => setBgMusicStarted(true)).catch(() => {});
+          }
+        }}
+        className="absolute top-4 right-4 z-50 group"
+        title={isMuted ? 'Nyalakan musik' : 'Matikan musik'}
+        initial={{ opacity: 0, scale: 0.5 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ delay: 0.8, type: 'spring', stiffness: 300 }}
+        whileHover={{ scale: 1.15 }}
+        whileTap={{ scale: 0.9 }}
+      >
+        {/* Glow ring */}
+        <motion.div
+          className="absolute inset-0 rounded-full"
+          style={{
+            background: isMuted
+              ? 'radial-gradient(circle, rgba(255,100,100,0.4) 0%, transparent 70%)'
+              : 'radial-gradient(circle, rgba(224,169,109,0.5) 0%, transparent 70%)',
+          }}
+          animate={{
+            scale: musicPulse && !isMuted ? [1, 1.6, 1] : 1,
+            opacity: musicPulse && !isMuted ? [0.6, 1, 0] : 0.6,
+          }}
+          transition={{ duration: 0.4 }}
+        />
+        {/* Button body */}
+        <div
+          className="relative flex items-center justify-center w-11 h-11 rounded-full border-2 backdrop-blur-sm transition-all duration-300"
+          style={{
+            background: isMuted
+              ? 'rgba(30,20,20,0.75)'
+              : 'rgba(224,169,109,0.18)',
+            borderColor: isMuted ? '#ff6b6b' : '#E0A96D',
+            boxShadow: isMuted
+              ? '0 0 0 0 transparent, inset 0 1px 0 rgba(255,255,255,0.1)'
+              : '0 0 12px rgba(224,169,109,0.4), inset 0 1px 0 rgba(255,255,255,0.15)',
+          }}
+        >
+          {isMuted ? (
+            <VolumeX className="w-5 h-5 text-red-400" />
+          ) : (
+            <motion.div
+              animate={musicPulse ? { scale: [1, 1.3, 1] } : { scale: 1 }}
+              transition={{ duration: 0.3 }}
+            >
+              <Volume2 className="w-5 h-5" style={{ color: '#E0A96D' }} />
+            </motion.div>
+          )}
+        </div>
+        {/* Floating music notes when playing */}
+        {!isMuted && bgMusicStarted && (
+          <>
+            <motion.span
+              className="absolute -top-2 -right-1 text-[10px] select-none pointer-events-none"
+              style={{ color: '#E0A96D' }}
+              animate={{ y: [0, -12, -20], opacity: [0.9, 0.6, 0], scale: [0.8, 1, 0.6] }}
+              transition={{ duration: 2, repeat: Infinity, delay: 0 }}
+            >♪</motion.span>
+            <motion.span
+              className="absolute -top-1 -left-2 text-[8px] select-none pointer-events-none"
+              style={{ color: '#D97757' }}
+              animate={{ y: [0, -10, -18], opacity: [0.8, 0.5, 0], scale: [0.7, 1, 0.5] }}
+              transition={{ duration: 2.2, repeat: Infinity, delay: 0.7 }}
+            >♫</motion.span>
+          </>
+        )}
+      </motion.button>
 
       {/* --- RETRO RPG ENVIRONMENT ANIMATIONS --- */}
 
