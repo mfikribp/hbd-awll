@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useGameStore } from '../store/useGameStore';
 import { useAudio } from '../hooks/useAudio';
@@ -12,13 +12,10 @@ import confetti from 'canvas-confetti';
 
 export const LandingPage: React.FC = () => {
   const nextSection = useGameStore((state) => state.nextSection);
-  const isMuted = useGameStore((state) => state.isMuted);
   const { playLevelUp } = useAudio();
   const [isLoading, setIsLoading] = useState(false);
   const [typedText, setTypedText] = useState('');
   const [boardBounce, setBoardBounce] = useState(false);
-  const [bgMusicStarted, setBgMusicStarted] = useState(false);
-  const bgAudioRef = useRef<HTMLAudioElement | null>(null);
 
   const handleBoardClick = () => {
     playLevelUp();
@@ -82,70 +79,6 @@ export const LandingPage: React.FC = () => {
       clearTimeout(timer2);
     };
   }, []);
-
-  // Background music autoplay effect
-  useEffect(() => {
-    const audio = new Audio('/audio/hbdoy.mp3');
-    audio.loop = true;
-    audio.volume = 0;
-    audio.muted = isMuted;
-    bgAudioRef.current = audio;
-
-    // Attempt autoplay immediately
-    const playPromise = audio.play();
-    if (playPromise !== undefined) {
-      playPromise
-        .then(() => {
-          // Fade in volume smoothly
-          setBgMusicStarted(true);
-          let vol = 0;
-          const fadeIn = setInterval(() => {
-            vol = Math.min(vol + 0.02, 0.45);
-            audio.volume = isMuted ? 0 : vol;
-            if (vol >= 0.45) clearInterval(fadeIn);
-          }, 80);
-        })
-        .catch(() => {
-          // Autoplay blocked — wait for first user interaction
-          const unlockAudio = () => {
-            audio.play().then(() => {
-              setBgMusicStarted(true);
-              let vol = 0;
-              const fadeIn = setInterval(() => {
-                vol = Math.min(vol + 0.02, 0.45);
-                audio.volume = isMuted ? 0 : vol;
-                if (vol >= 0.45) clearInterval(fadeIn);
-              }, 80);
-            }).catch(() => { });
-            document.removeEventListener('click', unlockAudio);
-            document.removeEventListener('keydown', unlockAudio);
-            document.removeEventListener('touchstart', unlockAudio);
-          };
-          document.addEventListener('click', unlockAudio);
-          document.addEventListener('keydown', unlockAudio);
-          document.addEventListener('touchstart', unlockAudio);
-        });
-    }
-
-    return () => {
-      audio.pause();
-      audio.src = '';
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  // Sync mute state with audio element
-  useEffect(() => {
-    const audio = bgAudioRef.current;
-    if (!audio) return;
-    if (isMuted) {
-      audio.volume = 0;
-    } else {
-      if (bgMusicStarted) {
-        audio.volume = 0.45;
-      }
-    }
-  }, [isMuted, bgMusicStarted]);
 
   useEffect(() => {
     if (!isLoading) return;

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useRef } from 'react';
+import React from 'react';
 import { motion } from 'framer-motion';
 import { useGameStore } from '../store/useGameStore';
 import { useAudio } from '../hooks/useAudio';
@@ -25,38 +25,7 @@ const BLESSINGS: BlessingComponent[] = [
 export const MiniGame: React.FC = () => {
   const { placedBlessings, placeBlessing, nextSection } = useGameStore();
   const { playSuccess, playClick, playLevelUp } = useAudio();
-  const isMuted = useGameStore((state) => state.isMuted);
   const [screenShake, setScreenShake] = React.useState(false);
-  const bgMusicRef = useRef<HTMLAudioElement | null>(null);
-
-  // Backsound: play wish.mp3 looping saat komponen mount
-  useEffect(() => {
-    const audio = new Audio('/audio/wish.mp3');
-    audio.loop = true;
-    audio.volume = 0.35;
-    bgMusicRef.current = audio;
-
-    if (!isMuted) {
-      audio.play().catch(() => {});
-    }
-
-    return () => {
-      audio.pause();
-      audio.src = '';
-      bgMusicRef.current = null;
-    };
-  }, []);
-
-  // Mute/unmute saat isMuted berubah
-  useEffect(() => {
-    const audio = bgMusicRef.current;
-    if (!audio) return;
-    if (isMuted) {
-      audio.pause();
-    } else {
-      audio.play().catch(() => {});
-    }
-  }, [isMuted]);
 
   const handleComponentClick = (id: string) => {
     if (placedBlessings.includes(id)) return;

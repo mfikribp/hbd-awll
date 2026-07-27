@@ -1,9 +1,7 @@
 'use client';
 
 import React, { useEffect, useRef, useState } from 'react';
-import { Play, Pause, Music } from 'lucide-react';
 import { useGameStore } from '../store/useGameStore';
-import { motion } from 'framer-motion';
 
 const AUDIO_MAP: Record<number, string> = {
   1: '/audio/hbdoy.mp3',          // Landing
@@ -15,198 +13,182 @@ const AUDIO_MAP: Record<number, string> = {
 };
 
 const FALLBACK_AUDIO = '/audio/hbdoy.mp3';
+const TARGET_VOLUME = 0.35;
 
+/**
+ * AudioController — global, persistent audio manager.
+ *
+ * Strategy for mobile autoplay:
+ * 1. Try to play immediately (works on desktop / some Android).
+ * 2. If blocked, use AudioContext.resume() trick: create a silent AudioContext
+ *    and resume it on the first user gesture to unlock the audio engine globally,
+ *    then start the HTMLAudioElement. This is the ONLY reliable method on iOS Safari.
+ * 3. Attach listeners to the earliest possible gestures (touchstart, pointerdown, click)
+ *    so audio starts on the very first tap — before any button click fires.
+ */
 export const AudioController: React.FC = () => {
   const { isMusicMuted, toggleMusicMute } = useGameStore();
   const currentSection = useGameStore((state) => state.currentSection);
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  const audioCtxRef = useRef<AudioContext | null>(null);
+  const unlockedRef = useRef(false);
   const [isPlaying, setIsPlaying] = useState(false);
 
+  // --- Initial setup (runs once on mount) ---
   useEffect(() => {
-    // Instantiate audio object on client-side
-    const initialTrack = AUDIO_MAP[currentSection] || FALLBACK_AUDIO;
+    const initialTrack = AUDIO_MAP[currentSection] ?? FALLBACK_AUDIO;
     const audio = new Audio(initialTrack);
     audio.loop = true;
-    audio.volume = 0.20; // 20% volume is perfect and non-intrusive
-
-    // Register error handler for initial track
-    const handleInitialLoadError = () => {
-      console.warn(`Failed to load initial track ${initialTrack}, falling back to ${FALLBACK_AUDIO}`);
-      audio.src = FALLBACK_AUDIO;
-      audio.load();
-      if (!isMusicMuted) {
-        audio.play().then(() => setIsPlaying(true)).catch(() => { });
-      }
-    };
-    audio.addEventListener('error', handleInitialLoadError);
-
+    audio.volume = TARGET_VOLUME;
     audioRef.current = audio;
 
-    // Sync playing state with HTMLAudioElement events
-    const handlePlay = () => setIsPlaying(true);
-    const handlePause = () => setIsPlaying(false);
+    // Sync React state with native events
+    const onPlay  = () => setIsPlaying(true);
+    const onPause = () => setIsPlaying(false);
+    audio.addEventListener('play', onPlay);
+    audio.addEventListener('pause', onPause);
 
-    audio.addEventListener('play', handlePlay);
-    audio.addEventListener('pause', handlePause);
+    // ---- Unlock helper ----
+    // Called on the FIRST user interaction.
+    // AudioContext.resume() lifts the browser's autoplay restriction globally.
+    const unlock = () => {
+      if (unlockedRef.current) return;
+      unlockedRef.current = true;
+      removeGestureListeners();
 
-    // Try autoplay immediately on mount if not muted
+      if (isMusicMuted) return; // user muted before interaction — respect it
+
+      // Resume AudioContext first (iOS requirement)
+      const tryPlay = () => {
+        const a = audioRef.current;
+        if (!a || !a.paused) return;
+        a.play()
+          .then(() => setIsPlaying(true))
+          .catch(() => {});
+      };
+
+      if (audioCtxRef.current && audioCtxRef.current.state === 'suspended') {
+        audioCtxRef.current.resume().then(tryPlay).catch(tryPlay);
+      } else {
+        tryPlay();
+      }
+    };
+
+    // Listen on the CAPTURE phase with the earliest events so we fire before any
+    // other handler (critical for iOS where the gesture must be in the same call stack).
+    const gestureEvents = ['touchstart', 'pointerdown', 'click', 'keydown'] as const;
+    const addGestureListeners = () => {
+      gestureEvents.forEach(evt => document.addEventListener(evt, unlock, { capture: true, once: true, passive: true }));
+    };
+    const removeGestureListeners = () => {
+      gestureEvents.forEach(evt => document.removeEventListener(evt, unlock, { capture: true }));
+    };
+
+    // Create a suspended AudioContext early — its existence alone signals to the
+    // browser that we intend to play audio, priming the unlock mechanism.
+    try {
+      const AudioContextClass = window.AudioContext || (window as typeof window & { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
+      if (AudioContextClass) {
+        audioCtxRef.current = new AudioContextClass();
+      }
+    } catch (_) {}
+
+    // Try immediate autoplay first (works on desktop / non-strict Android)
     if (!isMusicMuted) {
       audio.play()
-        .then(() => setIsPlaying(true))
-        .catch((err) => {
-          console.log("Autoplay blocked by browser policy, will resume on interaction:", err);
+        .then(() => {
+          unlockedRef.current = true;
+          setIsPlaying(true);
+        })
+        .catch(() => {
+          // Autoplay blocked — wait for first gesture
+          addGestureListeners();
         });
+    } else {
+      addGestureListeners();
     }
 
-    // Set up auto-play on first interaction anywhere in the window
-    const handleFirstInteraction = () => {
-      if (audioRef.current && !isMusicMuted && audioRef.current.paused) {
-        audioRef.current.play()
-          .then(() => setIsPlaying(true))
-          .catch((err) => {
-            console.log("Failed to play on first interaction:", err);
-          });
-      }
-      removeListeners();
-    };
-
-    const addListeners = () => {
-      window.addEventListener('click', handleFirstInteraction);
-      window.addEventListener('touchstart', handleFirstInteraction);
-      window.addEventListener('scroll', handleFirstInteraction);
-      window.addEventListener('keydown', handleFirstInteraction);
-    };
-
-    const removeListeners = () => {
-      window.removeEventListener('click', handleFirstInteraction);
-      window.removeEventListener('touchstart', handleFirstInteraction);
-      window.removeEventListener('scroll', handleFirstInteraction);
-      window.removeEventListener('keydown', handleFirstInteraction);
-    };
-
-    addListeners();
-
     return () => {
-      // Clean up audio on unmount
-      if (audioRef.current) {
-        audioRef.current.removeEventListener('play', handlePlay);
-        audioRef.current.removeEventListener('pause', handlePause);
-        audioRef.current.removeEventListener('error', handleInitialLoadError);
-        audioRef.current.pause();
-        audioRef.current = null;
+      removeGestureListeners();
+      audio.removeEventListener('play', onPlay);
+      audio.removeEventListener('pause', onPause);
+      audio.pause();
+      audioRef.current = null;
+      if (audioCtxRef.current) {
+        audioCtxRef.current.close().catch(() => {});
+        audioCtxRef.current = null;
       }
-      removeListeners();
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Handle section-specific track transitions dynamically
+  // --- Track switching when section changes ---
   useEffect(() => {
     const audio = audioRef.current;
     if (!audio) return;
 
-    const targetTrack = AUDIO_MAP[currentSection] || FALLBACK_AUDIO;
-
-    // Convert current absolute src to relative pathname for comparison
-    const currentSrcPath = audio.src ? new URL(audio.src, window.location.href).pathname : '';
-    if (currentSrcPath === targetTrack) return;
+    const targetTrack = AUDIO_MAP[currentSection] ?? FALLBACK_AUDIO;
+    const currentPath = audio.src ? new URL(audio.src, window.location.href).pathname : '';
+    if (currentPath === targetTrack) return; // same track — don't restart
 
     const wasPlaying = !audio.paused;
-    let fadeOutInterval: NodeJS.Timeout;
-    let fadeInInterval: NodeJS.Timeout;
+    const STEPS = 10;
+    const FADE_MS = 300;
+    let fadeOut: ReturnType<typeof setInterval>;
+    let fadeIn:  ReturnType<typeof setInterval>;
+    const startVol = audio.volume;
 
-    const startVolume = audio.volume;
-    const fadeOutDuration = 300; // ms
-    const steps = 10;
-    const fadeOutStep = startVolume / steps;
-    let currentStep = 0;
-
-    const changeAndPlayTrack = () => {
+    const switchTrack = () => {
       audio.src = targetTrack;
       audio.load();
-
-      const handleLoadError = () => {
-        console.warn(`Failed to load track ${targetTrack}, falling back to ${FALLBACK_AUDIO}`);
-        audio.src = FALLBACK_AUDIO;
-        audio.load();
-        if (wasPlaying && !isMusicMuted) {
-          audio.play().catch(() => { });
-        }
-        audio.removeEventListener('error', handleLoadError);
-      };
-      audio.addEventListener('error', handleLoadError);
-
       if (wasPlaying && !isMusicMuted) {
         audio.play()
           .then(() => {
             audio.volume = 0;
-            let fadeInStep = 0;
-            fadeInInterval = setInterval(() => {
-              fadeInStep++;
-              audio.volume = Math.min(0.20, (fadeInStep / steps) * 0.20);
-              if (fadeInStep >= steps) {
-                clearInterval(fadeInInterval);
-                audio.volume = 0.20;
-              }
-            }, fadeOutDuration / steps);
+            let step = 0;
+            fadeIn = setInterval(() => {
+              step++;
+              audio.volume = Math.min(TARGET_VOLUME, (step / STEPS) * TARGET_VOLUME);
+              if (step >= STEPS) { clearInterval(fadeIn); audio.volume = TARGET_VOLUME; }
+            }, FADE_MS / STEPS);
           })
-          .catch((err) => {
-            console.log("Failed to play new track:", err);
-          });
+          .catch(() => {});
       } else {
-        audio.volume = 0.20;
+        audio.volume = TARGET_VOLUME;
       }
     };
 
     if (wasPlaying) {
-      fadeOutInterval = setInterval(() => {
-        currentStep++;
-        audio.volume = Math.max(0, startVolume - (currentStep * fadeOutStep));
-        if (currentStep >= steps) {
-          clearInterval(fadeOutInterval);
-          audio.pause();
-          changeAndPlayTrack();
-        }
-      }, fadeOutDuration / steps);
+      let step = 0;
+      fadeOut = setInterval(() => {
+        step++;
+        audio.volume = Math.max(0, startVol - (step / STEPS) * startVol);
+        if (step >= STEPS) { clearInterval(fadeOut); audio.pause(); switchTrack(); }
+      }, FADE_MS / STEPS);
     } else {
-      changeAndPlayTrack();
+      switchTrack();
     }
 
-    return () => {
-      clearInterval(fadeOutInterval);
-      clearInterval(fadeInInterval);
-    };
-  }, [currentSection, isMusicMuted]);
+    return () => { clearInterval(fadeOut); clearInterval(fadeIn); };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentSection]);
 
-  // Sync play/pause state when isMusicMuted is changed from other parts of the app
+  // --- Sync mute toggle ---
   useEffect(() => {
     const audio = audioRef.current;
     if (!audio) return;
-
     if (isMusicMuted) {
       audio.pause();
       setIsPlaying(false);
-    } else if (audio.paused && isPlaying) {
-      audio.play()
-        .then(() => setIsPlaying(true))
-        .catch(() => { });
+    } else {
+      // If already unlocked (user interacted before), resume immediately
+      if (audio.paused) {
+        audio.play()
+          .then(() => setIsPlaying(true))
+          .catch(() => {});
+      }
     }
   }, [isMusicMuted]);
-
-  const handleButtonClick = () => {
-    const audio = audioRef.current;
-    if (!audio) return;
-
-    if (isPlaying) {
-      audio.pause();
-      setIsPlaying(false);
-      if (!isMusicMuted) toggleMusicMute();
-    } else {
-      audio.play()
-        .then(() => setIsPlaying(true))
-        .catch(() => { });
-      if (isMusicMuted) toggleMusicMute();
-    }
-  };
 
   return null;
 };
