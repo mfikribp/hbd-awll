@@ -1,6 +1,33 @@
 import { useCallback } from 'react';
 import { useGameStore } from '../store/useGameStore';
 
+// --- Module-level singleton AudioContext ---
+// Mobile browsers (especially iOS Safari) only allow a small number of
+// AudioContext instances to exist at once. The old code created a brand new
+// context on EVERY sound effect call, which meant after a handful of rapid
+// plays (e.g. the staggered "unlock.wav" sequence on the Achievements
+// section) new contexts silently failed to be created, and sound effects
+// stopped working with no visible error.
+//
+// Fix: create ONE context and reuse it for the lifetime of the app.
+let sharedCtx: AudioContext | null = null;
+
+function getSharedAudioContext(): AudioContext | null {
+  if (typeof window === 'undefined') return null;
+
+  const AudioContextClass =
+    window.AudioContext ||
+    (window as typeof window & { webkitAudioContext?: typeof AudioContext }).webkitAudioContext;
+
+  if (!AudioContextClass) return null;
+
+  if (!sharedCtx || sharedCtx.state === 'closed') {
+    sharedCtx = new AudioContextClass();
+  }
+
+  return sharedCtx;
+}
+
 export const useAudio = () => {
   const isMuted = useGameStore((state) => state.isMuted);
 
@@ -9,14 +36,15 @@ export const useAudio = () => {
     if (isMuted) return;
 
     try {
-      const AudioContextClass = window.AudioContext || (window as any).webkitAudioContext;
-      if (!AudioContextClass) return;
+      const ctx = getSharedAudioContext();
+      if (!ctx) return;
 
-      const ctx = new AudioContextClass();
-      
-      // Explicitly resume context in case the browser launched it suspended
+      // Resume synchronously (not awaited) — this call happens inside a
+      // click/tap handler, so as long as we don't chain the oscillator
+      // scheduling inside a .then(), iOS still treats this as a valid
+      // user-gesture-triggered resume.
       if (ctx.state === 'suspended') {
-        ctx.resume();
+        ctx.resume().catch(() => { });
       }
 
       const osc = ctx.createOscillator();
@@ -24,7 +52,7 @@ export const useAudio = () => {
 
       osc.type = type;
       const now = ctx.currentTime;
-      
+
       // Set volume to 15% to 20% for a comfortable level
       gain.gain.setValueAtTime(0.08, now);
 
@@ -42,10 +70,13 @@ export const useAudio = () => {
       osc.start(now);
       osc.stop(now + duration);
 
-      // Gracefully close audio context after playing is finished
-      setTimeout(() => {
-        ctx.close().catch(() => {});
-      }, (duration + 0.1) * 1000);
+      // Clean up the individual nodes when done — the CONTEXT itself is
+      // shared and must stay open, only the oscillator/gain nodes are
+      // per-call and safe to disconnect.
+      osc.onended = () => {
+        osc.disconnect();
+        gain.disconnect();
+      };
     } catch (e) {
       console.warn("Web Audio synthesis failed:", e);
     }
@@ -58,4 +89,3 @@ export const useAudio = () => {
     playSuccess: () => playSynthTone([392.00, 523.25, 659.25, 783.99], 0.35, 'triangle'),
   };
 };
-
