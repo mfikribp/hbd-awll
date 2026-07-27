@@ -53,82 +53,56 @@ export const EndingPage: React.FC = () => {
         />
       )}
 
-      {/* --- MOBILE LAYOUT ONLY (md:hidden) --- */}
-      {/* Waving Awll Mascot Sprite near the left edge / sky */}
-      <motion.div
-        animate={{
-          y: [-5, 5, -5],
-        }}
-        transition={{
-          duration: 3,
-          repeat: Infinity,
-          ease: "easeInOut",
-        }}
-        className="absolute top-4 left-1/2 -translate-x-1/2 w-36 h-36 pointer-events-none z-20 md:hidden"
-      >
-        <Image
-          src="/assets/awl/png/awll-page6.png"
-          alt="Waving Awll"
-          fill
-          priority
-          sizes="144px"
-          className="object-contain image-rendering-pixelated"
-        />
-      </motion.div>
-
       {/* Top Header Section (Mobile) */}
-      <div className="flex flex-col items-center mt-36 z-10 w-full max-w-xs select-none relative md:hidden">
-        {/* Title: MISSION COMPLETE! */}
-        <h1 className="font-press-start text-3xl text-[#FAF6EE] text-center tracking-wide drop-shadow-[0_3px_0px_#000000] animate-expandable-glow">
-          <span className="relative inline-block">
-            M
-            {/* Cat Mascot sitting on top of M */}
-            <motion.div
-              animate={{
-                y: [-2, 2, -2],
-              }}
-              transition={{
-                duration: 2.5,
-                repeat: Infinity,
-                ease: "easeInOut",
-              }}
-              className="absolute bottom-[95%] left-1/2 -translate-x-1/2 w-20 h-20 pointer-events-none z-20"
-            >
-              <Image
-                src="/assets/mascot/png/cat-ending.png"
-                alt="Cat Mascot"
-                fill
-                sizes="80px"
-                className="object-contain image-rendering-pixelated"
-              />
-            </motion.div>
-          </span>
-          ISSIO
-          <span className="relative inline-block">
-            N
-            {/* Dino Mascot sitting on top of N */}
-            <motion.div
-              animate={{
-                y: [-2, 2, -2],
-              }}
-              transition={{
-                duration: 2.5,
-                repeat: Infinity,
-                ease: "easeInOut",
-                delay: 0.3,
-              }}
-              className="absolute bottom-[95%] left-1/2 -translate-x-1/2 w-20 h-20 pointer-events-none z-20"
-            >
-              <Image
-                src="/assets/mascot/png/dino-endingv1.png"
-                alt="Dino Mascot"
-                fill
-                sizes="80px"
-                className="object-contain image-rendering-pixelated"
-              />
-            </motion.div>
-          </span>
-          {' '}COMPLETE!
+      <div className="flex flex-col items-center mt-8 z-10 w-full max-w-xs select-none relative md:hidden">
+        {/* Mascots Row (Mobile) */}
+        <div className="flex items-end justify-center gap-3 mb-2 z-20">
+          <motion.div
+            animate={{ y: [-3, 3, -3] }}
+            transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
+            className="w-20 h-20 relative"
+          >
+            <Image
+              src="/assets/mascot/png/cat-ending.png"
+              alt="Cat Mascot"
+              fill
+              sizes="80px"
+              className="object-contain image-rendering-pixelated"
+            />
+          </motion.div>
+
+          <motion.div
+            animate={{ y: [-4, 4, -4] }}
+            transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+            className="w-28 h-28 relative"
+          >
+            <Image
+              src="/assets/awl/png/awll-page6.png"
+              alt="Waving Awll"
+              fill
+              sizes="112px"
+              className="object-contain image-rendering-pixelated"
+            />
+          </motion.div>
+
+          <motion.div
+            animate={{ y: [-3, 3, -3] }}
+            transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut", delay: 0.3 }}
+            className="w-20 h-20 relative"
+          >
+            <Image
+              src="/assets/mascot/png/dino-endingv1.png"
+              alt="Dino Mascot"
+              fill
+              sizes="80px"
+              className="object-contain image-rendering-pixelated"
+            />
+          </motion.div>
+        </div>
+
+        {/* Title */}
+        <h1 className="font-press-start text-2xl text-[#FAF6EE] text-center tracking-wide drop-shadow-[0_3px_0px_#000000] animate-expandable-glow leading-snug">
+          HAPPY BIRTHDAY
         </h1>
       </div>
 
@@ -202,7 +176,7 @@ export const EndingPage: React.FC = () => {
           </motion.div>
         </div>
 
-        {/* Title: MISSION COMPLETE! */}
+        {/* Title: HAPPY BIRTHDAY */}
         <h1 className="font-press-start text-5xl text-[#FAF6EE] text-center tracking-wide drop-shadow-[0_4px_0px_#000000] animate-expandable-glow w-full px-2">
           HAPPY BIRTHDAY
         </h1>
@@ -238,14 +212,9 @@ export const EndingPage: React.FC = () => {
           />
 
           <span className="drop-shadow-[0_1px_0px_rgba(255,255,255,0.6)]">
-            PLAY AGAIN?
+            KLIK AKU KALO MAU KE PAGE AWAL
           </span>
         </motion.button>
-
-        {/* Footer Line */}
-        <p className="font-nunito text-[10px] sm:text-[11px] text-[#ebd2ab] font-extrabold tracking-widest mt-5 text-center drop-shadow-[0_2px_4px_rgba(0,0,0,0.95)]">
-          — when the sky touches the sea —
-        </p>
       </div>
     </div>
   );

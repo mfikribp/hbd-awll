@@ -85,7 +85,7 @@ export const LandingPage: React.FC = () => {
 
   // Background music autoplay effect
   useEffect(() => {
-    const audio = new Audio('/audio/membasuh.mp3');
+    const audio = new Audio('/audio/hbdoy.mp3');
     audio.loop = true;
     audio.volume = 0;
     audio.muted = isMuted;
@@ -116,7 +116,7 @@ export const LandingPage: React.FC = () => {
                 audio.volume = isMuted ? 0 : vol;
                 if (vol >= 0.45) clearInterval(fadeIn);
               }, 80);
-            }).catch(() => {});
+            }).catch(() => { });
             document.removeEventListener('click', unlockAudio);
             document.removeEventListener('keydown', unlockAudio);
             document.removeEventListener('touchstart', unlockAudio);
@@ -131,7 +131,7 @@ export const LandingPage: React.FC = () => {
       audio.pause();
       audio.src = '';
     };
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Sync mute state with audio element
@@ -149,7 +149,7 @@ export const LandingPage: React.FC = () => {
 
   useEffect(() => {
     if (!isLoading) return;
-    const fullText = "LOADING ADVENTURE...";
+    const fullText = "BENTARRR...";
     let currentIdx = 0;
 
     const interval = setInterval(() => {

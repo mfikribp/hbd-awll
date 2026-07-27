@@ -99,7 +99,7 @@ export const Achievements: React.FC = () => {
                     >
                       {/* Bubble chat pointing to cursor */}
                       <div className="absolute bottom-full mb-1 bg-white text-black text-[7px] font-press-start font-black py-1 px-1.5 border-2 border-black rounded-lg shadow-md whitespace-nowrap z-40 select-none">
-                        <span>Tap aku!</span>
+                        <span>KLIK DULUU!</span>
                         <div className="absolute top-full left-1/2 -translate-x-1/2 w-0 h-0 border-x-4 border-x-transparent border-t-4 border-t-black" />
                         <div className="absolute top-[calc(100%-2px)] left-1/2 -translate-x-1/2 w-0 h-0 border-x-[3px] border-x-transparent border-t-[3px] border-t-white z-10" />
                       </div>
@@ -168,7 +168,7 @@ export const Achievements: React.FC = () => {
             <div className="absolute top-1/2 -left-[9px] -translate-y-1/2 w-0 h-0 border-y-[6px] border-y-transparent border-r-[6px] border-r-white pointer-events-none z-10" />
 
             <p className="font-nunito font-extrabold text-xs sm:text-sm text-retro-navy leading-normal flex items-center flex-wrap gap-1">
-              <span>heyy... klaim semua achievement yang udah kamu capai selama satu tahun kuliah</span> <Flame className="w-4 h-4 text-retro-pink fill-current inline-block animate-pulse shrink-0" />
+              <span>ACHIEVEMENTS CALON ENGINEER</span> <Flame className="w-4 h-4 text-retro-pink fill-current inline-block animate-pulse shrink-0" />
             </p>
           </div>
         </div>

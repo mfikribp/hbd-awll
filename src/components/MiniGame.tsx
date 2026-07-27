@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { useGameStore } from '../store/useGameStore';
 import { useAudio } from '../hooks/useAudio';
@@ -25,7 +25,38 @@ const BLESSINGS: BlessingComponent[] = [
 export const MiniGame: React.FC = () => {
   const { placedBlessings, placeBlessing, nextSection } = useGameStore();
   const { playSuccess, playClick, playLevelUp } = useAudio();
+  const isMuted = useGameStore((state) => state.isMuted);
   const [screenShake, setScreenShake] = React.useState(false);
+  const bgMusicRef = useRef<HTMLAudioElement | null>(null);
+
+  // Backsound: play wish.mp3 looping saat komponen mount
+  useEffect(() => {
+    const audio = new Audio('/audio/wish.mp3');
+    audio.loop = true;
+    audio.volume = 0.35;
+    bgMusicRef.current = audio;
+
+    if (!isMuted) {
+      audio.play().catch(() => {});
+    }
+
+    return () => {
+      audio.pause();
+      audio.src = '';
+      bgMusicRef.current = null;
+    };
+  }, []);
+
+  // Mute/unmute saat isMuted berubah
+  useEffect(() => {
+    const audio = bgMusicRef.current;
+    if (!audio) return;
+    if (isMuted) {
+      audio.pause();
+    } else {
+      audio.play().catch(() => {});
+    }
+  }, [isMuted]);
 
   const handleComponentClick = (id: string) => {
     if (placedBlessings.includes(id)) return;
@@ -59,7 +90,7 @@ export const MiniGame: React.FC = () => {
           BUILD THE BLESSING!
         </h2>
         <p className="font-nunito font-extrabold text-xs sm:text-sm text-gray-200">
-          Klik komponen di bawah untuk membangun tahun yang luar biasa! ({placedBlessings.length}/4)
+          klik komponen di bawah untuk membangun tahun yang luar biasa! ({placedBlessings.length}/4)
         </p>
       </div>
 
@@ -99,7 +130,7 @@ export const MiniGame: React.FC = () => {
                   ? 'bg-gray-200 border-gray-400 text-gray-400 cursor-not-allowed opacity-40 grayscale'
                   : 'bg-white hover:bg-amber-50 text-black cursor-pointer shadow-[2px_2px_0_#000]'
                   }`}
-                title={isUsed ? "Sudah ditambahkan!" : "Klik untuk menambahkan komponen ini!"}
+                title={isUsed ? "sudah ditambahkan!" : "klik untuk menambahkan komponen ini!"}
               >
                 {/* Icon box */}
                 <div className="w-12 h-12 flex items-center justify-center shrink-0">
@@ -185,7 +216,7 @@ export const MiniGame: React.FC = () => {
             <div className="absolute top-1/2 -left-[9px] -translate-y-1/2 w-0 h-0 border-y-[6px] border-y-transparent border-r-[6px] border-r-white pointer-events-none z-10" />
 
             <p className="font-nunito font-extrabold text-xs sm:text-sm text-retro-navy leading-snug flex items-center flex-wrap gap-1">
-              <span>{isCompleted ? "Semua blessing telah terpasang sempurna!" : "Klik semua komponen di atas untuk melengkapi struktur!"}</span>
+              <span>{isCompleted ? "semua blessing telah terpasang sempurna!" : "klik semua komponen di atas untuk melengkapi struktur harapan di usia yang baru!"}</span>
               <Hammer className="w-4 h-4 text-retro-navy shrink-0 animate-bounce inline-block" />
             </p>
           </div>

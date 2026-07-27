@@ -33,7 +33,7 @@ export const RetroWindow: React.FC<RetroWindowProps> = ({ title, children, class
           <span onClick={onClose} className="hover:text-red-600 font-extrabold ml-1">🗙</span>
         </div>
       </div>
-      
+
       {/* Body Content */}
       <div className="p-4 sm:p-6 flex-1 flex flex-col font-nunito font-semibold bg-[#FAF6EE]">
         {children}

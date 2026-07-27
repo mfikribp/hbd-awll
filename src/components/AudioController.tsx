@@ -6,15 +6,15 @@ import { useGameStore } from '../store/useGameStore';
 import { motion } from 'framer-motion';
 
 const AUDIO_MAP: Record<number, string> = {
-  1: '/audio/membasuh.mp3', // Landing
-  2: '/audio/slide2.mp3',     // CharacterCard (falls back to membasuh.mp3 if not exists)
-  3: '/audio/slide3.mp3',     // Achievements (falls back to membasuh.mp3 if not exists)
-  4: '/audio/slide4.mp3',     // MiniGame (falls back to membasuh.mp3 if not exists)
-  5: '/audio/system_message.mp3',     // SystemMessage (falls back to membasuh.mp3 if not exists)
-  6: '/audio/slide6.mp3',     // EndingPage (falls back to membasuh.mp3 if not exists)
+  1: '/audio/hbdoy.mp3',          // Landing
+  2: '/audio/tekniksound.mp3',    // CharacterCard
+  3: '/audio/tekniksound.mp3',    // Achievements
+  4: '/audio/wish.mp3',           // MiniGame
+  5: '/audio/system_message.mp3', // SystemMessage
+  6: '/audio/hbdoy.mp3',          // EndingPage
 };
 
-const FALLBACK_AUDIO = '/audio/membasuh.mp3';
+const FALLBACK_AUDIO = '/audio/hbdoy.mp3';
 
 export const AudioController: React.FC = () => {
   const { isMusicMuted, toggleMusicMute } = useGameStore();

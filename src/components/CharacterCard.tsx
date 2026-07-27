@@ -54,7 +54,7 @@ export const CharacterCard: React.FC = () => {
       <div className="absolute inset-0 pointer-events-none overflow-hidden z-0">
         {[
           { top: '12%', left: '8%', icon: '✨', delay: 0, duration: 3.5 },
-          { top: '25%', left: '88%', icon: '💖', delay: 0.8, duration: 4.2 },
+          { top: '25%', left: '88%', icon: '🥳', delay: 0.8, duration: 4.2 },
           { top: '70%', left: '6%', icon: '😊', delay: 1.5, duration: 3.8 },
           { top: '80%', left: '92%', icon: '💤', delay: 0.3, duration: 4.5 },
           { top: '45%', left: '4%', icon: '⭐', delay: 1.2, duration: 3.2 },
@@ -93,7 +93,7 @@ export const CharacterCard: React.FC = () => {
         }}
         className="w-full max-w-xl z-10"
       >
-        <RetroWindow title="PROFILE: AWLL" className="w-full shadow-2xl">
+        <RetroWindow title="PROFILE CARD" className="w-full shadow-2xl">
           <div className="flex flex-col md:flex-row gap-6 md:gap-8 items-center md:items-start select-none">
             {/* Left Column - Avatar Container */}
             <div className="flex flex-col items-center relative">
@@ -194,7 +194,7 @@ export const CharacterCard: React.FC = () => {
                   </span>
                   <span className="text-gray-600 font-extrabold">:</span>
                   <span className="text-retro-navy font-black tracking-wide uppercase">
-                    CIVIL ENGG
+                    CIVIL ENGINEER
                   </span>
                 </div>
               </motion.div>

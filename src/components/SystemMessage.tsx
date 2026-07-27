@@ -1,7 +1,7 @@
 'use client';
 
-import { AnimatePresence, motion } from 'framer-motion';
-import { CheckCircle, Coffee, GraduationCap, Heart, Shield, Smile, Sparkles, Terminal, Zap } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { Heart, Smile, Sparkles, Terminal } from 'lucide-react';
 import Image from 'next/image';
 import React, { useEffect, useRef, useState } from 'react';
 import { useAudio } from '../hooks/useAudio';
@@ -9,28 +9,16 @@ import { useGameStore } from '../store/useGameStore';
 import { PixelButton } from './ui/PixelButton';
 import { RetroWindow } from './ui/RetroWindow';
 
-interface BuffType {
-  text: string;
-  desc: string;
-  icon: React.ReactNode;
-}
 
-const BUFF_LIST: BuffType[] = [
-  { text: '+100 Keberuntungan', desc: 'Semua revisi gamtek auto di-ACC dosen dalam sekali coba.', icon: <Sparkles className="w-6 h-6 text-retro-gold fill-current" /> },
-  { text: 'Deadline Resistance +50%', desc: 'Kekebalan ekstra terhadap tugas dadakan di jam 11 malam.', icon: <Zap className="w-6 h-6 text-amber-500 fill-current animate-pulse" /> },
-  { text: 'Dosen Friendly Buff Activated', desc: 'Dosen mendadak ramah dan hobi ngasih nilai A.', icon: <GraduationCap className="w-6 h-6 text-retro-navy" /> },
-];
 
 export const SystemMessage: React.FC = () => {
   const { nextSection } = useGameStore();
-  const { playClick, playUnlock } = useAudio();
+  const { playClick } = useAudio();
 
   const [messages, setMessages] = useState<string[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [typingText, setTypingText] = useState('');
   const [typingComplete, setTypingComplete] = useState(false);
-  const [showBuff, setShowBuff] = useState(false);
-  const [randomBuff, setRandomBuff] = useState<BuffType>({ text: '', desc: '', icon: <Sparkles /> });
   const terminalRef = useRef<HTMLDivElement>(null);
 
   const textLines = [
@@ -39,15 +27,16 @@ export const SystemMessage: React.FC = () => {
     "[SYSTEM] Level 20 reached successfully! 🎂",
     "awll@birthday:~$ cat wishes_for_awll.txt",
     "HAPPY 20TH BIRTHDAYYY🥳🎉",
-    "semoga semua harapan yang selalu kamu sebut di dalam do'a mu perlahan tercapai sedikit demi sedikit, jangan merasa cape sama proses yang kamu rasa stagnan, karena stagnan juga termasuk ke dalam proses ke stabilan yang artinya engga turun tapi engga naik juga, teruslah berproses, percayakan semua sama do'a dan usaha kamu buat wujudin apa yang kamu mau baik itu untuk diri sendiri ataupun keluarga",
+    "tetaplah menjadi orang yang selama ini bikin aku penasaran dan tertarik buat mengenal kamu lebih jauh. tetaplah menjadi pribadi yang hangat, baik, dan selalu membawa kenyamanan buat orang-orang di sekitarmu",
+    "semoga di usia yang baru ini kamu selalu diberi kesehatan dan kebahagiaan, serta langkah yang semakin mendekatkanmu pada semua impian yang selama ini kamu panjatkan dalam doa. semoga segala hal baik selalu ada buat kamu, dan semoga setiap perjalanan yang kamu lalui nantinya dipenuhi cerita-cerita yang indah",
     "...",
-    "sorry banget udh runtuhin pertemanan kita sebelumnya yg udah berjalan sejak ombus ft, aku kira orang tahan banting yg bisa kuliah sambil kerja dan juga ngekost itu cuma cerita motivator belaka, tapi ternyata beneran ada. makanya aku berani buat bilang apa yang aku rasain ke kmu sebelumnya, karena aku ngeliat masa depan di kamu, tapi ternyata aku bukan orng yg beruntung...jadi aku juga punya pikiran bahwa 'mau segimanapun aku berusaha agaknya ga akan ada valuenya deh di dia', bukan sebagai tanda bendera putih, melainkan bentuk rasionalitas yg aku punya buat diri sendiri",
-    "makasih banget atas kedewasaan yang kamu miliki, aku jadi bisa terlepas secara perlahan dan ga terlarut larut dengan obsesi dari tujuan aku ke kmu sebelumnya",
+    "aku mau minta maaf, maaff bangettt udah chat kamu lagi",
+    "aku juga mau bilang makasih sama kamu, karena kamu ngasih jawaban yang jelas. MAKAAASIIHHH BANGEETT",
     "TETAP SEMANGAT KULIAH DAN KERJANYA, JANGAN LUPA MAKAN, JANGAN LUPA BUAT ISTIRAHAT, SATU LAGI JANGAN LUPA BUAT OLAHRAGA!",
-    "sorry and thnk you, i just wanna say 'HAPPY BIRTHDAY AWLL!!!'",
+    "sorry and thnk you, i just wanna say 'HAPPY BIRTHDAY AWLL'",
     "awll@birthday:~$ execute proud-mode.sh --always",
     "// always proud of you, awll! 💚",
-    "[SYSTEM] Birthday messages loaded! Injecting active birthday buffs..."
+    "[SYSTEM] Birthday messages loaded successfully!"
   ];
 
   // Typewriter logic line-by-line
@@ -73,18 +62,11 @@ export const SystemMessage: React.FC = () => {
             setTypingText('');
           }, 800);
         }
-      }, 30);
+      }, 55);
 
       return () => clearInterval(interval);
     } else {
       setTypingComplete(true);
-
-      const chosenBuff = BUFF_LIST[Math.floor(Math.random() * BUFF_LIST.length)];
-      setRandomBuff(chosenBuff);
-      setTimeout(() => {
-        setShowBuff(true);
-        playUnlock();
-      }, 800);
     }
   }, [currentIndex]);
 
@@ -295,40 +277,7 @@ export const SystemMessage: React.FC = () => {
             </div>
           </div>
 
-          {/* Easter Egg Birthday Buff Alert Popup */}
-          <AnimatePresence>
-            {showBuff && (
-              <motion.div
-                initial={{ scale: 0.8, opacity: 0, y: 15 }}
-                animate={{ scale: 1, opacity: 1, y: 0 }}
-                exit={{ scale: 0.8, opacity: 0 }}
-                className="mt-6 p-4 sm:p-5 border-4 border-retro-gold bg-[#0C101B] text-white shadow-[6px_6px_0px_#000000] relative overflow-visible flex items-center gap-4 select-none"
-              >
-                {/* Ribbon style Top-Right Badge */}
-                <div className="absolute -top-3.5 right-4 bg-retro-pink text-white border-2 border-black font-press-start text-[7px] sm:text-[8px] px-2.5 py-1 uppercase tracking-widest shadow-[2px_2px_0px_#000] font-bold">
-                  BUFF ACTIVE
-                </div>
 
-                {/* Golden Animated Icon Container */}
-                <div className="p-3 border-4 border-black bg-retro-gold text-black shrink-0 animate-bounce relative shadow-[2px_2px_0px_#000]">
-                  {randomBuff.icon}
-                </div>
-
-                <div className="flex-1 font-nunito">
-                  <h3 className="font-press-start text-[8px] sm:text-[9.5px] text-retro-skyblue mb-2 leading-relaxed flex items-center gap-1.5 font-bold tracking-wide">
-                    <span>EASTER EGG BUFF ACTIVATED!</span>
-                    <Sparkles className="w-3.5 h-3.5 text-retro-gold fill-current animate-pulse" />
-                  </h3>
-                  <p className="font-press-start text-xs sm:text-sm text-retro-gold mb-1.5 leading-snug drop-shadow-[0_1.5px_0_#000]">
-                    {randomBuff.text}
-                  </p>
-                  <p className="text-[11px] sm:text-xs font-semibold text-gray-300 leading-relaxed">
-                    {randomBuff.desc}
-                  </p>
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
 
           {/* Navigation Button */}
           {typingComplete && (

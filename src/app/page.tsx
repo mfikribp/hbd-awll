@@ -27,7 +27,7 @@ export default function Home() {
   if (!mounted) {
     return (
       <div className="min-h-screen w-full flex justify-center items-center bg-[#0B132B] text-retro-gold font-press-start text-xs select-none">
-        <span className="animate-pulse">LOADING ADVENTURE...</span>
+        <span className="animate-pulse">BENTAARRR...</span>
       </div>
     );
   }
