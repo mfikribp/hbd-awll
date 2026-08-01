@@ -4,7 +4,6 @@ import React, { useEffect, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useGameStore } from '../store/useGameStore';
 import AudioController from '../components/AudioController';
-import GreetingCard from '../components/GreetingCard';
 
 // Lazy load components safely
 import LandingPage from '../components/LandingPage';
@@ -54,9 +53,6 @@ export default function Home() {
 
   return (
     <main className="relative min-h-screen w-full overflow-x-hidden select-none">
-      {/* Greeting card initial audio trigger for mobile */}
-      <GreetingCard />
-
       {/* Global floating speaker widget */}
       <AudioController />
 

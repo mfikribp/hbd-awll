@@ -1,9 +1,9 @@
 'use client';
 
 import React, { useEffect, useRef, useState } from 'react';
-import { Volume2, VolumeX } from 'lucide-react';
 import { useGameStore } from '../store/useGameStore';
-import { unlockAudioContext } from '../hooks/useAudio';
+import { Volume2, VolumeX, Music } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 
 const AUDIO_MAP: Record<number, string> = {
   1: '/audio/hbdoy.mp3',          // Landing
@@ -18,29 +18,37 @@ const FALLBACK_AUDIO = '/audio/hbdoy.mp3';
 const TARGET_VOLUME = 0.35;
 
 export const AudioController: React.FC = () => {
-  const { isMusicMuted, toggleMusicMute, hasStartedAudio, setHasStartedAudio } = useGameStore();
+  const { isMusicMuted, toggleMusicMute } = useGameStore();
   const currentSection = useGameStore((state) => state.currentSection);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const audioCtxRef = useRef<AudioContext | null>(null);
   const unlockedRef = useRef(false);
   const [isPlaying, setIsPlaying] = useState(false);
 
-  // Helper function to force audio play synchronously on user interaction
-  const triggerAudioPlay = () => {
+  // Synchronous audio unlocker on user tap
+  const unlockAndPlayAudio = () => {
     unlockedRef.current = true;
-    unlockAudioContext();
-    if (!hasStartedAudio) {
-      setHasStartedAudio(true);
-    }
-    const a = audioRef.current;
-    if (a && a.paused && !isMusicMuted) {
-      a.play()
+
+    // 1. Resume AudioContext
+    try {
+      if (audioCtxRef.current && audioCtxRef.current.state === 'suspended') {
+        audioCtxRef.current.resume().catch(() => {});
+      }
+    } catch (_) {}
+
+    // 2. Play HTML5 Audio synchronously
+    const audio = audioRef.current;
+    if (audio) {
+      if (isMusicMuted) {
+        toggleMusicMute(); // unmute if currently muted
+      }
+      audio.play()
         .then(() => setIsPlaying(true))
         .catch(() => {});
     }
   };
 
-  // --- Initial setup (runs once on mount) ---
+  // Initial setup (runs once on mount)
   useEffect(() => {
     const initialTrack = AUDIO_MAP[currentSection] ?? FALLBACK_AUDIO;
     const audio = new Audio(initialTrack);
@@ -48,19 +56,15 @@ export const AudioController: React.FC = () => {
     audio.volume = TARGET_VOLUME;
     audioRef.current = audio;
 
-    // Sync React state with native events
-    const onPlay  = () => setIsPlaying(true);
+    const onPlay = () => setIsPlaying(true);
     const onPause = () => setIsPlaying(false);
     audio.addEventListener('play', onPlay);
     audio.addEventListener('pause', onPause);
 
-    // ---- Unlock helper ----
     const unlock = () => {
       if (unlockedRef.current) return;
       unlockedRef.current = true;
-      setHasStartedAudio(true);
       removeGestureListeners();
-      unlockAudioContext();
 
       if (isMusicMuted) return;
 
@@ -69,6 +73,10 @@ export const AudioController: React.FC = () => {
         a.play()
           .then(() => setIsPlaying(true))
           .catch(() => {});
+      }
+
+      if (audioCtxRef.current && audioCtxRef.current.state === 'suspended') {
+        audioCtxRef.current.resume().catch(() => {});
       }
     };
 
@@ -91,7 +99,6 @@ export const AudioController: React.FC = () => {
       audio.play()
         .then(() => {
           unlockedRef.current = true;
-          setHasStartedAudio(true);
           setIsPlaying(true);
         })
         .catch(() => {
@@ -115,14 +122,7 @@ export const AudioController: React.FC = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Sync with store hasStartedAudio
-  useEffect(() => {
-    if (hasStartedAudio && !unlockedRef.current) {
-      triggerAudioPlay();
-    }
-  }, [hasStartedAudio]);
-
-  // --- Track switching when section changes ---
+  // Track switching when section changes
   useEffect(() => {
     const audio = audioRef.current;
     if (!audio) return;
@@ -135,7 +135,7 @@ export const AudioController: React.FC = () => {
     const STEPS = 10;
     const FADE_MS = 300;
     let fadeOut: ReturnType<typeof setInterval>;
-    let fadeIn:  ReturnType<typeof setInterval>;
+    let fadeIn: ReturnType<typeof setInterval>;
     const startVol = audio.volume;
 
     const switchTrack = () => {
@@ -170,10 +170,10 @@ export const AudioController: React.FC = () => {
     }
 
     return () => { clearInterval(fadeOut); clearInterval(fadeIn); };
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentSection]);
 
-  // --- Sync mute toggle ---
+  // Sync mute toggle
   useEffect(() => {
     const audio = audioRef.current;
     if (!audio) return;
@@ -181,36 +181,69 @@ export const AudioController: React.FC = () => {
       audio.pause();
       setIsPlaying(false);
     } else {
-      if (audio.paused && (unlockedRef.current || hasStartedAudio)) {
+      if (audio.paused) {
         audio.play()
           .then(() => setIsPlaying(true))
           .catch(() => {});
       }
     }
-  }, [isMusicMuted, hasStartedAudio]);
+  }, [isMusicMuted]);
 
   const handleToggleClick = (e: React.MouseEvent) => {
     e.stopPropagation();
-    triggerAudioPlay();
-    toggleMusicMute();
+    if (isMusicMuted || !isPlaying) {
+      unlockAndPlayAudio();
+    } else {
+      toggleMusicMute();
+    }
   };
 
+  const showTapPrompt = !isPlaying || isMusicMuted;
+
   return (
-    <div className="fixed top-4 right-4 z-[999] select-none">
-      <button
-        onClick={handleToggleClick}
-        title={isMusicMuted ? "Turn Music On" : "Turn Music Off"}
-        className="flex items-center gap-2 px-3 py-2 bg-[#1C2541]/90 hover:bg-[#1C2541] border-2 border-[#E0A96D] rounded-full text-[#E0A96D] shadow-[2px_2px_0px_#000000] active:translate-y-0.5 transition-all cursor-pointer group"
-      >
-        {isMusicMuted ? (
-          <VolumeX className="w-5 h-5 text-red-400 group-hover:scale-110 transition-transform" />
-        ) : (
-          <Volume2 className="w-5 h-5 text-green-400 animate-pulse group-hover:scale-110 transition-transform" />
+    <div className="fixed top-4 right-4 z-[999] select-none flex items-center gap-2">
+      {/* Prominent Bouncing Badge Prompt when audio hasn't started or is muted */}
+      <AnimatePresence>
+        {showTapPrompt && (
+          <motion.div
+            initial={{ opacity: 0, x: 10, scale: 0.9 }}
+            animate={{ opacity: 1, x: 0, scale: 1 }}
+            exit={{ opacity: 0, x: 10, scale: 0.9 }}
+            transition={{ duration: 0.3 }}
+            className="flex items-center gap-1 bg-[#FFD700] text-black px-2.5 py-1.5 rounded-lg font-press-start text-[8px] sm:text-[9px] font-extrabold border-2 border-black shadow-[2px_2px_0px_#000000] animate-bounce"
+          >
+            <span>TAP ICON MUSIK 🎵</span>
+          </motion.div>
         )}
-        <span className="font-press-start text-[9px] uppercase hidden sm:inline">
-          {isMusicMuted ? "MUTED" : isPlaying ? "MUSIC ON" : "TAP FOR MUSIC"}
-        </span>
-      </button>
+      </AnimatePresence>
+
+      {/* Top-Right Music Icon Button */}
+      <motion.button
+        onClick={handleToggleClick}
+        whileHover={{ scale: 1.1 }}
+        whileTap={{ scale: 0.9 }}
+        title={showTapPrompt ? "Klik untuk memutar audio" : "Klik untuk mematikan musik"}
+        className={`relative flex items-center justify-center p-3 rounded-full border-3 border-black shadow-[3px_3px_0px_#000000] active:translate-y-0.5 transition-all cursor-pointer ${
+          showTapPrompt
+            ? 'bg-gradient-to-r from-[#FF9F1C] to-[#FFBF69] text-black ring-4 ring-[#FFD700]/50 animate-pulse'
+            : 'bg-[#1C2541] text-[#FFD700] hover:bg-[#2A385B]'
+        }`}
+      >
+        {/* Glow Ring Effect when waiting for tap */}
+        {showTapPrompt && (
+          <span className="absolute -inset-1 rounded-full bg-[#FFD700] opacity-75 blur-sm animate-ping pointer-events-none" />
+        )}
+
+        {isMusicMuted ? (
+          <VolumeX className="w-6 h-6 text-red-500 relative z-10" />
+        ) : isPlaying ? (
+          <div className="relative z-10 flex items-center gap-1">
+            <Volume2 className="w-6 h-6 text-green-400 animate-pulse" />
+          </div>
+        ) : (
+          <Music className="w-6 h-6 text-black animate-bounce relative z-10" />
+        )}
+      </motion.button>
     </div>
   );
 };
