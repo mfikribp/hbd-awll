@@ -32,9 +32,9 @@ export const AudioController: React.FC = () => {
     // 1. Resume AudioContext
     try {
       if (audioCtxRef.current && audioCtxRef.current.state === 'suspended') {
-        audioCtxRef.current.resume().catch(() => {});
+        audioCtxRef.current.resume().catch(() => { });
       }
-    } catch (_) {}
+    } catch (_) { }
 
     // 2. Play HTML5 Audio synchronously
     const audio = audioRef.current;
@@ -44,7 +44,7 @@ export const AudioController: React.FC = () => {
       }
       audio.play()
         .then(() => setIsPlaying(true))
-        .catch(() => {});
+        .catch(() => { });
     }
   };
 
@@ -72,11 +72,11 @@ export const AudioController: React.FC = () => {
       if (a && a.paused) {
         a.play()
           .then(() => setIsPlaying(true))
-          .catch(() => {});
+          .catch(() => { });
       }
 
       if (audioCtxRef.current && audioCtxRef.current.state === 'suspended') {
-        audioCtxRef.current.resume().catch(() => {});
+        audioCtxRef.current.resume().catch(() => { });
       }
     };
 
@@ -93,7 +93,7 @@ export const AudioController: React.FC = () => {
       if (AudioContextClass) {
         audioCtxRef.current = new AudioContextClass();
       }
-    } catch (_) {}
+    } catch (_) { }
 
     if (!isMusicMuted) {
       audio.play()
@@ -115,7 +115,7 @@ export const AudioController: React.FC = () => {
       audio.pause();
       audioRef.current = null;
       if (audioCtxRef.current) {
-        audioCtxRef.current.close().catch(() => {});
+        audioCtxRef.current.close().catch(() => { });
         audioCtxRef.current = null;
       }
     };
@@ -152,7 +152,7 @@ export const AudioController: React.FC = () => {
               if (step >= STEPS) { clearInterval(fadeIn); audio.volume = TARGET_VOLUME; }
             }, FADE_MS / STEPS);
           })
-          .catch(() => {});
+          .catch(() => { });
       } else {
         audio.volume = TARGET_VOLUME;
       }
@@ -184,7 +184,7 @@ export const AudioController: React.FC = () => {
       if (audio.paused) {
         audio.play()
           .then(() => setIsPlaying(true))
-          .catch(() => {});
+          .catch(() => { });
       }
     }
   }, [isMusicMuted]);
@@ -212,7 +212,7 @@ export const AudioController: React.FC = () => {
             transition={{ duration: 0.3 }}
             className="flex items-center gap-1 bg-[#FFD700] text-black px-2.5 py-1.5 rounded-lg font-press-start text-[8px] sm:text-[9px] font-extrabold border-2 border-black shadow-[2px_2px_0px_#000000] animate-bounce"
           >
-            <span>TAP ICON MUSIK 🎵</span>
+            <span>KLIK DULU BIAR ADA AUDIONYA</span>
           </motion.div>
         )}
       </AnimatePresence>
@@ -223,11 +223,10 @@ export const AudioController: React.FC = () => {
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.9 }}
         title={showTapPrompt ? "Klik untuk memutar audio" : "Klik untuk mematikan musik"}
-        className={`relative flex items-center justify-center p-3 rounded-full border-3 border-black shadow-[3px_3px_0px_#000000] active:translate-y-0.5 transition-all cursor-pointer ${
-          showTapPrompt
+        className={`relative flex items-center justify-center p-3 rounded-full border-3 border-black shadow-[3px_3px_0px_#000000] active:translate-y-0.5 transition-all cursor-pointer ${showTapPrompt
             ? 'bg-gradient-to-r from-[#FF9F1C] to-[#FFBF69] text-black ring-4 ring-[#FFD700]/50 animate-pulse'
             : 'bg-[#1C2541] text-[#FFD700] hover:bg-[#2A385B]'
-        }`}
+          }`}
       >
         {/* Glow Ring Effect when waiting for tap */}
         {showTapPrompt && (
