@@ -28,6 +28,14 @@ function getSharedAudioContext(): AudioContext | null {
   return sharedCtx;
 }
 
+export function unlockAudioContext(): AudioContext | null {
+  const ctx = getSharedAudioContext();
+  if (ctx && ctx.state === 'suspended') {
+    ctx.resume().catch(() => {});
+  }
+  return ctx;
+}
+
 export const useAudio = () => {
   const isMuted = useGameStore((state) => state.isMuted);
 

@@ -9,6 +9,8 @@ interface GameState {
   isMuted: boolean;
   isMusicMuted: boolean;
   gameCompleted: boolean;
+  hasStartedAudio: boolean;
+  setHasStartedAudio: (started: boolean) => void;
   nextSection: () => void;
   prevSection: () => void;
   goToSection: (section: number) => void;
@@ -30,7 +32,9 @@ export const useGameStore = create<GameState>((set) => ({
   isMuted: false,
   isMusicMuted: false,
   gameCompleted: false,
+  hasStartedAudio: false,
 
+  setHasStartedAudio: (started: boolean) => set({ hasStartedAudio: started }),
   nextSection: () => set((state) => ({ currentSection: Math.min(state.currentSection + 1, 6) })),
   prevSection: () => set((state) => ({ currentSection: Math.max(state.currentSection - 1, 1) })),
   goToSection: (section: number) => set({ currentSection: section }),
@@ -67,5 +71,6 @@ export const useGameStore = create<GameState>((set) => ({
     isMuted: false,
     isMusicMuted: false,
     gameCompleted: false,
+    hasStartedAudio: false,
   }),
 }));

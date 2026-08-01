@@ -1,7 +1,9 @@
 'use client';
 
 import React, { useEffect, useRef, useState } from 'react';
+import { Volume2, VolumeX } from 'lucide-react';
 import { useGameStore } from '../store/useGameStore';
+import { unlockAudioContext } from '../hooks/useAudio';
 
 const AUDIO_MAP: Record<number, string> = {
   1: '/audio/hbdoy.mp3',          // Landing
@@ -15,24 +17,28 @@ const AUDIO_MAP: Record<number, string> = {
 const FALLBACK_AUDIO = '/audio/hbdoy.mp3';
 const TARGET_VOLUME = 0.35;
 
-/**
- * AudioController — global, persistent audio manager.
- *
- * Strategy for mobile autoplay:
- * 1. Try to play immediately (works on desktop / some Android).
- * 2. If blocked, use AudioContext.resume() trick: create a silent AudioContext
- *    and resume it on the first user gesture to unlock the audio engine globally,
- *    then start the HTMLAudioElement. This is the ONLY reliable method on iOS Safari.
- * 3. Attach listeners to the earliest possible gestures (touchstart, pointerdown, click)
- *    so audio starts on the very first tap — before any button click fires.
- */
 export const AudioController: React.FC = () => {
-  const { isMusicMuted, toggleMusicMute } = useGameStore();
+  const { isMusicMuted, toggleMusicMute, hasStartedAudio, setHasStartedAudio } = useGameStore();
   const currentSection = useGameStore((state) => state.currentSection);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const audioCtxRef = useRef<AudioContext | null>(null);
   const unlockedRef = useRef(false);
   const [isPlaying, setIsPlaying] = useState(false);
+
+  // Helper function to force audio play synchronously on user interaction
+  const triggerAudioPlay = () => {
+    unlockedRef.current = true;
+    unlockAudioContext();
+    if (!hasStartedAudio) {
+      setHasStartedAudio(true);
+    }
+    const a = audioRef.current;
+    if (a && a.paused && !isMusicMuted) {
+      a.play()
+        .then(() => setIsPlaying(true))
+        .catch(() => {});
+    }
+  };
 
   // --- Initial setup (runs once on mount) ---
   useEffect(() => {
@@ -49,33 +55,23 @@ export const AudioController: React.FC = () => {
     audio.addEventListener('pause', onPause);
 
     // ---- Unlock helper ----
-    // Called on the FIRST user interaction.
-    // AudioContext.resume() lifts the browser's autoplay restriction globally.
     const unlock = () => {
       if (unlockedRef.current) return;
       unlockedRef.current = true;
+      setHasStartedAudio(true);
       removeGestureListeners();
+      unlockAudioContext();
 
-      if (isMusicMuted) return; // user muted before interaction — respect it
+      if (isMusicMuted) return;
 
-      // Resume AudioContext first (iOS requirement)
-      const tryPlay = () => {
-        const a = audioRef.current;
-        if (!a || !a.paused) return;
+      const a = audioRef.current;
+      if (a && a.paused) {
         a.play()
           .then(() => setIsPlaying(true))
           .catch(() => {});
-      };
-
-      if (audioCtxRef.current && audioCtxRef.current.state === 'suspended') {
-        audioCtxRef.current.resume().then(tryPlay).catch(tryPlay);
-      } else {
-        tryPlay();
       }
     };
 
-    // Listen on the CAPTURE phase with the earliest events so we fire before any
-    // other handler (critical for iOS where the gesture must be in the same call stack).
     const gestureEvents = ['touchstart', 'pointerdown', 'click', 'keydown'] as const;
     const addGestureListeners = () => {
       gestureEvents.forEach(evt => document.addEventListener(evt, unlock, { capture: true, once: true, passive: true }));
@@ -84,8 +80,6 @@ export const AudioController: React.FC = () => {
       gestureEvents.forEach(evt => document.removeEventListener(evt, unlock, { capture: true }));
     };
 
-    // Create a suspended AudioContext early — its existence alone signals to the
-    // browser that we intend to play audio, priming the unlock mechanism.
     try {
       const AudioContextClass = window.AudioContext || (window as typeof window & { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
       if (AudioContextClass) {
@@ -93,15 +87,14 @@ export const AudioController: React.FC = () => {
       }
     } catch (_) {}
 
-    // Try immediate autoplay first (works on desktop / non-strict Android)
     if (!isMusicMuted) {
       audio.play()
         .then(() => {
           unlockedRef.current = true;
+          setHasStartedAudio(true);
           setIsPlaying(true);
         })
         .catch(() => {
-          // Autoplay blocked — wait for first gesture
           addGestureListeners();
         });
     } else {
@@ -122,6 +115,13 @@ export const AudioController: React.FC = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // Sync with store hasStartedAudio
+  useEffect(() => {
+    if (hasStartedAudio && !unlockedRef.current) {
+      triggerAudioPlay();
+    }
+  }, [hasStartedAudio]);
+
   // --- Track switching when section changes ---
   useEffect(() => {
     const audio = audioRef.current;
@@ -129,7 +129,7 @@ export const AudioController: React.FC = () => {
 
     const targetTrack = AUDIO_MAP[currentSection] ?? FALLBACK_AUDIO;
     const currentPath = audio.src ? new URL(audio.src, window.location.href).pathname : '';
-    if (currentPath === targetTrack) return; // same track — don't restart
+    if (currentPath === targetTrack) return;
 
     const wasPlaying = !audio.paused;
     const STEPS = 10;
@@ -181,16 +181,38 @@ export const AudioController: React.FC = () => {
       audio.pause();
       setIsPlaying(false);
     } else {
-      // If already unlocked (user interacted before), resume immediately
-      if (audio.paused) {
+      if (audio.paused && (unlockedRef.current || hasStartedAudio)) {
         audio.play()
           .then(() => setIsPlaying(true))
           .catch(() => {});
       }
     }
-  }, [isMusicMuted]);
+  }, [isMusicMuted, hasStartedAudio]);
 
-  return null;
+  const handleToggleClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    triggerAudioPlay();
+    toggleMusicMute();
+  };
+
+  return (
+    <div className="fixed top-4 right-4 z-[999] select-none">
+      <button
+        onClick={handleToggleClick}
+        title={isMusicMuted ? "Turn Music On" : "Turn Music Off"}
+        className="flex items-center gap-2 px-3 py-2 bg-[#1C2541]/90 hover:bg-[#1C2541] border-2 border-[#E0A96D] rounded-full text-[#E0A96D] shadow-[2px_2px_0px_#000000] active:translate-y-0.5 transition-all cursor-pointer group"
+      >
+        {isMusicMuted ? (
+          <VolumeX className="w-5 h-5 text-red-400 group-hover:scale-110 transition-transform" />
+        ) : (
+          <Volume2 className="w-5 h-5 text-green-400 animate-pulse group-hover:scale-110 transition-transform" />
+        )}
+        <span className="font-press-start text-[9px] uppercase hidden sm:inline">
+          {isMusicMuted ? "MUTED" : isPlaying ? "MUSIC ON" : "TAP FOR MUSIC"}
+        </span>
+      </button>
+    </div>
+  );
 };
 
 export default AudioController;
