@@ -258,7 +258,7 @@ export const Achievements: React.FC<AchievementsProps> = ({
     if (vid) {
       vid.currentTime = 0;
       setActiveVideo(card.id);
-      vid.play().catch(() => {});
+      vid.play().catch(() => { });
     }
 
     // Dino jump
@@ -319,12 +319,36 @@ export const Achievements: React.FC<AchievementsProps> = ({
         variants={reduceMotion ? undefined : modalVariants}
         initial={reduceMotion ? false : 'hidden'}
         animate="visible"
-        className="w-full max-w-2xl bg-[#F4EAD4] border-4 border-black p-4 sm:p-6 my-4 pixel-border text-black select-none z-10 flex flex-col gap-5"
+        className="w-full max-w-2xl bg-[#F4EAD4] border-4 border-black p-4 sm:p-6 my-4 pixel-border text-black select-none z-10 flex flex-col gap-5 relative"
       >
-        {/* Header */}
-        <h2 className="font-press-start text-xs sm:text-sm text-center text-retro-navy tracking-tight leading-snug border-b-4 border-black pb-3">
-          ACHIEVEMENT UNLOCKED
-        </h2>
+        {/* Animated Mascot Cat Sitting on Top-Left of the Container Frame */}
+        <div className="absolute -top-[105px] left-4 w-36 h-36 z-20 pointer-events-none select-none">
+          <img
+            src="/assets/mascot/gif/cat.gif"
+            alt="Mascot Cat Sitting"
+            className="w-full h-full object-contain"
+          />
+        </div>
+
+        {/* Header with Progress Bar */}
+        <div className="flex flex-col gap-2.5 border-b-4 border-black pb-3">
+          <h2 className="font-press-start text-xs sm:text-sm text-center text-retro-navy tracking-tight leading-snug">
+            ACHIEVEMENT UNLOCKED
+          </h2>
+          <div className="flex items-center justify-between gap-3 px-1">
+            <span className="font-press-start text-[8px] sm:text-[9px] text-black shrink-0">
+              PROGRESS: {unlockedAchievements.length} / 4
+            </span>
+            <div className="flex-1 h-3.5 bg-black/20 border-2 border-black rounded-md overflow-hidden relative shadow-inner">
+              <motion.div
+                className="h-full bg-gradient-to-r from-[#FFD700] via-[#FFA500] to-[#FFD700]"
+                initial={{ width: '0%' }}
+                animate={{ width: `${(unlockedAchievements.length / 4) * 100}%` }}
+                transition={{ duration: 0.5, ease: 'easeOut' }}
+              />
+            </div>
+          </div>
+        </div>
 
         {/* ── Cards grid (staggered entrance) ── */}
         <motion.div
@@ -348,70 +372,96 @@ export const Achievements: React.FC<AchievementsProps> = ({
                 }
                 whileTap={!isUnlocked && !reduceMotion ? { scale: 0.94 } : {}}
                 onClick={(e) => handleCardClick(e, card)}
-                className={`relative border-4 border-black pixel-border cursor-pointer select-none flex flex-col items-center text-center justify-between min-h-[140px] overflow-visible transition-shadow duration-200 ${
-                  isUnlocked
-                    ? 'bg-gray-300 opacity-70 cursor-default'
+                className={`relative border-4 border-black pixel-border cursor-pointer select-none flex flex-col items-center text-center justify-between min-h-[145px] overflow-visible transition-all duration-200 ${isUnlocked
+                    ? 'bg-gradient-to-b from-amber-50 to-emerald-100 border-emerald-600 shadow-md'
                     : `${card.colorClass} shadow-lg ${card.glowClass}`
-                }`}
+                  }`}
                 style={{ padding: '14px 10px 10px' }}
               >
-                {/* Shimmer sweep (locked cards only) */}
-                {!isUnlocked && !reduceMotion && (
-                  <motion.div
-                    className="absolute inset-0 bg-gradient-to-r from-transparent via-white/45 to-transparent -skew-x-12 pointer-events-none z-10"
-                    animate={{ x: ['-120%', '120%'] }}
-                    transition={{
-                      duration: 2.4,
-                      repeat: Infinity,
-                      repeatDelay: 1.8,
-                      ease: 'easeInOut',
-                    }}
-                  />
-                )}
-
-                {/* WebM overlay — clipped to card */}
-                <div className="absolute inset-0 overflow-hidden pointer-events-none z-20">
-                  <video
-                    ref={(el) => {
-                      videoRefs.current[card.id] = el;
-                    }}
-                    src="/assets/element/canvas-animation-1778001503561.webm"
-                    preload="auto"
-                    muted
-                    playsInline
-                    onEnded={() => setActiveVideo(null)}
-                    className="absolute inset-0 w-full h-full object-cover"
-                    style={{
-                      display: activeVideo === card.id ? 'block' : 'none',
-                    }}
-                  />
-                </div>
-
-                {/* "KLIK DULUU!" guide (first card only) */}
-                {card.id === 'struktur' && !isUnlocked && (
-                  <div className="absolute inset-0 flex justify-center items-center pointer-events-none z-30 translate-x-5 translate-y-5">
-                    <motion.div
-                      animate={reduceMotion ? {} : { y: [-4, 4, -4] }}
-                      transition={{
-                        duration: 0.8,
-                        repeat: Infinity,
-                        ease: 'easeInOut',
-                      }}
-                      className="relative flex flex-col items-center select-none"
-                    >
-                      <div className="absolute bottom-full mb-1 bg-white text-black text-[7px] font-press-start font-black py-1 px-1.5 border-2 border-black rounded-lg shadow-md whitespace-nowrap z-40">
-                        <span>KLIK DULUU!</span>
-                        <div className="absolute top-full left-1/2 -translate-x-1/2 w-0 h-0 border-x-4 border-x-transparent border-t-4 border-t-black" />
-                        <div className="absolute top-[calc(100%-2px)] left-1/2 -translate-x-1/2 w-0 h-0 border-x-[3px] border-x-transparent border-t-[3px] border-t-white z-10" />
-                      </div>
-                      <img
-                        src="/assets/element/kursor.png?v=3"
-                        alt="Pointer"
-                        className="w-10 h-10 object-contain image-rendering-pixelated drop-shadow-[2.5px_2.5px_0px_#000000]"
-                      />
-                    </motion.div>
+                {/* Golden Badge Checkmark when unlocked */}
+                {isUnlocked && (
+                  <div className="absolute -top-2 -right-2 bg-emerald-500 text-white rounded-full p-1 border-2 border-black shadow-[1.5px_1.5px_0px_#000] z-30">
+                    <ShieldCheck className="w-3.5 h-3.5 text-white" />
                   </div>
                 )}
+
+                {/* Shimmer sweep (locked cards only) */}
+                <AnimatePresence>
+                  {!isUnlocked && !reduceMotion && (
+                    <motion.div
+                      key="shimmer"
+                      initial={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      className="absolute inset-0 bg-gradient-to-r from-transparent via-white/45 to-transparent -skew-x-12 pointer-events-none z-10"
+                      animate={{ x: ['-120%', '120%'] }}
+                      transition={{
+                        x: {
+                          duration: 2.4,
+                          repeat: Infinity,
+                          repeatDelay: 1.8,
+                          ease: 'easeInOut',
+                        },
+                        opacity: { duration: 0.3 },
+                      }}
+                    />
+                  )}
+                </AnimatePresence>
+
+                {/* WebM overlay — smoothly faded in and out */}
+                <AnimatePresence>
+                  {activeVideo === card.id && (
+                    <motion.div
+                      key={`video-${card.id}`}
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      transition={{ duration: 0.35, ease: 'easeOut' }}
+                      className="absolute inset-0 overflow-hidden pointer-events-none z-20"
+                    >
+                      <video
+                        ref={(el) => {
+                          videoRefs.current[card.id] = el;
+                        }}
+                        src="/assets/element/canvas-animation-1778001503561.webm"
+                        preload="auto"
+                        muted
+                        playsInline
+                        autoPlay
+                        onEnded={() => setActiveVideo(null)}
+                        className="absolute inset-0 w-full h-full object-cover"
+                      />
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+
+                {/* "KLIK DULUU!" guide pointer (enlarged & shifted to the left) */}
+                <AnimatePresence>
+                  {card.id === 'struktur' && !isUnlocked && (
+                    <motion.div
+                      key="guide-pointer"
+                      initial={{ opacity: 0, scale: 0.8 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      exit={{ opacity: 0, scale: 0.8 }}
+                      transition={{ duration: 0.3 }}
+                      className="absolute -top-5 -left-2 pointer-events-none z-30 flex flex-col items-start"
+                    >
+                      <motion.div
+                        animate={reduceMotion ? {} : { y: [-3, 3, -3], scale: [1, 1.05, 1] }}
+                        transition={{ duration: 0.9, repeat: Infinity, ease: 'easeInOut' }}
+                        className="flex flex-col items-start"
+                      >
+                        <div className="bg-[#FFD700] text-black text-[7.5px] font-press-start font-black py-1 px-1.5 border-2 border-black rounded-md shadow-[1.5px_1.5px_0px_#000] whitespace-nowrap">
+                          <span>KLIK DULUU!</span>
+                        </div>
+                        <img
+                          src="/assets/element/kursor.png?v=3"
+                          alt="Pointer"
+                          className="w-11 h-11 object-contain drop-shadow-[2.5px_2.5px_0px_#000] -mt-1.5 -ml-1"
+                        />
+                      </motion.div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
 
                 {/* XP particles */}
                 <AnimatePresence>
@@ -475,23 +525,22 @@ export const Achievements: React.FC<AchievementsProps> = ({
                 </div>
 
                 {/* Title */}
-                <h3 className="font-nunito font-extrabold text-[11px] sm:text-xs leading-tight mb-2 flex-1 flex items-center">
+                <h3 className="font-nunito font-black text-[11px] sm:text-xs leading-tight mb-2 flex-1 flex items-center text-retro-navy">
                   {card.title}
                 </h3>
 
                 {/* XP badge — bounces in after card entrance */}
                 <motion.div
                   variants={reduceMotion ? undefined : xpBadgeVariants}
-                  className={`px-2 py-0.5 rounded-full font-press-start text-[8px] border border-black flex items-center gap-0.5 ${
-                    isUnlocked
-                      ? 'bg-gray-400 text-gray-700'
-                      : 'bg-black text-retro-gold'
-                  }`}
+                  className={`px-2 py-0.5 rounded-full font-press-start text-[8px] border border-black flex items-center gap-0.5 ${isUnlocked
+                      ? 'bg-emerald-600 text-white font-extrabold'
+                      : 'bg-black text-retro-gold font-extrabold'
+                    }`}
                 >
                   {isUnlocked ? (
                     <>
                       <ShieldCheck className="w-2.5 h-2.5 mr-0.5" />
-                      DONE
+                      UNLOCKED
                     </>
                   ) : (
                     '+500 XP'
@@ -511,8 +560,8 @@ export const Achievements: React.FC<AchievementsProps> = ({
               dinoJump
                 ? { y: [-18, 0], rotate: [0, -8, 8, 0] }
                 : reduceMotion
-                ? {}
-                : { y: [0, -3, 0] }
+                  ? {}
+                  : { y: [0, -3, 0] }
             }
             transition={
               dinoJump
@@ -530,7 +579,7 @@ export const Achievements: React.FC<AchievementsProps> = ({
           </motion.div>
 
           {/* Speech bubble */}
-          <div className="relative bg-white text-black p-3.5 border-4 border-black rounded-2xl pixel-border flex-1 select-none overflow-hidden">
+          <div className="relative bg-white text-black p-3.5 border-4 border-black rounded-2xl pixel-border flex-1 select-none overflow-hidden shadow-[3px_3px_0px_#000]">
             {/* Pointer triangle */}
             <div className="absolute top-1/2 -left-3.5 -translate-y-1/2 w-0 h-0 border-y-8 border-y-transparent border-r-8 border-r-black pointer-events-none" />
             <div className="absolute top-1/2 -left-[9px] -translate-y-1/2 w-0 h-0 border-y-[6px] border-y-transparent border-r-[6px] border-r-white pointer-events-none z-10" />
@@ -557,33 +606,18 @@ export const Achievements: React.FC<AchievementsProps> = ({
         </div>
 
         {/* ── LANJUT Button ── */}
-        <div className="flex justify-center mt-2">
+        <div className="flex justify-center mt-2 w-full">
           <motion.div
-            className="relative group"
-            animate={
-              reduceMotion
-                ? {}
-                : {
-                    boxShadow: [
-                      '0 0 0px rgba(255,215,0,0)',
-                      '0 0 14px rgba(255,215,0,0.55)',
-                      '0 0 0px rgba(255,215,0,0)',
-                    ],
-                  }
-            }
-            transition={{ duration: 1.8, repeat: Infinity, ease: 'easeInOut' }}
+            whileHover={reduceMotion ? {} : { scale: 1.05 }}
+            whileTap={reduceMotion ? {} : { scale: 0.96 }}
+            className="inline-block"
           >
-            <motion.div
-              whileHover={reduceMotion ? {} : { scale: 1.05 }}
-              whileTap={reduceMotion ? {} : { scale: 0.97 }}
+            <PixelButton
+              onClick={handleNext}
+              className="px-8 py-3 text-xs sm:text-sm"
             >
-              <PixelButton
-                onClick={handleNext}
-                className="px-8 py-3 text-xs sm:text-sm"
-              >
-                LANJUT ➔
-              </PixelButton>
-            </motion.div>
+              LANJUT ➔
+            </PixelButton>
           </motion.div>
         </div>
       </motion.div>

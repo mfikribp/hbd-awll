@@ -56,10 +56,10 @@ export const MiniGame: React.FC = () => {
       {/* Title */}
       <div className="text-center z-10 mt-6 max-w-xl bg-[#0C101B]/85 p-4 sm:p-5 border-4 border-black pixel-border rounded-2xl shadow-[4px_4px_0_#000000]">
         <h2 className="font-press-start text-xs sm:text-sm text-retro-gold mb-2 tracking-tight">
-          BUILD THE BLESSING!
+          BUILD YOUR YEAR!
         </h2>
         <p className="font-nunito font-extrabold text-xs sm:text-sm text-gray-200">
-          klik komponen di bawah untuk membangun tahun yang luar biasa! ({placedBlessings.length}/4)
+          klik komponen di bawah untuk menyusun harapan di usia yang baru! ({placedBlessings.length}/4)
         </p>
       </div>
 
@@ -185,8 +185,7 @@ export const MiniGame: React.FC = () => {
             <div className="absolute top-1/2 -left-[9px] -translate-y-1/2 w-0 h-0 border-y-[6px] border-y-transparent border-r-[6px] border-r-white pointer-events-none z-10" />
 
             <p className="font-nunito font-extrabold text-xs sm:text-sm text-retro-navy leading-snug flex items-center flex-wrap gap-1">
-              <span>{isCompleted ? "semua blessing telah terpasang sempurna!" : "klik semua komponen di atas untuk melengkapi struktur harapan di usia yang baru!"}</span>
-              <Hammer className="w-4 h-4 text-retro-navy shrink-0 animate-bounce inline-block" />
+              <span>{isCompleted ? "your year is ready!" : "klik semua komponen di atas untuk melengkapi struktur harapan di usia yang baru!"}</span>
             </p>
           </div>
         </div>

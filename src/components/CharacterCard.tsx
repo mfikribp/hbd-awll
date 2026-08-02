@@ -296,7 +296,6 @@ export const CharacterCard: React.FC = () => {
 
                 {/* Distinct Action Pointer/Instruction */}
                 <div className="border-t-2 border-black/10 pt-2 mt-1 flex items-center gap-1.5 text-[8.5px] sm:text-[9.5px] font-press-start text-retro-pink tracking-tight animate-pulse">
-                  <span>👉</span>
                   <span>KLIK TOMBOL KUNING DI BAWAH UNTUK LANJUT</span>
                 </div>
               </div>

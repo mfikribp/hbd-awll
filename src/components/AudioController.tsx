@@ -202,7 +202,7 @@ export const AudioController: React.FC = () => {
 
   return (
     <div className="fixed top-4 right-4 z-[999] select-none flex items-center gap-2">
-      {/* Prominent Bouncing Badge Prompt when audio hasn't started or is muted */}
+      {/* Prominent Badge Prompt with Kursor Pointer when audio hasn't started or is muted */}
       <AnimatePresence>
         {showTapPrompt && (
           <motion.div
@@ -210,37 +210,66 @@ export const AudioController: React.FC = () => {
             animate={{ opacity: 1, x: 0, scale: 1 }}
             exit={{ opacity: 0, x: 10, scale: 0.9 }}
             transition={{ duration: 0.3 }}
-            className="flex items-center gap-1 bg-[#FFD700] text-black px-2.5 py-1.5 rounded-lg font-press-start text-[8px] sm:text-[9px] font-extrabold border-2 border-black shadow-[2px_2px_0px_#000000] animate-bounce"
+            className="flex items-center gap-1 -mr-2"
           >
-            <span>KLIK DULU BIAR ADA AUDIONYA</span>
+            {/* Glowing & Eye-catching Teks Badge */}
+            <motion.div
+              animate={{
+                y: [0, -3, 0],
+                scale: [1, 1.05, 1],
+                boxShadow: [
+                  '0 0 4px rgba(255,215,0,0.5)',
+                  '0 0 14px rgba(255,215,0,0.95)',
+                  '0 0 4px rgba(255,215,0,0.5)',
+                ],
+              }}
+              transition={{ duration: 1.2, repeat: Infinity, ease: 'easeInOut' }}
+              className="flex items-center gap-1.5 bg-gradient-to-r from-[#FFDF00] via-[#FFB700] to-[#FFDF00] text-black px-2 py-1 rounded-lg font-press-start text-[7px] sm:text-[8px] font-black border-2 border-black shadow-[2px_2px_0px_#000000] whitespace-nowrap"
+            >
+              <span>KLIK DULU BIAR ADA AUDIONYA</span>
+            </motion.div>
+
+            {/* Glowing Pointer Cursor */}
+            <motion.img
+              src="/assets/element/kursor.png"
+              alt="Pointer kursor"
+              className="w-10 h-10 sm:w-12 sm:h-12 object-contain drop-shadow-[0_0_10px_rgba(255,215,0,1)] drop-shadow-[2px_2px_0px_#000] pointer-events-none relative -mr-7 sm:-mr-9 z-20"
+              animate={{
+                x: [0, 8, 3, 0],
+                y: [0, -2, 2, 0],
+                scale: [1, 1.18, 0.88, 1],
+                rotate: [0, -10, -18, 0],
+              }}
+              transition={{
+                duration: 1.2,
+                repeat: Infinity,
+                ease: 'easeInOut',
+                times: [0, 0.4, 0.65, 1],
+              }}
+            />
           </motion.div>
         )}
       </AnimatePresence>
 
-      {/* Top-Right Music Icon Button */}
+      {/* Top-Right Music Icon Button (Static icon, no movement) */}
       <motion.button
         onClick={handleToggleClick}
-        whileHover={{ scale: 1.1 }}
-        whileTap={{ scale: 0.9 }}
+        whileHover={{ scale: 1.05 }}
+        whileTap={{ scale: 0.95 }}
         title={showTapPrompt ? "Klik untuk memutar audio" : "Klik untuk mematikan musik"}
         className={`relative flex items-center justify-center p-3 rounded-full border-3 border-black shadow-[3px_3px_0px_#000000] active:translate-y-0.5 transition-all cursor-pointer ${showTapPrompt
-            ? 'bg-gradient-to-r from-[#FF9F1C] to-[#FFBF69] text-black ring-4 ring-[#FFD700]/50 animate-pulse'
+            ? 'bg-gradient-to-r from-[#FF9F1C] to-[#FFBF69] text-black ring-4 ring-[#FFD700]/50'
             : 'bg-[#1C2541] text-[#FFD700] hover:bg-[#2A385B]'
           }`}
       >
-        {/* Glow Ring Effect when waiting for tap */}
-        {showTapPrompt && (
-          <span className="absolute -inset-1 rounded-full bg-[#FFD700] opacity-75 blur-sm animate-ping pointer-events-none" />
-        )}
-
         {isMusicMuted ? (
           <VolumeX className="w-6 h-6 text-red-500 relative z-10" />
         ) : isPlaying ? (
           <div className="relative z-10 flex items-center gap-1">
-            <Volume2 className="w-6 h-6 text-green-400 animate-pulse" />
+            <Volume2 className="w-6 h-6 text-green-400" />
           </div>
         ) : (
-          <Music className="w-6 h-6 text-black animate-bounce relative z-10" />
+          <Music className="w-6 h-6 text-black relative z-10" />
         )}
       </motion.button>
     </div>
