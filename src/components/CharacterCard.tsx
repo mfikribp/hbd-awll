@@ -190,11 +190,11 @@ export const CharacterCard: React.FC = () => {
 
                 <div className="grid grid-cols-[75px_15px_1fr] sm:grid-cols-[85px_15px_1fr] items-center">
                   <span className="text-gray-600 font-extrabold flex items-center gap-1.5">
-                    <GraduationCap className="w-3.5 h-3.5 text-retro-green shrink-0 animate-bounce" /> DEPT
+                    <GraduationCap className="w-3.5 h-3.5 text-retro-green shrink-0 animate-bounce" /> MAJOR
                   </span>
                   <span className="text-gray-600 font-extrabold">:</span>
                   <span className="text-retro-navy font-black tracking-wide uppercase">
-                    CIVIL ENGINEER
+                    CIVIL ENGINEERING
                   </span>
                 </div>
               </motion.div>
