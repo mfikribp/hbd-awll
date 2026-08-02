@@ -74,13 +74,13 @@ export const EndingPage: React.FC = () => {
           <motion.div
             animate={{ y: [-4, 4, -4] }}
             transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-            className="w-28 h-28 relative"
+            className="w-36 h-36 relative"
           >
             <Image
               src="/assets/awl/png/awll-page6.png"
               alt="Waving Awll"
               fill
-              sizes="112px"
+              sizes="144px"
               className="object-contain image-rendering-pixelated"
             />
           </motion.div>
@@ -101,7 +101,7 @@ export const EndingPage: React.FC = () => {
         </div>
 
         {/* Title */}
-        <h1 className="font-press-start text-2xl text-[#FAF6EE] text-center tracking-wide drop-shadow-[0_3px_0px_#000000] animate-expandable-glow leading-snug">
+        <h1 className="font-press-start text-[1.65rem] sm:text-3xl text-[#FAF6EE] text-center tracking-wide drop-shadow-[0_3px_0px_#000000] animate-expandable-glow leading-snug mt-2">
           HAPPY BIRTHDAY
         </h1>
       </div>
@@ -141,14 +141,14 @@ export const EndingPage: React.FC = () => {
               repeat: Infinity,
               ease: "easeInOut",
             }}
-            className="w-72 h-72 relative"
+            className="w-80 h-80 relative"
           >
             <Image
               src="/assets/awl/png/awll-page6.png"
               alt="Waving Awll"
               fill
               priority
-              sizes="288px"
+              sizes="320px"
               className="object-contain image-rendering-pixelated"
             />
           </motion.div>
@@ -177,7 +177,7 @@ export const EndingPage: React.FC = () => {
         </div>
 
         {/* Title: HAPPY BIRTHDAY */}
-        <h1 className="font-press-start text-5xl text-[#FAF6EE] text-center tracking-wide drop-shadow-[0_4px_0px_#000000] animate-expandable-glow w-full px-2">
+        <h1 className="font-press-start text-6xl text-[#FAF6EE] text-center tracking-wide drop-shadow-[0_4px_0px_#000000] animate-expandable-glow w-full px-2 mt-3">
           HAPPY BIRTHDAY
         </h1>
       </div>
