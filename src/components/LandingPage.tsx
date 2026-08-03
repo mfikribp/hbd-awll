@@ -5,7 +5,7 @@ import { motion } from 'framer-motion';
 import { useGameStore } from '../store/useGameStore';
 import { useAudio } from '../hooks/useAudio';
 import { PixelButton } from './ui/PixelButton';
-import { Star, Sparkles, Heart, Coffee, ArrowUp } from 'lucide-react';
+import { Cake, Sparkles, Heart, Coffee, ArrowUp } from 'lucide-react';
 
 import Image from 'next/image';
 import confetti from 'canvas-confetti';
@@ -530,7 +530,7 @@ export const LandingPage: React.FC = () => {
                 transition={{ repeat: Infinity, duration: 1.2, ease: "linear" }}
                 className="w-10 h-10 border-4 border-t-retro-gold border-r-retro-gold border-b-transparent border-l-transparent rounded-full"
               />
-              <Star className="absolute w-5 h-5 fill-retro-gold text-retro-gold animate-pulse" />
+              <Cake className="absolute w-5 h-5 fill-retro-gold text-retro-gold animate-pulse" />
             </div>
 
             {/* Typewriter Text */}

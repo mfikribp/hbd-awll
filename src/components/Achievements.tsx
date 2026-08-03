@@ -57,8 +57,8 @@ const ACHIEVEMENT_LIST: AchievementCard[] = [
     id: 'struktur',
     title: 'Survived Analisa Struktur',
     xp: 500,
-    colorClass: 'bg-gradient-to-b from-emerald-200 to-green-100 border-green-500',
-    glowClass: 'shadow-green-400/50',
+    colorClass: 'bg-gradient-to-b from-yellow-200 to-amber-100 border-yellow-500',
+    glowClass: 'shadow-yellow-400/50',
     icon: '/assets/element/anstrukv1.png',
     alt: 'Analisa Struktur',
   },
@@ -66,8 +66,8 @@ const ACHIEVEMENT_LIST: AchievementCard[] = [
     id: 'manual',
     title: 'Survived Fisika Teknik',
     xp: 500,
-    colorClass: 'bg-gradient-to-b from-red-200 to-rose-100 border-red-500',
-    glowClass: 'shadow-red-400/50',
+    colorClass: 'bg-gradient-to-b from-yellow-200 to-amber-100 border-yellow-500',
+    glowClass: 'shadow-yellow-400/50',
     icon: '/assets/element/fistek.png',
     alt: 'Fisika Teknik',
   },
@@ -84,8 +84,8 @@ const ACHIEVEMENT_LIST: AchievementCard[] = [
     id: 'begadang',
     title: 'Survived Begadang',
     xp: 500,
-    colorClass: 'bg-gradient-to-b from-amber-200 to-orange-100 border-amber-500',
-    glowClass: 'shadow-amber-400/50',
+    colorClass: 'bg-gradient-to-b from-yellow-200 to-amber-100 border-yellow-500',
+    glowClass: 'shadow-yellow-400/50',
     icon: '/assets/element/kopi.png',
     alt: 'Begadang',
   },
@@ -373,66 +373,62 @@ export const Achievements: React.FC<AchievementsProps> = ({
                 whileTap={!isUnlocked && !reduceMotion ? { scale: 0.94 } : {}}
                 onClick={(e) => handleCardClick(e, card)}
                 className={`relative border-4 border-black pixel-border cursor-pointer select-none flex flex-col items-center text-center justify-between min-h-[145px] overflow-visible transition-all duration-200 ${isUnlocked
-                    ? 'bg-gradient-to-b from-amber-50 to-emerald-100 border-emerald-600 shadow-md'
-                    : `${card.colorClass} shadow-lg ${card.glowClass}`
+                  ? 'bg-gradient-to-b from-amber-50 to-emerald-100 border-emerald-600 shadow-md'
+                  : `${card.colorClass} shadow-lg ${card.glowClass}`
                   }`}
                 style={{ padding: '14px 10px 10px' }}
               >
-                {/* Golden Badge Checkmark when unlocked */}
-                {isUnlocked && (
-                  <div className="absolute -top-2 -right-2 bg-emerald-500 text-white rounded-full p-1 border-2 border-black shadow-[1.5px_1.5px_0px_#000] z-30">
-                    <ShieldCheck className="w-3.5 h-3.5 text-white" />
-                  </div>
-                )}
-
-                {/* Shimmer sweep (locked cards only) */}
-                <AnimatePresence>
-                  {!isUnlocked && !reduceMotion && (
-                    <motion.div
-                      key="shimmer"
-                      initial={{ opacity: 1 }}
-                      exit={{ opacity: 0 }}
-                      className="absolute inset-0 bg-gradient-to-r from-transparent via-white/45 to-transparent -skew-x-12 pointer-events-none z-10"
-                      animate={{ x: ['-120%', '120%'] }}
-                      transition={{
-                        x: {
-                          duration: 2.4,
-                          repeat: Infinity,
-                          repeatDelay: 1.8,
-                          ease: 'easeInOut',
-                        },
-                        opacity: { duration: 0.3 },
-                      }}
-                    />
-                  )}
-                </AnimatePresence>
-
-                {/* WebM overlay — smoothly faded in and out */}
-                <AnimatePresence>
-                  {activeVideo === card.id && (
-                    <motion.div
-                      key={`video-${card.id}`}
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      exit={{ opacity: 0 }}
-                      transition={{ duration: 0.35, ease: 'easeOut' }}
-                      className="absolute inset-0 overflow-hidden pointer-events-none z-20"
-                    >
-                      <video
-                        ref={(el) => {
-                          videoRefs.current[card.id] = el;
+                {/* Background FX Container (overflow-hidden to contain shimmer and video) */}
+                <div className="absolute inset-0 overflow-hidden pointer-events-none rounded-[inherit]">
+                  {/* Shimmer sweep (locked cards only) */}
+                  <AnimatePresence>
+                    {!isUnlocked && !reduceMotion && (
+                      <motion.div
+                        key="shimmer"
+                        initial={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        className="absolute inset-0 bg-gradient-to-r from-transparent via-white/45 to-transparent -skew-x-12 pointer-events-none z-10"
+                        animate={{ x: ['-120%', '120%'] }}
+                        transition={{
+                          x: {
+                            duration: 2.4,
+                            repeat: Infinity,
+                            repeatDelay: 1.8,
+                            ease: 'easeInOut',
+                          },
+                          opacity: { duration: 0.3 },
                         }}
-                        src="/assets/element/canvas-animation-1778001503561.webm"
-                        preload="auto"
-                        muted
-                        playsInline
-                        autoPlay
-                        onEnded={() => setActiveVideo(null)}
-                        className="absolute inset-0 w-full h-full object-cover"
                       />
-                    </motion.div>
-                  )}
-                </AnimatePresence>
+                    )}
+                  </AnimatePresence>
+
+                  {/* WebM overlay — smoothly faded in and out */}
+                  <AnimatePresence>
+                    {activeVideo === card.id && (
+                      <motion.div
+                        key={`video-${card.id}`}
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        transition={{ duration: 0.35, ease: 'easeOut' }}
+                        className="absolute inset-0 overflow-hidden pointer-events-none z-20"
+                      >
+                        <video
+                          ref={(el) => {
+                            videoRefs.current[card.id] = el;
+                          }}
+                          src="/assets/element/canvas-animation-1778001503561.webm"
+                          preload="auto"
+                          muted
+                          playsInline
+                          autoPlay
+                          onEnded={() => setActiveVideo(null)}
+                          className="absolute inset-0 w-full h-full object-cover"
+                        />
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
 
                 {/* "KLIK DULUU!" guide pointer (enlarged & shifted to the left) */}
                 <AnimatePresence>
@@ -443,15 +439,15 @@ export const Achievements: React.FC<AchievementsProps> = ({
                       animate={{ opacity: 1, scale: 1 }}
                       exit={{ opacity: 0, scale: 0.8 }}
                       transition={{ duration: 0.3 }}
-                      className="absolute -top-5 -left-2 pointer-events-none z-30 flex flex-col items-start"
+                      className="absolute top-2 -left-2 pointer-events-none z-30 flex flex-col items-start"
                     >
                       <motion.div
                         animate={reduceMotion ? {} : { y: [-3, 3, -3], scale: [1, 1.05, 1] }}
                         transition={{ duration: 0.9, repeat: Infinity, ease: 'easeInOut' }}
                         className="flex flex-col items-start"
                       >
-                        <div className="bg-[#FFD700] text-black text-[7.5px] font-press-start font-black py-1 px-1.5 border-2 border-black rounded-md shadow-[1.5px_1.5px_0px_#000] whitespace-nowrap">
-                          <span>KLIK DULUU!</span>
+                        <div className="bg-white text-black text-[7.5px] font-press-start font-black py-1 px-1.5 border-2 border-black rounded-md shadow-[1.5px_1.5px_0px_#000] whitespace-nowrap">
+                          <span>KLAIM DULUU!</span>
                         </div>
                         <img
                           src="/assets/element/kursor.png?v=3"
@@ -533,8 +529,8 @@ export const Achievements: React.FC<AchievementsProps> = ({
                 <motion.div
                   variants={reduceMotion ? undefined : xpBadgeVariants}
                   className={`px-2 py-0.5 rounded-full font-press-start text-[8px] border border-black flex items-center gap-0.5 ${isUnlocked
-                      ? 'bg-emerald-600 text-white font-extrabold'
-                      : 'bg-black text-retro-gold font-extrabold'
+                    ? 'bg-emerald-600 text-white font-extrabold'
+                    : 'bg-black text-retro-gold font-extrabold'
                     }`}
                 >
                   {isUnlocked ? (
