@@ -12,7 +12,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 
 const CAT_GREETINGS = [
   "hii! 👋",
-  "halo awll! ✨ jangan lupa istirahat & minum air ya",
+  "halo aul! ✨ jangan lupa istirahat & minum air ya",
   "semangat terus ya hari ini~ 🐾",
 ];
 
@@ -174,7 +174,7 @@ export const CharacterCard: React.FC = () => {
                   </span>
                   <span className="text-gray-600 font-extrabold">:</span>
                   <span className="text-retro-navy font-black tracking-wide uppercase">
-                    Awll
+                    Auliana Ridha
                   </span>
                 </div>
 

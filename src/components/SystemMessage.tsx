@@ -22,19 +22,19 @@ export const SystemMessage: React.FC = () => {
   const terminalRef = useRef<HTMLDivElement>(null);
 
   const textLines = [
-    "awll@birthday:~$ run check-status.sh",
+    "aull@birthday:~$ run check-status.sh",
     "[SYSTEM] Initializing Life Status Analysis...",
     "[SYSTEM] Level 20 reached successfully! 🎂",
-    "awll@birthday:~$ cat message_for_awll.txt",
+    "aull@birthday:~$ cat message_for_aull.txt",
     "HAPPY 20TH BIRTHDAYYY🥳🎉",
     "tetaplah jadi orang yang selama ini selalu bikin aku penasaran dan tertarik buat kenal kamu lebih jauh. tetaplah jadi pribadi yang hangat, baik, dan selalu membawa kenyamanan buat orang-orang di sekitarmu",
     "semoga di usia yang baru ini kamu selalu diberi kesehatan, kebahagiaan, dilimpahkan rezekinya, dan dilancarkan dalam segala urusan yang kamu hadapi",
     "...",
     "aku mau minta maaf, maaf banget udah chat kamu lagi",
     "TETAP SEMANGAT KULIAH DAN KERJANYA, JANGAN LUPA MAKAN, JANGAN LUPA BUAT ISTIRAHAT, SATU LAGI JANGAN LUPA BUAT OLAHRAGA!",
-    "sorry and thnk you, i just wanna say 'HAPPY BIRTHDAY AWLL'",
-    "awll@birthday:~$ execute proud-mode.sh --always",
-    "// always proud of you, awll! 💚",
+    "sorry and thnk you, i just wanna say 'HAPPY BIRTHDAY AULL'",
+    "aull@birthday:~$ execute proud-mode.sh --always",
+    "// always proud of you, aull! 💚",
     "[SYSTEM] Birthday messages loaded successfully!"
   ];
 
@@ -42,9 +42,9 @@ export const SystemMessage: React.FC = () => {
   useEffect(() => {
     if (currentIndex < textLines.length) {
       const line = textLines[currentIndex];
-      const isCommand = line.startsWith("awll@birthday:~$");
-      const prefix = isCommand ? "awll@birthday:~$ " : "";
-      const actualTextToType = isCommand ? line.replace("awll@birthday:~$ ", "") : line;
+      const isCommand = line.startsWith("aull@birthday:~$");
+      const prefix = isCommand ? "aull@birthday:~$ " : "";
+      const actualTextToType = isCommand ? line.replace("aull@birthday:~$ ", "") : line;
 
       let charIndex = 0;
       setTypingText(prefix);
@@ -142,14 +142,14 @@ export const SystemMessage: React.FC = () => {
       <span className="w-2 h-4 bg-retro-green inline-block animate-pulse ml-1 shrink-0 align-middle" />
     ) : null;
 
-    if (fullLine.startsWith("awll@birthday:~$")) {
+    if (fullLine.startsWith("aull@birthday:~$")) {
       // Remove prefix from the typed content to prevent double-rendering if any
-      const command = line.startsWith("awll@birthday:~$")
-        ? line.replace("awll@birthday:~$", "").trimStart()
+      const command = line.startsWith("aull@birthday:~$")
+        ? line.replace("aull@birthday:~$", "").trimStart()
         : line.trimStart();
       return (
         <div className="font-mono text-xs sm:text-sm select-text flex flex-wrap gap-x-1.5 leading-relaxed shrink-0 break-words whitespace-pre-wrap">
-          <span className="text-retro-green font-bold">awll@birthday</span>
+          <span className="text-retro-green font-bold">aull@birthday</span>
           <span className="text-retro-pink font-bold">:~$</span>
           <span className="text-white font-semibold flex items-center flex-wrap">
             {command}

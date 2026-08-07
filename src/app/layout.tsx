@@ -17,8 +17,8 @@ const nunito = Nunito({
 });
 
 export const metadata: Metadata = {
-  title: "Birthday Adventure — Awll Level Up",
-  description: "Happy Birthday, Awll!",
+  title: "HAPPY BIRTHDAY AULL",
+  description: "HAPPY LEVEL UP",
 };
 
 export default function RootLayout({
