@@ -168,32 +168,32 @@ export const CharacterCard: React.FC = () => {
                 transition={{ delay: 0.25, duration: 0.4 }}
                 className="pb-4 mb-4 font-press-start text-[8.5px] sm:text-[9.5px] leading-relaxed flex flex-col space-y-3 bg-[#FAF6EE] p-4 border-4 border-black shadow-[4px_4px_0px_#000000] pixel-border-inward relative overflow-hidden"
               >
-                <div className="grid grid-cols-[75px_15px_1fr] sm:grid-cols-[85px_15px_1fr] items-center">
+                <div className="grid grid-cols-[68px_10px_1fr] sm:grid-cols-[72px_10px_1fr] items-center">
                   <span className="text-gray-600 font-extrabold flex items-center gap-1.5">
                     <User className="w-3.5 h-3.5 text-retro-pink shrink-0" /> NAME
                   </span>
                   <span className="text-gray-600 font-extrabold">:</span>
-                  <span className="text-retro-navy font-black tracking-wide uppercase">
+                  <span className="text-retro-navy font-black tracking-wide uppercase whitespace-nowrap">
                     Auliana Ridha
                   </span>
                 </div>
 
-                <div className="grid grid-cols-[75px_15px_1fr] sm:grid-cols-[85px_15px_1fr] items-center">
+                <div className="grid grid-cols-[68px_10px_1fr] sm:grid-cols-[72px_10px_1fr] items-center">
                   <span className="text-gray-600 font-extrabold flex items-center gap-1.5">
                     <ArrowUpCircle className="w-3.5 h-3.5 text-retro-gold shrink-0 animate-spin" style={{ animationDuration: '6s' }} /> LEVEL
                   </span>
                   <span className="text-gray-600 font-extrabold">:</span>
-                  <span className="text-retro-purple font-black tracking-wide">
+                  <span className="text-retro-purple font-black tracking-wide whitespace-nowrap">
                     20
                   </span>
                 </div>
 
-                <div className="grid grid-cols-[75px_15px_1fr] sm:grid-cols-[85px_15px_1fr] items-center">
+                <div className="grid grid-cols-[68px_10px_1fr] sm:grid-cols-[72px_10px_1fr] items-center">
                   <span className="text-gray-600 font-extrabold flex items-center gap-1.5">
                     <GraduationCap className="w-3.5 h-3.5 text-retro-green shrink-0 animate-bounce" /> MAJOR
                   </span>
                   <span className="text-gray-600 font-extrabold">:</span>
-                  <span className="text-retro-navy font-black tracking-wide uppercase">
+                  <span className="text-retro-navy font-black tracking-wide uppercase whitespace-nowrap">
                     CIVIL ENGINEERING
                   </span>
                 </div>
