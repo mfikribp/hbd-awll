@@ -22,6 +22,37 @@ const BLESSINGS: BlessingComponent[] = [
   { id: 'rezeki', name: 'Rezeki', color: 'bg-retro-gold border-retro-gold', icon: <img src="/assets/element/rezeki.png" alt="Rezeki" className="w-12 h-12 object-contain image-rendering-pixelated" /> },
 ];
 
+const BLESSING_INFO: Record<string, { label: string; meaning: string; detail: string }> = {
+  health: {
+    label: 'Health',
+    meaning: 'Kesehatan Fisik & Mental',
+    detail: 'Kesehatan tubuh dan pikiran agar selalu bertenaga serta siap menjalani hari dengan baik',
+  },
+  luck: {
+    label: 'Luck',
+    meaning: 'Keberuntungan',
+    detail: 'Keberuntungan dan kemudahan dalam setiap langkah, termasuk saat mengambil keputusan',
+  },
+  knowledge: {
+    label: 'Knowledge',
+    meaning: 'Ilmu & Wawasan',
+    detail: 'Pengetahuan dan wawasan yang luas agar semakin bijak serta tepat dalam mengambil keputusan',
+  },
+  rezeki: {
+    label: 'Rezeki',
+    meaning: 'Rezeki & Kelancaran',
+    detail: 'Rezeki yang berlimpah, penuh berkah, serta kelancaran dalam segala urusan',
+  },
+};
+
+const getNormalizedId = (id: string) => {
+  if (id === 'kesehatan') return 'health';
+  if (id === 'keberuntungan' || id === 'Lucky' || id === 'luck') return 'luck';
+  if (id === 'ilmu') return 'knowledge';
+  if (id === 'wealth' || id === 'Rezeki' || id === 'rezeki') return 'rezeki';
+  return id;
+};
+
 export const MiniGame: React.FC = () => {
   const { placedBlessings, placeBlessing, nextSection } = useGameStore();
   const { playSuccess, playClick, playLevelUp } = useAudio();
@@ -45,6 +76,8 @@ export const MiniGame: React.FC = () => {
   };
 
   const isCompleted = placedBlessings.length === 4;
+  const latestPlacedId = placedBlessings.length > 0 ? getNormalizedId(placedBlessings[placedBlessings.length - 1]) : null;
+  const latestInfo = latestPlacedId ? BLESSING_INFO[latestPlacedId] : null;
 
   return (
     <div
@@ -77,36 +110,29 @@ export const MiniGame: React.FC = () => {
         {/* Component Selector Area */}
         <div className="grid grid-cols-4 gap-2">
           {BLESSINGS.map((b) => {
-            const isUsed = placedBlessings.some((placedId) => {
-              const normalizedId = placedId === 'kesehatan' ? 'health'
-                : placedId === 'keberuntungan' || placedId === 'Lucky' || placedId === 'luck' ? 'luck'
-                  : placedId === 'ilmu' ? 'knowledge'
-                    : placedId === 'wealth' || placedId === 'Rezeki' || placedId === 'rezeki' ? 'rezeki'
-                      : placedId;
-              return normalizedId === b.id;
-            });
+            const isUsed = placedBlessings.some((placedId) => getNormalizedId(placedId) === b.id);
             return (
               <motion.button
                 key={b.id}
-                whileHover={isUsed ? {} : { scale: 1.06, y: -3 }}
-                whileTap={isUsed ? {} : { scale: 0.94 }}
+                whileHover={isUsed ? {} : { scale: 1.05, y: -2 }}
+                whileTap={isUsed ? {} : { scale: 0.95 }}
                 onClick={() => {
                   playClick();
                   handleComponentClick(b.id);
                 }}
                 disabled={isUsed}
-                className={`p-2.5 border-4 border-black pixel-border flex flex-col items-center text-center justify-between select-none transition-all ${isUsed
+                className={`aspect-square p-2 border-4 border-black pixel-border flex flex-col items-center justify-between select-none transition-all ${isUsed
                   ? 'bg-gray-200 border-gray-400 text-gray-400 cursor-not-allowed opacity-40 grayscale'
-                  : 'bg-white hover:bg-amber-50 text-black cursor-pointer shadow-[2px_2px_0_#000]'
+                  : 'bg-white hover:bg-amber-50 text-black cursor-pointer'
                   }`}
                 title={isUsed ? "sudah ditambahkan!" : "klik untuk menambahkan komponen ini!"}
               >
                 {/* Icon box */}
-                <div className="w-12 h-12 flex items-center justify-center shrink-0">
+                <div className="w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center shrink-0 my-auto">
                   {b.icon}
                 </div>
                 {/* Text Label */}
-                <span className="font-press-start text-[6px] xs:text-[7px] sm:text-[8px] font-bold tracking-tighter uppercase mt-2 block leading-none text-center">
+                <span className="font-press-start text-[6px] xs:text-[7px] sm:text-[8px] font-bold tracking-tighter uppercase leading-none text-center w-full truncate">
                   {b.name}
                 </span>
               </motion.button>
@@ -119,14 +145,11 @@ export const MiniGame: React.FC = () => {
           className="relative border-4 border-dashed border-black bg-black/5 min-h-[220px] flex flex-col justify-end items-center p-4 overflow-hidden pixel-border-inward transition-all duration-200"
         >
           {/* Placed components stack inside tower */}
-          <div className="w-full max-w-[240px] flex flex-col-reverse gap-1.5 z-10">
+          <div className="w-full max-w-[280px] flex flex-col-reverse gap-1.5 z-10">
             {placedBlessings.map((bId) => {
-              const normalizedId = bId === 'kesehatan' ? 'health'
-                : bId === 'keberuntungan' || bId === 'Lucky' || bId === 'luck' ? 'luck'
-                  : bId === 'ilmu' ? 'knowledge'
-                    : bId === 'wealth' || bId === 'Rezeki' || bId === 'rezeki' ? 'rezeki'
-                      : bId;
+              const normalizedId = getNormalizedId(bId);
               const b = BLESSINGS.find((x) => x.id === normalizedId);
+              const info = BLESSING_INFO[normalizedId];
               if (!b) return null;
               return (
                 <motion.div
@@ -134,12 +157,21 @@ export const MiniGame: React.FC = () => {
                   initial={{ y: -80, opacity: 0, scale: 0.8 }}
                   animate={{ y: 0, opacity: 1, scale: 1 }}
                   transition={{ type: 'spring', stiffness: 250, damping: 18 }}
-                  className={`p-1.5 pl-6 border-4 border-black font-press-start text-[8px] sm:text-[9px] font-black text-white flex items-center justify-start gap-3 pixel-border shadow-[2px_2px_0_#000] ${b.color}`}
+                  className={`p-1.5 pl-4 pr-3 border-4 border-black font-press-start text-[8px] sm:text-[9px] font-black text-white flex items-center justify-between gap-2 pixel-border shadow-[2px_2px_0_#000] ${b.color}`}
                 >
-                  <div className="w-10 h-10 flex items-center justify-center shrink-0">
-                    {b.icon}
+                  <div className="flex items-center gap-2">
+                    <div className="w-9 h-9 flex items-center justify-center shrink-0">
+                      {b.icon}
+                    </div>
+                    <div className="flex flex-col text-left">
+                      <span>{b.name.toUpperCase()} PLACED!</span>
+                      {info && (
+                        <span className="font-nunito font-bold text-[10px] text-white/90 leading-tight normal-case">
+                          ({info.meaning})
+                        </span>
+                      )}
+                    </div>
                   </div>
-                  <span>{b.name.toUpperCase()} PLACED!</span>
                 </motion.div>
               );
             })}
@@ -167,26 +199,42 @@ export const MiniGame: React.FC = () => {
         </div>
 
         {/* Helper Dialogue box */}
-        <div className="flex gap-4 items-center w-full my-1">
+        <div className="flex gap-3 sm:gap-4 items-center w-full my-1">
           {/* Cat Mascot */}
-          <div className="w-16 h-24 relative shrink-0">
+          <div className="w-14 h-20 sm:w-16 sm:h-24 relative shrink-0">
             <Image
               src="/assets/mascot/png/cat.png"
               alt="Mascot Cat"
               fill
-              sizes="56px"
+              sizes="64px"
               className="object-contain"
             />
           </div>
           {/* Speech Bubble */}
-          <div className="relative bg-white text-black p-3.5 border-4 border-black rounded-2xl pixel-border flex-1 select-none shadow-[2px_2px_0_#000]">
+          <div className="relative bg-white text-black p-3.5 border-4 border-black rounded-2xl pixel-border flex-1 select-none shadow-[2px_2px_0_#000] min-h-[70px] flex items-center">
             {/* Bubble Triangle pointer */}
             <div className="absolute top-1/2 -left-3.5 -translate-y-1/2 w-0 h-0 border-y-8 border-y-transparent border-r-8 border-r-black pointer-events-none" />
             <div className="absolute top-1/2 -left-[9px] -translate-y-1/2 w-0 h-0 border-y-[6px] border-y-transparent border-r-[6px] border-r-white pointer-events-none z-10" />
 
-            <p className="font-nunito font-extrabold text-xs sm:text-sm text-retro-navy leading-snug flex items-center flex-wrap gap-1">
-              <span>{isCompleted ? "your year is ready!" : "klik semua komponen di atas untuk melengkapi struktur harapan di usia yang baru!"}</span>
-            </p>
+            <div className="font-nunito text-xs sm:text-sm text-retro-navy leading-snug">
+              {latestInfo ? (
+                <div>
+                  <span className="font-extrabold text-amber-600">
+                    [{latestInfo.label} - {latestInfo.meaning}]:{' '}
+                  </span>
+                  <span className="font-bold text-gray-800">{latestInfo.detail}</span>
+                  {isCompleted && (
+                    <div className="mt-1 font-extrabold text-emerald-600">
+                      Semua komponen sudah lengkap!
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <span className="font-extrabold">
+                  klik semua komponen di atas untuk melengkapi struktur harapan di usia yang baru!
+                </span>
+              )}
+            </div>
           </div>
         </div>
 

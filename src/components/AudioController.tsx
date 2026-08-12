@@ -11,7 +11,7 @@ const AUDIO_MAP: Record<number, string> = {
   3: '/audio/tekniksound.mp3',    // Achievements
   4: '/audio/wish.mp3',           // MiniGame
   5: '/audio/system_message.mp3', // SystemMessage
-  6: '/audio/hbdoy.mp3',          // EndingPage
+  6: '/audio/ending.mp3',         // EndingPage
 };
 
 const FALLBACK_AUDIO = '/audio/hbdoy.mp3';

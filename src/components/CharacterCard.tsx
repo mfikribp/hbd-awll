@@ -239,7 +239,7 @@ export const CharacterCard: React.FC = () => {
                   value={999}
                   max={999}
                   colorClass="bg-retro-gold"
-                  badge="HAPPY ✨"
+                  badge="HAPPY"
                   badgeColor="bg-retro-gold text-black font-bold"
                 />
               </motion.div>

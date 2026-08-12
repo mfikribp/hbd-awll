@@ -489,7 +489,7 @@ export const LandingPage: React.FC = () => {
             onClick={handleStart}
             className="px-10 py-4 text-sm sm:text-base font-bold relative uppercase tracking-wider !shadow-[6px_6px_0px_#000000]"
           >
-            ▸ START ADVENTURE ◂
+            ▸ START ◂
           </PixelButton>
         </motion.div>
 
@@ -505,7 +505,7 @@ export const LandingPage: React.FC = () => {
             ease: "easeInOut",
           }}
         >
-          <span>CLICK START ADVENTURE TO PLAY</span>
+          <span>CLICK START TO PLAY</span>
         </motion.div>
       </motion.div>
 
