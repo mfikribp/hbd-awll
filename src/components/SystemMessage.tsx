@@ -30,9 +30,8 @@ export const SystemMessage: React.FC = () => {
     "tetaplah jadi orang yang selama ini selalu bikin aku penasaran dan tertarik buat kenal kamu lebih jauh. tetaplah jadi pribadi yang hangat, baik, dan selalu membawa kenyamanan buat orang-orang di sekitarmu",
     "semoga di usia yang baru ini kamu selalu diberi kesehatan, kebahagiaan, dilimpahkan rezekinya, dan dilancarkan dalam segala urusan yang kamu hadapi",
     "...",
-    "aku mau minta maaf, maaf banget udah chat kamu lagi",
     "TETAP SEMANGAT KULIAH DAN KERJANYA, JANGAN LUPA MAKAN, JANGAN LUPA BUAT ISTIRAHAT, SATU LAGI JANGAN LUPA BUAT OLAHRAGA!",
-    "sorry and thnk you, i just wanna say 'HAPPY BIRTHDAY AULL'",
+    "i just wanna say 'HAPPY BIRTHDAY AULL'",
     "aull@birthday:~$ execute proud-mode.sh --always",
     "// always proud of you, aull! 💚",
     "[SYSTEM] Birthday messages loaded successfully!"
