@@ -1,12 +1,12 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { useGameStore } from '../store/useGameStore';
-import { useAudio } from '../hooks/useAudio';
-import ReactConfetti from 'react-confetti';
-import Image from 'next/image';
+import { motion } from 'framer-motion';
 import { RotateCcw, Star } from 'lucide-react';
+import Image from 'next/image';
+import React, { useEffect, useState } from 'react';
+import ReactConfetti from 'react-confetti';
+import { useAudio } from '../hooks/useAudio';
+import { useGameStore } from '../store/useGameStore';
 
 /* ------------------------------------------------------------------ */
 /* Floating sparkle star positions (fixed, purely decorative)          */
@@ -260,7 +260,7 @@ export const EndingPage: React.FC = () => {
           transition={{ type: 'spring', stiffness: 180, damping: 14, delay: 0.1 }}
           className="font-press-start text-6xl text-[#FAF6EE] text-center tracking-wide drop-shadow-[0_4px_0px_#000000] animate-expandable-glow w-full px-2 mt-3"
         >
-          HAPPY BIRTHDAY
+          HAPPY BIRTHDAY AULL
         </motion.h1>
       </div>
 
